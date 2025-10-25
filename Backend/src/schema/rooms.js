@@ -2,7 +2,7 @@ import db from '../config/db.js'
 
 export async function initRoomsModel() {
     const createRoomTable = `
-        create table rooms (
+        create table IF NOT EXISTS rooms (
         room_id int auto_increment primary key,
         room_number VARCHAR(10) NOT NULL UNIQUE,
         room_type varchar(255) NOT NULL,

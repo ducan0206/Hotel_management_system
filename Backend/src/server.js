@@ -1,11 +1,13 @@
 import express from 'express'
 import db from '../src/config/db.js'
+import {initRoomsModel} from '../src/schema/rooms.js'
 
 const app = express();
 
 const startServer = async () => {
     try {
         await db.getConnection();
+        await initRoomsModel();
         app.listen(5001, () => {
             console.log('Server start ...');
         })
