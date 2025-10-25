@@ -1,11 +1,23 @@
 import express from 'express'
 import db from '../src/config/db.js'
+import adminRoute from './routes/adminRoutes.js'
 import {initRoomsModel} from '../src/schema/rooms.js'
 import {initPaymentModel} from '../src/schema/payments.js'
 import {initBookingsModel} from '../src/schema/bookings.js'
 import {initUsersModel} from '../src/schema/users.js'
+import cors from 'cors'
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+}))
+
+app.use(express.json());
+
+app.use("/admin", adminRoute);
 
 const startServer = async () => {
     try {
