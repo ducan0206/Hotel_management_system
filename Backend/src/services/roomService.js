@@ -11,19 +11,19 @@ export const fetchAllRooms = async() => {
     }
 }
 
-export const addRoom = async({room_number, room_type, price, status, description, img_url}) => {
+export const addRoom = async({room_number, room_type, price, status, description, image_url}) => {
     try {
-        const [result] = await db.query("insert into rooms (room_number, room_type, price, status, description, image_url) values (?, ?, ?, ?, ?, ?)",
-                                        [room_number, room_type, price, status, description, img_url]
+        const [result] = await db.query(
+            "INSERT INTO rooms (room_number, room_type, price, status, description, image_url) VALUES (?, ?, ?, ?, ?, ?)",
+            [room_number, room_type, price, status, description, image_url]
         );
-        const [rows] = await db.query("select * from rooms where room_id = ?", [result.insertId]);
-        console.log(rows);
+        const [rows] = await db.query("SELECT * FROM rooms WHERE room_id = ?", [result.insertId]);
         return rows[0];
     } catch (error) {
         console.log('Error: addRoom function', error.message);
         return error;
     }
-}
+};
 
 export const updatingRoom = async(id, roomData) => {
     try {
