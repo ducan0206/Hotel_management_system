@@ -1,10 +1,10 @@
-import {fetchAllRooms, addRoom, updatingRoom, editingRoom, deletingRoom} from '../apis/adminAPIs.js'
+import {fetchAllRooms, addRoom, updatingRoom, editingRoom, deletingRoom} from '../services/roomService.js'
 
 export const getAllRooms = async(request, response) => {
     try {
         const rooms = await fetchAllRooms();
         response.status(200).json(rooms);
-    } catch (error) {
+    } catch (error) {cd
         console.log("getAllRooms function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
