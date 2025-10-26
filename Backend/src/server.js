@@ -6,6 +6,7 @@ import {initPaymentModel} from '../src/schema/payments.js'
 import {initBookingsModel} from '../src/schema/bookings.js'
 import {initUsersModel} from '../src/schema/users.js'
 import cors from 'cors'
+import cloudinary from '../src/config/cloudinary.js'
 
 const app = express();
 
@@ -18,6 +19,10 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/admin", adminRoute);
+
+cloudinary.api.ping()
+    .then(res => console.log('? Cloudinary connected:', res))
+    .catch(err => console.error('? Cloudinary error:', err));
 
 const startServer = async () => {
     try {

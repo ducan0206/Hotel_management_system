@@ -12,7 +12,13 @@ export const getAllRooms = async(request, response) => {
 
 export const addNewRoom = async(request, response) => {
     try {
-        const newRoom = await addRoom(request.body);
+        // Cloudinary automatically provides a secure URL
+        const imageUrl = request.file ? request.file.path : null;
+
+        const newRoom = await addRoom({
+            ...request.body,
+            img_url: imageUrl
+        });
         if(!newRoom) {
             return response.status(500).json({message: "System error"});
         }
