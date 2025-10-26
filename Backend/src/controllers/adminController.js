@@ -47,8 +47,10 @@ export const editRoom = async(request, response) => {
 
 export const deleteRoom = async(request, response) => {
     try {
-        const id = request.params.id;
+        const id = parseInt(request.params.id, 10);
         const result = await deletingRoom(id);
+        if(result.status === 404) 
+            response.status(404).json({message: result.message});
         response.status(200).json(result);
     } catch (error) {
         console.log("deleteRoom function error: ", error.message);

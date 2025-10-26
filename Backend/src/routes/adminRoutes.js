@@ -11,6 +11,6 @@ adminRoute.put("/update-room", updateRoom);
 
 adminRoute.patch("/edit-room", editRoom);
 
-adminRoute.delete("/delete-room", deleteRoom);
+adminRoute.delete("/delete-room/:id", deleteRoom);
 
 export default adminRoute
