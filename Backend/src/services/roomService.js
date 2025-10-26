@@ -25,12 +25,34 @@ export const addRoom = async({room_number, room_type, price, status, description
     }
 }
 
-export const updatingRoom = async() => {
-    
-}
+export const updatingRoom = async(id, roomData) => {
+    try {
+        const [existingRoom] = await db.query("select * from rooms where room_id = ?", [id]);
+        if(existingRoom.length === 0) {
+            throw new Error(`Room with ${id} note found.`);
+        }
 
-export const editingRoom = async() => {
-    
+        const {room_number, room_type, price, status, description, image_url} = roomData;
+
+        await db.query(
+            `
+            update rooms
+            set room_number = ?,
+                room_type = ?,
+                price = ?,
+                status = ?,
+                description = ?,
+                image_url = ?
+            where room_id = ?
+            `, [room_number, room_type, price, status, description, image_url, id]
+        );
+
+        const [rows] = await db.query("select * from rooms where room_id = ?", [id]);
+        return rows[0];
+    } catch (error) {
+        console.log('Error: updatingRoom function', error.message);
+        return error;
+    }
 }
 
 export const deletingRoom = async(id) => {

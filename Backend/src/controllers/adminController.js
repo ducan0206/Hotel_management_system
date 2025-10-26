@@ -1,4 +1,4 @@
-import {fetchAllRooms, addRoom, updatingRoom, editingRoom, deletingRoom} from '../services/roomService.js'
+import {fetchAllRooms, addRoom, updatingRoom, deletingRoom} from '../services/roomService.js'
 
 export const getAllRooms = async(request, response) => {
     try {
@@ -25,22 +25,11 @@ export const addNewRoom = async(request, response) => {
 
 export const updateRoom = async(request, response) => {
     try {
-        const id = request.params.id;
+        const id = parseInt(request.params.id, 10);
         const updatedRoom = await updatingRoom(id, request.body);
         response.status(200).json(updatedRoom);
     } catch (error) {
         console.log("updateRoom function error: ", error.message);
-        response.status(500).json({message: "System error"});
-    }
-}
-
-export const editRoom = async(request, response) => {
-    try {
-        const id = request.params.id;
-        const editedRoom = await editingRoom(id);
-        response.status(200).json(editedRoom);
-    } catch (error) {
-        console.log("editRoom function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
 }
