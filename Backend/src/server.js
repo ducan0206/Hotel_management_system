@@ -1,6 +1,7 @@
 import express from 'express'
 import db from '../src/config/db.js'
 import adminRoute from './routes/adminRoutes.js'
+import customerRoute from './routes/customerRoutes.js'
 import {initRoomsModel} from '../src/schema/rooms.js'
 import {initPaymentModel} from '../src/schema/payments.js'
 import {initBookingsModel} from '../src/schema/bookings.js'
@@ -19,6 +20,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/admin", adminRoute);
+app.use("/user", customerRoute);
 
 cloudinary.api.ping()
     .then(res => console.log('? Cloudinary connected:', res))
