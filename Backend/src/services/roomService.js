@@ -11,6 +11,19 @@ export const fetchAllRooms = async() => {
     }
 }
 
+export const fetchRoomByID = async(id) => {
+    try {
+        const [existingRoom] = await db.query("select * from Rooms where room_id = ?", [id]);
+        if(existingRoom.length === 0) {
+            throw new Error(`Room with ${id} not found.`);
+        }
+        return existingRoom[0];
+    } catch (error) {
+        console.log('Error: fetchRoomByID function', error.message);
+        return error;
+    }
+}
+
 export const addRoom = async({room_number, room_type, price, status, description, image_url}) => {
     try {
         const [result] = await db.query(
@@ -70,6 +83,16 @@ export const deletingRoom = async(id) => {
         return {message: `Room with ${id} has been deleted.`}
     } catch (error) {
         console.log('Error: deletingRoom function', error);
+        return error;
+    }
+}
+
+export const fetchAllRoomTypes = async() => {
+    try {
+        const [rows] = "select * from RoomType";
+        return rows;
+    } catch (error) {
+        console.log('Error: fetchAllRoomTypes function', error);
         return error;
     }
 }
