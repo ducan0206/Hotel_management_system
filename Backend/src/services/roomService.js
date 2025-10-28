@@ -179,7 +179,7 @@ export const deletingRoomType = async(id) => {
             where type_id = ? 
             `, [id]
         )
-        return {message: `Room type with id ${id} has been deleted.`}
+        return {message: `Room type with id ${id} has been deleted.`};
     } catch (error) {
         console.log('Error: deletingRoomType function', error);
         return error;

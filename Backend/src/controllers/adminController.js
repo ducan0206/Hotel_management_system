@@ -1,5 +1,7 @@
 import {fetchAllRooms, fetchRoomByID, addRoom, updatingRoom, deletingRoom, fetchAllRoomTypes, addNewRoomType, updatingRoomType, deletingRoomType} from '../services/roomService.js'
+import {fetchAllServices, addNewService, updatingService, deletingService} from '../services/additionalService.js'
 
+// room management
 export const getAllRooms = async(request, response) => {
     try {
         const rooms = await fetchAllRooms();
@@ -107,6 +109,54 @@ export const deleteRoomType = async(request, response) => {
         response.status(200).json(result);
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+// service management
+export const getAllServices = async(request, response) => {
+    try {
+        const services = await fetchAllServices();
+        response.status(200).json(services);
+    } catch (error) {
+        console.log("deleteService function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const createNewService = async(request, response) => {
+    try {
+        const newService = await addNewService(request.body);
+        if(!newService) {
+            return response.status(500).json({message: "System error"});
+        }
+        response.status(201).json(newService);
+    } catch (error) {
+        console.log("deleteService function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const updateService = async(request, response) => {
+    try {
+        const id = parseInt(request.params.id, 10);
+        const updated = await updatingService(id, request.body);
+        response.status(200).json(updated); 
+    } catch (error) {
+        console.log("deleteService function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const deleteService = async(request, response) => {
+    try {
+        const id = parseInt(request.params.id, 10);
+        const result = await deletingService(id);
+        if(result.status === 404) 
+            response.status(404).json({message: result.message});
+        response.status(200).json(result);
+    } catch (error) {
+        console.log("deleteService function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
 }

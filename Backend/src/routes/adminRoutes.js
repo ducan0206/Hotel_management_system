@@ -1,6 +1,9 @@
 import express from 'express'
 import { uploadCloud } from '../middleware/uploadCloud.js'
-import {getAllRooms, getRoomByID, addNewRoom, updateRoom, deleteRoom, createNewRoomType, getAllRoomTypes, updateRoomType, deleteRoomType} from '../controllers/adminController.js'
+import {getAllRooms, getRoomByID, addNewRoom, updateRoom, deleteRoom, createNewRoomType, getAllRoomTypes, updateRoomType, deleteRoomType,
+        getAllServices, createNewService, updateService, deleteService
+} from '../controllers/adminController.js'
+
 
 const adminRoute = express.Router();
 
@@ -22,5 +25,14 @@ adminRoute.post("/new-room-type", createNewRoomType);
 adminRoute.put("/update-room-type/:id", updateRoomType);
 
 adminRoute.delete("/delete-room-type/:id", deleteRoomType);
+
+// service management 
+adminRoute.get("/services", getAllServices);
+
+adminRoute.post("/new-service", createNewService);
+
+adminRoute.put("/update-service/:id", updateService);
+
+adminRoute.delete("/delete-service/:id", deleteService);
 
 export default adminRoute
