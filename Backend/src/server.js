@@ -2,7 +2,7 @@ import express from 'express'
 import db from '../src/config/db.js'
 import adminRoute from './routes/adminRoutes.js'
 import customerRoute from './routes/customerRoutes.js'
-import {initRoomsModel} from '../src/models/rooms.js'
+import {initRoomsModel, initRoomTypeModel} from '../src/models/rooms.js'
 import {initPaymentModel} from '../src/models/payments.js'
 import {initBookingsModel} from '../src/models/bookings.js'
 import {initUsersModel} from '../src/models/users.js'
@@ -29,10 +29,10 @@ cloudinary.api.ping()
 const startServer = async () => {
     try {
         await db.getConnection();
+
+        await initRoomTypeModel();
         await initRoomsModel();
-        await initUsersModel();
-        await initBookingsModel();
-        await initPaymentModel();
+       
         app.listen(5001, () => {
             console.log('Server start ...');
         })
