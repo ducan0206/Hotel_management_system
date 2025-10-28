@@ -1,8 +1,8 @@
-import {fetchBookings, findBookingByID} from '../services/bookingService.js'
+import {fetchAllBookings, fetchBookingByID} from '../services/bookingService.js'
 
 export const getAllBooking = async(request, response) => {
     try {
-        const bookings = await fetchBookings();
+        const bookings = await fetchAllBookings();
         response.status(200).json(bookings);
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
@@ -13,7 +13,7 @@ export const getAllBooking = async(request, response) => {
 export const getBookingByID = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10)
-        const booking = await findBookingByID(id);
+        const booking = await fetchBookingByID(id);
         response.status(200).json(booking);
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);

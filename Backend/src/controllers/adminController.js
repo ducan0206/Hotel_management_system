@@ -1,5 +1,6 @@
 import {fetchAllRooms, fetchRoomByID, addRoom, updatingRoom, deletingRoom, fetchAllRoomTypes, addNewRoomType, updatingRoomType, deletingRoomType} from '../services/roomService.js'
 import {fetchAllServices, addNewService, updatingService, deletingService, fetchAllServiceOrders} from '../services/additionalService.js'
+import {fetchAllBookings, fetchBookingByID, updatingBooking, addNewBooking, deletingBooking} from '../services/bookingService.js'
 
 // room management
 export const getAllRooms = async(request, response) => {
@@ -167,6 +168,65 @@ export const getAllServiceOrder = async(request, response) => {
         response.status(200).json(services);
     } catch (error) {
         console.log("deleteService function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+// booking management
+export const getAllBookings = async(request, response) => {
+    try {
+        const bookings = await fetchAllBookings();
+        response.status(200).json(bookings);
+    } catch (error) {
+        console.log("getAllBookings function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const getBookingByID = async(request, response) => {
+    try {
+        const id = parseInt(request.params.id);
+        const booking = await fetchBookingByID(id);
+        response.status(200).json(booking);
+    } catch (error) {
+        console.log("getBookingByID function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const updateBooking = async(request, response) => {
+    try {
+        const id = parseInt(request.params.id);
+        const updated = await updatingBooking(id, request.body);
+        response.status(200).json(updated);
+    } catch (error) {
+        console.log("updateBooking function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const createNewBooking = async(request, response) => {
+    try {
+        const newBooking = await addNewBooking(request.body);
+        if(!newBooking) {
+            return response.status(500).json({message: "System error"});
+        }
+        response.status(200).json(newBooking);
+    } catch (error) {
+        console.log("createNewBooking function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const deleteBooking = async(request, response) => {
+    try {
+        const id = parseInt(request.params.id);
+        const result = await deletingBooking(id);
+        if(result.status === 404) 
+            response.status(404).json({message: result.message});
+        response.status(200).json(result);
+    } catch (error) {
+        console.log("deleteBooking function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
 }
