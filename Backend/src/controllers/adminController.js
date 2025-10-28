@@ -13,8 +13,8 @@ export const getAllRooms = async(request, response) => {
 export const getRoomByID = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
-        const room = await fetchRoomByID();
-        
+        const room = await fetchRoomByID(id);
+        response.status(200).json(room);
     } catch (error) {
         console.log("getRoomByID function error: ", error.message);
         response.status(500).json({message: "System error"});

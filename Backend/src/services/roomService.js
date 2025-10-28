@@ -43,7 +43,7 @@ export const addRoom = async({room_number, room_type, price, status, description
         }
         const room_type_id = type[0].type_id;
         const [result] = await db.query(
-            "INSERT INTO rooms (room_number, room_type, price, status, description, image_url) VALUES (?, ?, ?, ?, ?, ?)",
+            "insert into Rooms (room_number, room_type, price, status, description, image_url) VALUES (?, ?, ?, ?, ?, ?)",
             [room_number, room_type_id, price, status, description, image_url]
         );
         const [rows] = await db.query(
@@ -60,9 +60,10 @@ export const addRoom = async({room_number, room_type, price, status, description
     }
 };
 
+// problem: what if just update status
 export const updatingRoom = async(id, roomData) => {
     try {
-        const [existingRoom] = await db.query("select * from rooms where room_id = ?", [id]);
+        const [existingRoom] = await db.query("select * from Rooms where room_id = ?", [id]);
         if(existingRoom.length === 0) {
             throw new Error(`Room with ${id} note found.`);
         }
@@ -74,7 +75,7 @@ export const updatingRoom = async(id, roomData) => {
         const room_type_id = type[0].type_id;
         await db.query(
             `
-            update rooms
+            update Rooms
             set room_number = ?,
                 room_type = ?,
                 price = ?,
@@ -84,7 +85,7 @@ export const updatingRoom = async(id, roomData) => {
             where room_id = ?
             `, [room_number, room_type_id, price, status, description, image_url, id]
         );
-        const [rows] = await db.query("select * from rooms where room_id = ?", [id]);
+        const [rows] = await db.query("select * from Rooms where room_id = ?", [id]);
         return rows[0];
     } catch (error) {
         console.log('Error: updatingRoom function', error.message);
@@ -94,7 +95,7 @@ export const updatingRoom = async(id, roomData) => {
 
 export const deletingRoom = async(id) => {
     try {
-        const [existingRoom] = await db.query("select * from rooms where room_id = ?", [id]);
+        const [existingRoom] = await db.query("select * from Rooms where room_id = ?", [id]);
         if(existingRoom.length === 0) {
             throw new Error(`Room with ${id} not found.`);
         }
