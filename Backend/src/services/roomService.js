@@ -100,7 +100,7 @@ export const deletingRoom = async(id) => {
         }
         await db.query(
             `
-            delete from rooms 
+            delete from Rooms 
             where room_id = ?
             `, [id]
         );
@@ -113,7 +113,7 @@ export const deletingRoom = async(id) => {
 
 export const fetchAllRoomTypes = async() => {
     try {
-        const [rows] = "select * from RoomType";
+        const [rows] = await db.query("select * from RoomType");
         return rows;
     } catch (error) {
         console.log('Error: fetchAllRoomTypes function', error);
@@ -145,8 +145,11 @@ export const updatingRoomType = async(id, typeData) => {
         const {type_name, capacity} = typeData;
         await db.query(
             `
-            insert into RoomType (type_name, capacity) values (?, ?)
-            `, [type_name, capacity]
+            update RoomType
+            set type_name = ?,
+                capacity = ?
+            where type_id = ?
+            `, [type_name, capacity, id]
         );
         const [newType] = await db.query("select * from RoomType where type_id = ?", [id]);
         return newType[0];
@@ -161,6 +164,13 @@ export const deletingRoomType = async(id) => {
         const [existingType] = await db.query("select * from RoomType where type_id = ?", [id]);
         if(existingType.length === 0) {
             throw new Error(`Room type with ${id} not found.`);
+        }
+        const [roomsUsingType] = await db.query(
+            "select count(*) as c from Rooms where room_type = ?",
+            [id]
+        );
+        if (roomsUsingType[0].count > 0) {
+            throw new Error(`Cannot delete Room Type ID ${id} because it is used by ${roomsUsingType[0].c} room(s).`);
         }
         await db.query(
             `
