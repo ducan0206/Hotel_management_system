@@ -4,8 +4,9 @@ import adminRoute from './routes/adminRoutes.js'
 import customerRoute from './routes/customerRoutes.js'
 import {initRoomsModel, initRoomTypeModel} from '../src/models/rooms.js'
 import {initPaymentModel} from '../src/models/payments.js'
-import {initBookingsModel} from '../src/models/bookings.js'
-import {initUsersModel} from '../src/models/users.js'
+import {initBookingsModel, initBookingDetailsModel} from '../src/models/bookings.js'
+import {initAccountsModel} from './models/account.js'
+import {initServiceModel, initServiceOrderedModel} from '../src/models/service.js'
 import cors from 'cors'
 import cloudinary from '../src/config/cloudinary.js'
 
@@ -30,8 +31,14 @@ const startServer = async () => {
     try {
         await db.getConnection();
 
+        await initAccountsModel();
         await initRoomTypeModel();
         await initRoomsModel();
+        await initBookingsModel();
+        await initBookingDetailsModel();
+        await initPaymentModel();
+        await initServiceModel();
+        await initServiceOrderedModel();
        
         app.listen(5001, () => {
             console.log('Server start ...');
