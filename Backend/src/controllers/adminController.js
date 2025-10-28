@@ -10,6 +10,10 @@ export const getAllRooms = async(request, response) => {
     }
 }
 
+export const getRoomByID = async(request, response) => {
+
+}
+
 export const addNewRoom = async(request, response) => {
     try {
         // Cloudinary automatically provides a secure URL
@@ -51,4 +55,20 @@ export const deleteRoom = async(request, response) => {
         console.log("deleteRoom function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
+}
+
+export const createNewRoomType = async(request, response) => {
+
+}
+
+export const getAllRoomTypes = async(request, response) => {
+
+}
+
+export const updateRoomType = async(request, response) => {
+
+}
+
+export const deleteRoomType = async(request, response) => {
+
 }
