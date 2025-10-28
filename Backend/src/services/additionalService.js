@@ -69,3 +69,18 @@ export const deletingService = async(id) => {
         return error;
     }
 }
+
+export const fetchAllServiceOrders = async() => {
+    try {
+        const [rows] = await db.query(
+            `
+            select o.*, s.service_name, s.price, s.description 
+            from ServiceOrdered o join Services s on o.service_id = s.service_id
+            `
+        );
+        return rows;
+    } catch (error) {
+        console.log('Error: fetchAllServices function', error);
+        return error;
+    }
+}

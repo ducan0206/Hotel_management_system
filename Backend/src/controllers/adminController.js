@@ -1,5 +1,5 @@
 import {fetchAllRooms, fetchRoomByID, addRoom, updatingRoom, deletingRoom, fetchAllRoomTypes, addNewRoomType, updatingRoomType, deletingRoomType} from '../services/roomService.js'
-import {fetchAllServices, addNewService, updatingService, deletingService} from '../services/additionalService.js'
+import {fetchAllServices, addNewService, updatingService, deletingService, fetchAllServiceOrders} from '../services/additionalService.js'
 
 // room management
 export const getAllRooms = async(request, response) => {
@@ -155,6 +155,16 @@ export const deleteService = async(request, response) => {
         if(result.status === 404) 
             response.status(404).json({message: result.message});
         response.status(200).json(result);
+    } catch (error) {
+        console.log("deleteService function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const getAllServiceOrder = async(request, response) => {
+    try {
+        const services = await fetchAllServiceOrders();
+        response.status(200).json(services);
     } catch (error) {
         console.log("deleteService function error: ", error.message);
         response.status(500).json({message: "System error"});

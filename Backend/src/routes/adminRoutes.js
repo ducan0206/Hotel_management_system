@@ -1,7 +1,7 @@
 import express from 'express'
 import { uploadCloud } from '../middleware/uploadCloud.js'
 import {getAllRooms, getRoomByID, addNewRoom, updateRoom, deleteRoom, createNewRoomType, getAllRoomTypes, updateRoomType, deleteRoomType,
-        getAllServices, createNewService, updateService, deleteService
+        getAllServices, createNewService, updateService, deleteService, getAllServiceOrder
 } from '../controllers/adminController.js'
 
 
@@ -34,5 +34,7 @@ adminRoute.post("/new-service", createNewService);
 adminRoute.put("/update-service/:id", updateService);
 
 adminRoute.delete("/delete-service/:id", deleteService);
+
+adminRoute.get("/service-orderd", getAllServiceOrder);
 
 export default adminRoute
