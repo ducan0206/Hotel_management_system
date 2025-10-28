@@ -2,7 +2,9 @@ import express from 'express'
 import { uploadCloud } from '../middleware/uploadCloud.js'
 import {getAllRooms, getRoomByID, addNewRoom, updateRoom, deleteRoom, createNewRoomType, getAllRoomTypes, updateRoomType, deleteRoomType,
         getAllServices, createNewService, updateService, deleteService, getAllServiceOrder,
-        getAllBookings, getBookingByID, updateBooking, createNewBooking, deleteBooking
+        getAllBookings, getBookingByID, updateBooking, createNewBooking, deleteBooking,
+        getAllPayments, getAllPaymentsById, updatePayment, createPayment,
+        getAllCustomers, getCustomerInfo, updateCustomerInfo, deleteCustomer
 } from '../controllers/adminController.js'
 
 
@@ -48,5 +50,23 @@ adminRoute.put("/bookings/:id/update", updateBooking);
 adminRoute.post("/new-bookings", createNewBooking);
 
 adminRoute.delete("/bookings/:id", deleteBooking);
+
+// Payment Management
+adminRoute.get("/payments", getAllPayments);
+
+adminRoute.get("/payments/:id", getAllPaymentsById);
+
+adminRoute.put("/payments", updatePayment);
+
+adminRoute.post("/payments", createPayment); // offline payment
+
+// customer management
+adminRoute.get("/customers", getAllCustomers);
+
+adminRoute.get("/customer/:id", getCustomerInfo);
+
+adminRoute.put("/customer/:id", updateCustomerInfo);
+
+adminRoute.delete("/customer/:id", deleteCustomer);
 
 export default adminRoute

@@ -1,6 +1,7 @@
 import {fetchAllRooms, fetchRoomByID, addRoom, updatingRoom, deletingRoom, fetchAllRoomTypes, addNewRoomType, updatingRoomType, deletingRoomType} from '../services/roomService.js'
 import {fetchAllServices, addNewService, updatingService, deletingService, fetchAllServiceOrders} from '../services/additionalService.js'
 import {fetchAllBookings, fetchBookingByID, updatingBooking, addNewBooking, deletingBooking} from '../services/bookingService.js'
+import {fetchAllCustomers, getInfo, deletingCustomer} from '../helper/customer.js'
 
 // room management
 export const getAllRooms = async(request, response) => {
@@ -228,5 +229,86 @@ export const deleteBooking = async(request, response) => {
     } catch (error) {
         console.log("deleteBooking function error: ", error.message);
         response.status(500).json({message: "System error"});
+    }
+}
+
+// payment management
+export const getAllPayments = async (request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('getAllPayments function error: ', error);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const getAllPaymentsById = async (request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('getAllPaymentsById function error: ', error);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const updatePayment = async (request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('updatePayment function error: ', error);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const createPayment = async (request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('createPayment function error: ', error);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+// customer management
+export const getAllCustomers = async (request, response) => {
+    try {
+        const customers = await fetchAllCustomers();
+        response.status(200).json(customers);
+    } catch (error) {
+        console.log('getAllCustomers function error: ', error);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const getCustomerInfo = async (request, response) => {
+    try {
+        const id = parseInt(request.params.id, 10);
+        const info = await getInfo(id);
+        response.status(200).json(info);
+    } catch (error) {
+        console.log('getCustomerInfo function error: ', error);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const updateCustomerInfo = async (request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('updateCustomerInfo function error: ', error);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const deleteCustomer = async (request, response) => {
+    try {
+        const id = parseInt(request.params.id);
+        const result = await deletingCustomer(id);
+        if(result.status === 404) 
+            response.status(404).json({message: result.message});
+        response.status(200).json(result);
+    } catch (error) {
+        console.log('deleteCustomer function error: ', error);
+        response.status(500).json({message: "System error"})
     }
 }
