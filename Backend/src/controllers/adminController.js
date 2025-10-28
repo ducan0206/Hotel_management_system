@@ -1,4 +1,4 @@
-import {fetchAllRooms, fetchRoomByID, addRoom, updatingRoom, deletingRoom, fetchAllRoomTypes} from '../services/roomService.js'
+import {fetchAllRooms, fetchRoomByID, addRoom, updatingRoom, deletingRoom, fetchAllRoomTypes, addNewRoomType, updatingRoomType} from '../services/roomService.js'
 
 export const getAllRooms = async(request, response) => {
     try {
@@ -76,7 +76,11 @@ export const getAllRoomTypes = async(request, response) => {
 
 export const createNewRoomType = async(request, response) => {
     try {
-
+        const result = await addNewRoomType(...request.body);
+        if(!result) {
+            return response.status(500).json({message: "System error"});
+        }
+        response.status(201).json(result);
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -85,7 +89,9 @@ export const createNewRoomType = async(request, response) => {
 
 export const updateRoomType = async(request, response) => {
     try {
-
+        const id = parseInt(request.params.id, 10);
+        const updated = await updatingRoomType(id, request.body);
+        response.status(200).json(updated);
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -94,7 +100,11 @@ export const updateRoomType = async(request, response) => {
 
 export const deleteRoomType = async(request, response) => {
     try {
-
+        const id = parseInt(request.params.id, 10);
+        const result = await deletingRoom(id);
+        if(result.status === 404) 
+            response.status(404).json({message: result.message});
+        response.status(200).json(result);
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);
         response.status(500).json({message: "System error"});
