@@ -235,7 +235,8 @@ export const deleteBooking = async(request, response) => {
 // payment management
 export const getAllPayments = async (request, response) => {
     try {
-
+        const payments = await fetchAllPayments();
+        response.status(200).json(payments);
     } catch (error) {
         console.log('getAllPayments function error: ', error);
         response.status(500).json({message: "System error"})
@@ -244,7 +245,9 @@ export const getAllPayments = async (request, response) => {
 
 export const getAllPaymentsById = async (request, response) => {
     try {
-
+        const id = parseInt(request.params.id, 10);
+        const payment = await fetchPaymentByID();
+        response.status(200).json(payment);
     } catch (error) {
         console.log('getAllPaymentsById function error: ', error);
         response.status(500).json({message: "System error"})
