@@ -219,18 +219,21 @@ export const createNewBooking = async(request, response) => {
     }
 }
 
-export const deleteBooking = async(request, response) => {
+export const deleteBooking = async (request, response) => {
     try {
         const id = parseInt(request.params.id);
         const result = await deletingBooking(id);
-        if(result.status === 404) 
-            response.status(404).json({message: result.message});
-        response.status(200).json(result);
+
+        if (result.status === 404) {
+            return response.status(404).json({ message: result.message });
+        }
+
+        return response.status(200).json(result);
     } catch (error) {
         console.log("deleteBooking function error: ", error.message);
-        response.status(500).json({message: "System error"});
+        return response.status(500).json({ message: "System error" });
     }
-}
+};
 
 // payment management
 export const getAllPayments = async (request, response) => {

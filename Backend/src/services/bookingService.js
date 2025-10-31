@@ -38,7 +38,24 @@ export const fetchBookingByID = async(id) => {
 
 export const updatingBooking = async() => {
     try {
+        const [existing] = await db.query("select * from Bookings where booking_id = ?", [id]);
+        if (existing.length === 0) {
+            return { status: 404, message: `Booking with ID ${id} not found.` };
+        }
 
+        const { check_in, check_out, total_price, status, payment_status } = data;
+
+        await db.query(
+            `
+            update Bookings
+            set check_in = ?, check_out = ?, total_price = ?, status = ?, payment_status = ?, updated_at = NOW()
+            WHERE booking_id = ?
+            `,
+            [check_in, check_out, total_price, status, payment_status, id]
+        );
+
+        const [updated] = await db.query("select * from Bookings where booking_id = ?", [id]);
+        return updated[0];
     } catch (error) {
         console.log('Error: updatingBooking function', error);
         return error;
@@ -47,7 +64,19 @@ export const updatingBooking = async() => {
 
 export const addNewBooking = async() => {
     try {
+        const { user_id, check_in, check_out, total_price, status, payment_status } = data;
 
+        const [result] = await db.query(
+            `
+            insert into Bookings (user_id, check_in, check_out, total_price, status, payment_status, created_at, updated_at)
+            values (?, ?, ?, ?, ?, ?, NOW(), NOW())
+            `,
+            [user_id, check_in, check_out, total_price, status, payment_status]
+        );
+
+        const newId = result.insertId;
+        const [newBooking] = await db.query("select * from Bookings where booking_id = ?", [newId]);
+        return newBooking[0];
     } catch (error) {
         console.log('Error: addNewBooking function', error);
         return error;
@@ -58,7 +87,7 @@ export const deletingBooking = async(id) => {
     try {
         cosnt [existingId] = await db.query("select * from Bookings where booking_id = ?", [id]);
         if(existingId.length === 0) {
-            throw new Error(`Booking with id ${id} not found.`);
+            return { status: 404, message: `Booking with ID ${id} not found.` };
         }
         await db.query(
             `
