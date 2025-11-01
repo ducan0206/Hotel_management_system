@@ -27,19 +27,24 @@ export const fetchPaymentByID = async(id) => {
     }
 }
 
-export const addNewPayment = async(id) => {
+export const addNewPayment = async(info) => {
     try {
-        const [existingPayment] = await db.query(`select * from Payments where payment_id = ?`, [id]);
-        if(existingPayment.length === 0) {
-            throw new Error(`Payment with id ${id} not found.`)
+        const {booking_id, amount, payment_method} = info;
+        const [existingBooking] = await db.query(
+            `
+            select * from Bookings where booking_id = ?
+            `, [booking_id]
+        )
+        if(existingBooking.length === 0) {
+            throw new Error(`Booking with id ${id} not found.`);
         }
         await db.query(
             `
-            delete from Payments
-            where payment_id = ?
-            `, [id]
+            insert into Payments (booking_id, amount, payment_method, created_at)
+            values (?, ?, ?, NOW())
+            `, [booking_id, amount, payment_method]
         )
-        return {message: `Payment with id ${id} has been deleted.`}
+        return {message: `Payment related to booking id ${booking_id} has been added.`}
     } catch (error) {
         console.log('Error: fetchAllPayments function', error);
         return error;

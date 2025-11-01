@@ -18,6 +18,8 @@ export const getAllRooms = async(request, response) => {
 export const getRoomByID = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const room = await fetchRoomByID(id);
         response.status(200).json(room);
     } catch (error) {
@@ -48,6 +50,8 @@ export const addNewRoom = async(request, response) => {
 export const updateRoom = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const updatedRoom = await updatingRoom(id, request.body);
         response.status(200).json(updatedRoom);
     } catch (error) {
@@ -59,10 +63,12 @@ export const updateRoom = async(request, response) => {
 export const deleteRoom = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingRoom(id);
         if(result.status === 404) 
-            response.status(404).json({message: result.message});
-        response.status(200).json(result);
+            return response.status(404).json({message: result.message});
+        return response.status(204).send();
     } catch (error) {
         console.log("deleteRoom function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -95,6 +101,8 @@ export const createNewRoomType = async(request, response) => {
 export const updateRoomType = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const updated = await updatingRoomType(id, request.body);
         response.status(200).json(updated);
     } catch (error) {
@@ -106,10 +114,12 @@ export const updateRoomType = async(request, response) => {
 export const deleteRoomType = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingRoomType(id);
         if(result.status === 404) 
-            response.status(404).json({message: result.message});
-        response.status(200).json(result);
+            return response.status(404).json({message: result.message});
+        return response.status(204).send();
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -122,7 +132,7 @@ export const getAllServices = async(request, response) => {
         const services = await fetchAllServices();
         response.status(200).json(services);
     } catch (error) {
-        console.log("deleteService function error: ", error.message);
+        console.log("getAllServices function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
 }
@@ -135,7 +145,7 @@ export const createNewService = async(request, response) => {
         }
         response.status(201).json(newService);
     } catch (error) {
-        console.log("deleteService function error: ", error.message);
+        console.log("createNewService function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
 }
@@ -143,10 +153,12 @@ export const createNewService = async(request, response) => {
 export const updateService = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const updated = await updatingService(id, request.body);
         response.status(200).json(updated); 
     } catch (error) {
-        console.log("deleteService function error: ", error.message);
+        console.log("updateService function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
 }
@@ -154,10 +166,12 @@ export const updateService = async(request, response) => {
 export const deleteService = async(request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingService(id);
         if(result.status === 404) 
-            response.status(404).json({message: result.message});
-        response.status(200).json(result);
+            return response.status(404).json({message: result.message});
+        return response.status(204).send();
     } catch (error) {
         console.log("deleteService function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -169,7 +183,7 @@ export const getAllServiceOrder = async(request, response) => {
         const services = await fetchAllServiceOrders();
         response.status(200).json(services);
     } catch (error) {
-        console.log("deleteService function error: ", error.message);
+        console.log("getAllServiceOrder function error: ", error.message);
         response.status(500).json({message: "System error"});
     }
 }
@@ -188,6 +202,8 @@ export const getAllBookings = async(request, response) => {
 export const getBookingByID = async(request, response) => {
     try {
         const id = parseInt(request.params.id);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const booking = await fetchBookingByID(id);
         response.status(200).json(booking);
     } catch (error) {
@@ -199,6 +215,8 @@ export const getBookingByID = async(request, response) => {
 export const updateBooking = async(request, response) => {
     try {
         const id = parseInt(request.params.id);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const updated = await updatingBooking(id, request.body);
         response.status(200).json(updated);
     } catch (error) {
@@ -213,7 +231,7 @@ export const createNewBooking = async(request, response) => {
         if(!newBooking) {
             return response.status(500).json({message: "System error"});
         }
-        response.status(200).json(newBooking);
+        response.status(201).json(newBooking);
     } catch (error) {
         console.log("createNewBooking function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -223,13 +241,15 @@ export const createNewBooking = async(request, response) => {
 export const deleteBooking = async (request, response) => {
     try {
         const id = parseInt(request.params.id);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingBooking(id);
 
         if (result.status === 404) {
             return response.status(404).json({ message: result.message });
         }
 
-        return response.status(200).json(result);
+        return response.status(204).send();
     } catch (error) {
         console.log("deleteBooking function error: ", error.message);
         return response.status(500).json({ message: "System error" });
@@ -247,9 +267,11 @@ export const getAllPayments = async (request, response) => {
     }
 }
 
-export const getAllPaymentsById = async (request, response) => {
+export const getPaymentsById = async (request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const payment = await fetchPaymentByID(id);
         response.status(200).json(payment);
     } catch (error) {
@@ -260,8 +282,8 @@ export const getAllPaymentsById = async (request, response) => {
 
 export const createPayment = async (request, response) => {
     try {
-        const newPayment = await addNewPayment();
-        response.status(200).json(newPayment);
+        const newPayment = await addNewPayment(request.body);
+        response.status(201).json(newPayment);
     } catch (error) {
         console.log('createPayment function error: ', error);
         response.status(500).json({message: "System error"})
@@ -282,6 +304,8 @@ export const getAllCustomers = async (request, response) => {
 export const getCustomerInfo = async (request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const info = await getInfo(id);
         response.status(200).json(info);
     } catch (error) {
@@ -293,6 +317,8 @@ export const getCustomerInfo = async (request, response) => {
 export const updateCustomerInfo = async (request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const updated = await updatingCustomerInfo(id, request.body);
         response.status(200).json(updated);
     } catch (error) {
@@ -304,10 +330,12 @@ export const updateCustomerInfo = async (request, response) => {
 export const deleteCustomer = async (request, response) => {
     try {
         const id = parseInt(request.params.id);
+        if (isNaN(id)) 
+            return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingCustomer(id);
         if(result.status === 404) 
-            response.status(404).json({message: result.message});
-        response.status(200).json(result);
+            return response.status(404).json({message: result.message});
+        return response.status(204).send();
     } catch (error) {
         console.log('deleteCustomer function error: ', error);
         response.status(500).json({message: "System error"})
