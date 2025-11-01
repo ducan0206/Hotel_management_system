@@ -33,6 +33,7 @@ export const getInfo = async(id) => {
     }
 }
 
+// how can fix with general cases: changes personal info, password, ...
 export const updatingCustomerInfo = async(id, infoData) => {
     try {
         const [existingCustomer] = await db.query(

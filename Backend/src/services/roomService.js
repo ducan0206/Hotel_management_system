@@ -65,9 +65,18 @@ export const updatingRoom = async(id, roomData) => {
     try {
         const [existingRoom] = await db.query("select * from Rooms where room_id = ?", [id]);
         if(existingRoom.length === 0) {
-            throw new Error(`Room with ${id} note found.`);
+            throw new Error(`Room with ${id} not found.`);
         }
-        const {room_number, room_type, price, status, description, image_url} = roomData;
+        const old = existingRoom[0];
+        const updated = {
+            room_number: roomData.room_number ?? old.room_number,
+            room_type: roomData.room_type ?? old.room_type,
+            price: roomData.price ?? old.price,
+            status: roomData.status ?? old.status,
+            description: roomData.description ?? old.description,
+            image_url: roomData.image_url ?? old.image_url
+        };
+        let room_type = updated.room_type;
         const [type] = await db.query(`select type_id from RoomType where type_name = ?`, [room_type]);
         if(type.length === 0) {
             throw new Error(`Room type ${room_type} not existed.`);
@@ -83,7 +92,7 @@ export const updatingRoom = async(id, roomData) => {
                 description = ?,
                 image_url = ?
             where room_id = ?
-            `, [room_number, room_type_id, price, status, description, image_url, id]
+            `, [updated.room_number, room_type_id, updated.price, updated.status, updated.description, updated.image_url, id]
         );
         const [rows] = await db.query("select * from Rooms where room_id = ?", [id]);
         return rows[0];
@@ -107,7 +116,7 @@ export const deletingRoom = async(id) => {
         );
         return {message: `Room with ${id} has been deleted.`}
     } catch (error) {
-        console.log('Error: deletingRoom function', error);
+        console.log('Error: deletingRoom function', error.message);
         return error;
     }
 }
@@ -117,7 +126,7 @@ export const fetchAllRoomTypes = async() => {
         const [rows] = await db.query("select * from RoomType");
         return rows;
     } catch (error) {
-        console.log('Error: fetchAllRoomTypes function', error);
+        console.log('Error: fetchAllRoomTypes function', error.message);
         return error;
     }
 }
@@ -132,7 +141,7 @@ export const addNewRoomType = async({type_name, capacity}) => {
         const [rows] = await db.query("select * from RoomType where type_id = ?", [newType.insertId]);
         return rows[0];
     } catch (error) {
-        console.log('Error: addNewRoomType function', error);
+        console.log('Error: addNewRoomType function', error.message);
         return error;
     }
 }
@@ -155,7 +164,7 @@ export const updatingRoomType = async(id, typeData) => {
         const [newType] = await db.query("select * from RoomType where type_id = ?", [id]);
         return newType[0];
     } catch (error) {
-        console.log('Error: updatingRoomType function', error);
+        console.log('Error: updatingRoomType function', error.message);
         return error;
     }
 }
@@ -181,7 +190,7 @@ export const deletingRoomType = async(id) => {
         )
         return {message: `Room type with id ${id} has been deleted.`};
     } catch (error) {
-        console.log('Error: deletingRoomType function', error);
+        console.log('Error: deletingRoomType function', error.message);
         return error;
     }
 }

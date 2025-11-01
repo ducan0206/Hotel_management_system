@@ -31,7 +31,14 @@ export const updatingService = async(id, serviceData) => {
         if(existingService.length === 0) {
             throw new Error(`Service with id ${id} not found.`);
         }
-        const{service_name, price, description, status} = serviceData;
+        const old = existingService[0];
+        const updatedInfo = {
+            service_name: serviceData.service_name ?? old.service_name,
+            price: serviceData.price ?? old.price,
+            description: serviceData.description ?? old.description,
+            status: serviceData.status ?? old.status,
+        }
+        
         await db.query(
             `
             update Services
@@ -41,7 +48,7 @@ export const updatingService = async(id, serviceData) => {
                     status = ?,
                     updated_at = now()
                 where service_id = ?
-            `, [service_name, price, description, status, id]
+            `, [updatedInfo.service_name, updatedInfo.price, updatedInfo.description, updatedInfo.status, id]
         );
         const [updated] = await db.query("select * from Services where service_id = ?", [id]);
         return updated[0];

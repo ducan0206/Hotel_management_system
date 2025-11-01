@@ -36,15 +36,16 @@ export const addNewPayment = async(info) => {
             `, [booking_id]
         )
         if(existingBooking.length === 0) {
-            throw new Error(`Booking with id ${id} not found.`);
+            throw new Error(`Booking with id ${booking_id} not found.`);
         }
-        await db.query(
+        const [result] = await db.query(
             `
             insert into Payments (booking_id, amount, payment_method, created_at)
             values (?, ?, ?, NOW())
             `, [booking_id, amount, payment_method]
         )
-        return {message: `Payment related to booking id ${booking_id} has been added.`}
+        const [newPayment] = await db.query('select * from Payments where payment_id = ?', [result.insertId]);
+        return newPayment[0];
     } catch (error) {
         console.log('Error: fetchAllPayments function', error);
         return error;

@@ -29,6 +29,7 @@ export async function initBookingsModel() {
             check_in DATE NOT NULL,
             check_out DATE NOT NULL,
             total_price DECIMAL(10,2),
+            payment_status enum('paid', 'not paid'),
             status ENUM('booked', 'checked_in', 'checked_out', 'cancelled') DEFAULT 'booked',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
