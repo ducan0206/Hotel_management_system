@@ -1,7 +1,8 @@
 import {fetchAllRooms, fetchRoomByID, addRoom, updatingRoom, deletingRoom, fetchAllRoomTypes, addNewRoomType, updatingRoomType, deletingRoomType} from '../services/roomService.js'
 import {fetchAllServices, addNewService, updatingService, deletingService, fetchAllServiceOrders} from '../services/additionalService.js'
 import {fetchAllBookings, fetchBookingByID, updatingBooking, addNewBooking, deletingBooking} from '../services/bookingService.js'
-import {fetchAllCustomers, getInfo, deletingCustomer} from '../helper/customer.js'
+import {fetchAllPayments, fetchPaymentByID, addNewPayment} from '../services/paymentService.js'
+import {fetchAllCustomers, getInfo, deletingCustomer, updatingCustomerInfo} from '../helper/customer.js'
 
 // room management
 export const getAllRooms = async(request, response) => {
@@ -249,7 +250,7 @@ export const getAllPayments = async (request, response) => {
 export const getAllPaymentsById = async (request, response) => {
     try {
         const id = parseInt(request.params.id, 10);
-        const payment = await fetchPaymentByID();
+        const payment = await fetchPaymentByID(id);
         response.status(200).json(payment);
     } catch (error) {
         console.log('getAllPaymentsById function error: ', error);
@@ -257,18 +258,10 @@ export const getAllPaymentsById = async (request, response) => {
     }
 }
 
-export const updatePayment = async (request, response) => {
-    try {
-
-    } catch (error) {
-        console.log('updatePayment function error: ', error);
-        response.status(500).json({message: "System error"})
-    }
-}
-
 export const createPayment = async (request, response) => {
     try {
-
+        const newPayment = await addNewPayment();
+        response.status(200).json(newPayment);
     } catch (error) {
         console.log('createPayment function error: ', error);
         response.status(500).json({message: "System error"})
@@ -299,7 +292,9 @@ export const getCustomerInfo = async (request, response) => {
 
 export const updateCustomerInfo = async (request, response) => {
     try {
-
+        const id = parseInt(request.params.id, 10);
+        const updated = await updatingCustomerInfo(id, request.body);
+        response.status(200).json(updated);
     } catch (error) {
         console.log('updateCustomerInfo function error: ', error);
         response.status(500).json({message: "System error"})

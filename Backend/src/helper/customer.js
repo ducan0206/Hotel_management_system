@@ -33,6 +33,34 @@ export const getInfo = async(id) => {
     }
 }
 
+export const updatingCustomerInfo = async(id, infoData) => {
+    try {
+        const [existingCustomer] = await db.query(
+            `
+            select user_id, full_name, phone, email, created_at from Account 
+            where user_id = ? and role = 'customer'
+            `
+        )
+        if(existingCustomer.length === 0) {
+            throw new Error(`Customer with id ${id} not found.`);
+        }
+        const {fullname, phone, email} = infoData;
+        await db.query(
+            `
+            update from Account
+                set full_name = ?,
+                set phone = ?,
+                set email = ?
+            where user_id = ?
+            `, [fullname, phone, email, id]
+        )
+        return {message: `The information of customer with id ${id} has been updated.`}
+    } catch (error) {
+        console.log('Error: updatingCustomerInfo function', error.message);
+        return error;
+    }
+}
+
 export const deletingCustomer = async(id) => {
     try {
         const [existingCustomer] = await db.query(

@@ -2,7 +2,7 @@ import db from '../config/db.js'
 
 export async function initPaymentModel() {
     const createPaymentModel = `
-        create table if not exists payments (
+        create table if not exists Payments (
             payment_id INT AUTO_INCREMENT PRIMARY KEY,
             booking_id INT NOT NULL,
             amount DECIMAL(10,2) NOT NULL,

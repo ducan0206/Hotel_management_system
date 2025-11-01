@@ -3,7 +3,7 @@ import { uploadCloud } from '../middleware/uploadCloud.js'
 import {getAllRooms, getRoomByID, addNewRoom, updateRoom, deleteRoom, createNewRoomType, getAllRoomTypes, updateRoomType, deleteRoomType,
         getAllServices, createNewService, updateService, deleteService, getAllServiceOrder,
         getAllBookings, getBookingByID, updateBooking, createNewBooking, deleteBooking,
-        getAllPayments, getAllPaymentsById, updatePayment, createPayment,
+        getAllPayments, getAllPaymentsById, createPayment,
         getAllCustomers, getCustomerInfo, updateCustomerInfo, deleteCustomer
 } from '../controllers/adminController.js'
 
@@ -55,8 +55,6 @@ adminRoute.delete("/bookings/:id", deleteBooking);
 adminRoute.get("/payments", getAllPayments);
 
 adminRoute.get("/payments/:id", getAllPaymentsById);
-
-adminRoute.put("/payments", updatePayment);
 
 adminRoute.post("/payments", createPayment); // offline payment
 
