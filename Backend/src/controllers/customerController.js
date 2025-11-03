@@ -1,4 +1,81 @@
 import {fetchAllBookings, fetchBookingByID} from '../services/bookingService.js'
+import {createNewAccount} from '../services/accountService.js'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+import db from '../config/db.js'
+
+dotenv.config();
+
+export const createAccount = async(request, response) => {
+    try {
+        const newAccount = await createNewAccount(request.body);
+        response.status(201).json(newAccount);
+    } catch (error) {
+        console.log('Error: createAccount function', error.message);
+        response.status(500).json({message: 'System error'})
+    }
+}
+
+export const loginAccount = async(request, response) => {
+    try {
+        const {username, password} = request.body;
+        if(!username || !password) {
+            return response.status(400).json({message: 'Username and password are required.'});
+        }
+        const [rows] = await db.query(
+            `
+            select * from Account where username = ?
+            `, [username]
+        )
+        if(rows.length === 0) {
+            return response.status(404).json({message: 'Account not found.'});
+        }
+        const user = rows[0];
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if(!isMatch) {
+            return response.status(401).json({message: "Invalid credentials."})
+        }
+        const token = jwt.sign(
+            {user_id: user.user_id, role: user.role},
+            process.env.JWT_SECRET,
+            { expiresIn: "2h"}
+        )
+        response.status(200).json(
+            {
+                message: 'Login sucessful',
+                user: {
+                    user_id: user.user_id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role
+                },
+                token
+            }
+        )
+    } catch (error) {
+        console.log('Error: loginAccount error', error.message);
+        response.status(500).json({message: 'System error'})
+    }
+}
+
+export const updateAccount = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('Error: updateAccount function', error.message);
+        response.status(500).json({message: 'System error'})
+    }
+}
+
+export const viewAccount = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('Error: viewAccount function', error.message);
+        response.status(500).json({message: 'System error'})
+    }
+}
 
 export const getAllBooking = async(request, response) => {
     try {
@@ -44,6 +121,33 @@ export const deleteBooking = async(request, response) => {
         
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const getAllAvailableRooms = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('Error: getAllAvailableRooms function', error.message);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const getPayment = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('Error: getPayment function', error.message);
+        response.status(500).json({message: "System error"})
+    }
+}
+
+export const createNewPayment = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log('Error: createNewPayment function', error.message);
         response.status(500).json({message: "System error"})
     }
 }
