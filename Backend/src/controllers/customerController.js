@@ -1,5 +1,5 @@
 import {fetchAllBookings, fetchBookingByID} from '../services/bookingService.js'
-import {createNewAccount} from '../services/accountService.js'
+import {createNewAccount, getAccountById, updatingAccount} from '../services/accountService.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -10,7 +10,10 @@ dotenv.config();
 export const createAccount = async(request, response) => {
     try {
         const newAccount = await createNewAccount(request.body);
-        response.status(201).json(newAccount);
+        if(newAccount.status === 400) {
+            response.status(400).json({message: 'Creating account fail.'})
+        }
+        response.status(201).json(newAccount.data);
     } catch (error) {
         console.log('Error: createAccount function', error.message);
         response.status(500).json({message: 'System error'})
@@ -61,6 +64,8 @@ export const loginAccount = async(request, response) => {
 
 export const updateAccount = async(request, response) => {
     try {
+        const id = Number(request.params.id);
+        const updated = await updatingAccount(id, request.body);
 
     } catch (error) {
         console.log('Error: updateAccount function', error.message);
@@ -70,7 +75,12 @@ export const updateAccount = async(request, response) => {
 
 export const viewAccount = async(request, response) => {
     try {
-
+        const id = Number(request.params.id);
+        const account = await getAccountById(id);
+        if(account.status === 404) {
+            response.status(404).json({message: 'Not found.'});
+        }
+        response.status(200).json(account.data);
     } catch (error) {
         console.log('Error: viewAccount function', error.message);
         response.status(500).json({message: 'System error'})

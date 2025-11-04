@@ -24,9 +24,74 @@ export const createNewAccount = async(userData) => {
             select * from Account where user_id = ?
             `, [result.insertId]
         )
-        return newUser[0];
+        return {
+            status: 200,
+            data: existingUser[0]
+        }
     } catch (error) {
         console.log('Error: createNewAccount function', error.message);
+        return error;
+    }
+}
+
+export const getAccountById = async(id) => {
+    try {
+        const [existingAccount] = await db.query(
+            `
+            select * from Account where user_id = ?
+            `, [id]
+        )
+        if(existingAccount.length === 0) {
+            return {
+                status: 404,
+                message: `User with id ${id} not found.`
+            }
+        }
+        return {
+            status: 200,
+            data: existingAccount[0]
+        }
+    } catch (error) {
+        console.log('Error: getAccountById function', error.message);
+        return error;
+    }
+}
+
+// update all info except password
+export const updatingAccount = async(id, accountData) => {
+    try {
+        const [existingAccount] = await db.query(
+            `
+            select * from Account where user_id = ?
+            `, [id]
+        )
+        if(existingAccount.length === 0) {
+            return {
+                status: 404,
+                message: `User with id ${id} not found.`
+            }
+        }
+        const old = existingAccount[0];
+        const updatedInfo = {
+            full_name: accountData.full_name ?? old.full_name,
+            phone: accountData.phone ?? old.phone
+        }
+        await db.query(
+            `
+            update Account
+            set full_name = ?, phone = ?
+            where user_id = ?
+            `, [updatedInfo.full_name, updatedInfo.phone, id]
+        )
+        const [updated] = await db.query(
+            `select * from Account where user_id = ?`, [id]
+        )
+        return {
+            status: 200,
+            data: updated[0]
+        }
+    } catch (error) {
+        console.log('Error: updatingAccount function');
         return error;
     }
 }
