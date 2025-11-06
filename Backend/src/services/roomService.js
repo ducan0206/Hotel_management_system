@@ -194,3 +194,40 @@ export const deletingRoomType = async(id) => {
         return error;
     }
 }
+
+// customer
+export const getAvailableRooms = async(data) => {
+    try {   
+        const {check_in, check_out} = data;
+        if(!check_in || !check_out) {
+            return {
+                status: 400,
+                message: 'Both check_in and check_out are required'
+            }
+        }
+        const [rooms] = await db.query(
+            `
+            select r.room_number, t.type_name, t.capacity, r.price, r.description, r.image_url
+            from Rooms r join RoomType t on r.room_type = t.type_id
+            where r.room_id not in (
+                select d.room_id
+                from Bookings b join BookingDetails d on b.booking_id = d.booking_id
+                where b.status not in ('cancelled', 'checked_out') and (b.check_in < ? and b.check_out > ?)
+            ) and r.status = 'available'
+            `, [check_in, check_out]
+        )
+        if(rooms.length === 0) {
+            return {
+                status: 404,
+                message: `No available rooms for this selected dates.`
+            }
+        }
+        return {
+            status: 200,
+            data: rooms
+        }
+    } catch (error) {
+        console.log('Error: getAvailableRooms function', error.message);
+        return error;
+    }
+}

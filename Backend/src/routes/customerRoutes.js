@@ -25,7 +25,7 @@ customerRoute.post("/new-booking", addNewBooking);
 
 customerRoute.put("/booking/:id/update", updateBooking);
 
-customerRoute.delete("/delete-booking", deleteBooking);
+customerRoute.delete("/delete-booking/:id", deleteBooking);
 
 // room service
 customerRoute.get("/available-rooms", getAllAvailableRooms);

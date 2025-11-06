@@ -107,9 +107,15 @@ export const addNewBooking = async (data) => {
 
 export const deletingBooking = async(id) => {
     try {
-        const [existingId] = await db.query("select * from Bookings where booking_id = ?", [id]);
-        if(existingId.length === 0) {
+        const [existingBooking] = await db.query("select * from Bookings where booking_id = ?", [id]);
+        if(existingBooking.length === 0) {
             return { status: 404, message: `Booking with ID ${id} not found.` };
+        }
+        if(existingBooking[0].payment_status === 'paid') {
+            return {
+                status: 403,
+                message: `Can not delete booking with id ${id} because it has already been paid.`
+            }
         }
         await db.query(
             `
@@ -117,7 +123,10 @@ export const deletingBooking = async(id) => {
             where booking_id = ?
             `, [id]
         )
-        return {message: `Booking with id ${id} has been deleted.`};
+        return {
+            status: 200,
+            message: `Booking with id ${id} has been deleted.`
+        };
     } catch (error) {
         console.log('Error: deletingBooking function', error);
         return error;

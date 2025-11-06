@@ -1,5 +1,6 @@
-import {fetchBookingByID, addingBooking, getCustomerBooking} from '../services/bookingService.js'
+import {fetchBookingByID, addingBooking, getCustomerBooking, deletingBooking} from '../services/bookingService.js'
 import {createNewAccount, getAccountById, updatingAccount} from '../services/accountService.js'
+import {getAvailableRooms} from '../services/roomService.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -111,6 +112,10 @@ export const getBookingByID = async(request, response) => {
         const cus_id = parseInt(request.params.cus_id, 10);
         const booking_id = parseInt(request.params.id, 10);
         const booking = await getCustomerBooking(cus_id, booking_id);
+        if(booking.status === 404) {
+            response.status(404).json(booking.message);
+        }
+        response.status(200).json(booking);
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
         response.status(500).json({message: "System error"})
@@ -138,7 +143,12 @@ export const updateBooking = async(request, response) => {
 
 export const deleteBooking = async(request, response) => {
     try {
-        
+        const id = parseInt(request.params.id, 10);
+        const deleted = await deletingBooking(id);
+        if(deleted.status !== 200) {
+            response.status(deleted.status).json(deleted.message);
+        }
+        response.status(200).json({message: `Booking with id ${id} has been deleted.`})
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
         response.status(500).json({message: "System error"})
@@ -147,7 +157,11 @@ export const deleteBooking = async(request, response) => {
 
 export const getAllAvailableRooms = async(request, response) => {
     try {
-
+        const rooms = await getAvailableRooms(request.body);
+        if(rooms.status !== 200) {
+            response.status(rooms.status).json(rooms.message);
+        }
+        response.status(200).json(rooms.data);
     } catch (error) {
         console.log('Error: getAllAvailableRooms function', error.message);
         response.status(500).json({message: "System error"})
