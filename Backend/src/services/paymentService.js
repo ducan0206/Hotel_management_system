@@ -51,3 +51,33 @@ export const addNewPayment = async(info) => {
         return error;
     }
 }
+
+export const getPaymentByBookingId = async(booking_id) => {
+    try {
+        const [existingBooking] = await db.query(
+            `
+            select * from Bookings 
+            where booking_id = ?
+            `, [booking_id]
+        )
+        if(existingBooking.length === 0) {
+            return {
+                status: 404,
+                message: `Booking with id ${id} not found.`
+            }
+        }
+        const [payment] = await db.query(
+            `
+            select method, amount
+            from Payments where booking_id = ?
+            `, [booking_id]
+        )
+        return {
+            status: 200,
+            data: payment[0]
+        }
+    } catch (error) {
+        console.log('Error: getPayment function', error.message);
+        return error;
+    }
+}

@@ -1,6 +1,7 @@
 import {fetchBookingByID, addingBooking, getCustomerBooking, deletingBooking} from '../services/bookingService.js'
 import {createNewAccount, getAccountById, updatingAccount} from '../services/accountService.js'
 import {getAvailableRooms} from '../services/roomService.js'
+import {getPaymentByBookingId} from '../services/paymentService.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -170,7 +171,12 @@ export const getAllAvailableRooms = async(request, response) => {
 
 export const getPayment = async(request, response) => {
     try {
-
+        const booking_id = parseInt(request.params.booking_id);
+        const payment = await getPaymentByBookingId(booking_id);
+        if(payment.status !== 200) {
+            response.status(payment.status).json(payment.message);
+        }
+        response.status(200).json(payment.data);
     } catch (error) {
         console.log('Error: getPayment function', error.message);
         response.status(500).json({message: "System error"})
