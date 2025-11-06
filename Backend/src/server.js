@@ -2,6 +2,7 @@ import express from 'express'
 import db from '../src/config/db.js'
 import adminRoute from './routes/adminRoutes.js'
 import customerRoute from './routes/customerRoutes.js'
+import generalRoute from './routes/generalRoute.js'
 import {initRoomsModel, initRoomTypeModel} from '../src/models/rooms.js'
 import {initPaymentModel} from '../src/models/payments.js'
 import {initBookingsModel, initBookingDetailsModel} from '../src/models/bookings.js'
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.use("/admin", adminRoute);
 app.use("/user", customerRoute);
+app.use("/", generalRoute);
 
 cloudinary.api.ping()
     .then(res => console.log('? Cloudinary connected:', res))
