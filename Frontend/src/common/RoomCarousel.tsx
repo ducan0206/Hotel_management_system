@@ -35,56 +35,25 @@ const RoomCarousel = () => {
     if (errorMessage) return <div className="text-danger mb-5 mt-5 text-center">Error: {errorMessage}</div>
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {rooms.map((room, index) => (
-                <RoomCard
-                    key={index}
-                    name={room.type_name}
-                    image={room.image_url}
-                    price={room.price.toString()}
-                    capacity={room.capacity.toString()}
-                    description={room.description}
-                />
-            ))}
+        <div>
+            <div className="grid gap-5">
+                <h1 className="flex justify-center mt-10"> Our Rooms & Suites </h1>
+                <h2 className="flex justify-center item-center mb-10 text-white-500"> Experience luxury and comfort in our carefully designed rooms and suites, each offering stunning views and premium amenities. </h2>
+            </div>
+            <div className="flex flex-wrap justify-center items-start gap-4">
+                {rooms.map((room, index) => (
+                    <RoomCard
+                        key={index}
+                        name={room.type_name}
+                        image={room.image_url}
+                        price={room.price.toString()}
+                        capacity={room.capacity.toString()}
+                        description={room.description}
+                    />
+                ))}
+            </div>
         </div>
     )
-
-    // return (
-    //     <section className="bg-light mb-5 mt-5 shadow">
-    //     <Container>
-    //         <Carousel indicators={false}>
-    //         {[...Array(Math.ceil(rooms.length / 4))].map((_, index) => (
-    //             <Carousel.Item key={index}>
-    //             <Row>
-    //                 {rooms.slice(index * 4, index * 4 + 4).map((room) => (
-    //                 <Col key={room.id} className="mb-4" xs={12} md={6} lg={3}>
-    //                     <Card className="shadow-sm border-0 rounded-4">
-    //                     <Card.Img
-    //                         variant="top"
-    //                         src={room.image_url}
-    //                         alt={room.type_name}
-    //                         style={{ height: "200px", objectFit: "cover" }}
-    //                     />
-    //                     <Card.Body>
-    //                         <Card.Title className="fw-bold">{room.type_name}</Card.Title>
-    //                         <Card.Text>{room.description}</Card.Text>
-    //                         <Card.Text>
-    //                         <strong>${room.price}</strong> / night
-    //                         </Card.Text>
-    //                         <Button variant="dark" className="w-100 rounded-3">
-    //                             Book Now
-    //                         </Button>
-    //                     </Card.Body>
-    //                     </Card>
-    //                 </Col>
-    //                 ))}
-    //             </Row>
-    //             </Carousel.Item>
-    //         ))}
-    //         </Carousel>
-    //     </Container>
-    //     </section>
-    // )
 }
 
 export default RoomCarousel

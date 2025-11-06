@@ -14,7 +14,7 @@ interface RoomCardProps {
 export function RoomCard({ name, image, price, capacity, description }: RoomCardProps) {
 
     return (
-        <Card className="overflow-hidden hover:shadow-xl transition-shadow">
+        <Card className="overflow-hidden hover:shadow-xl transition-shadow w-full h-auto max-w-sm">
             <div className="relative h-64">
                 <ImageWithFallback
                     src={image}
@@ -37,7 +37,7 @@ export function RoomCard({ name, image, price, capacity, description }: RoomCard
                         <Maximize className="h-4 w-4" />
                     </div>
                 </div>
-                <Button className="w-full">View Details</Button>
+                <Button className="w-full cursor-pointer">View Details</Button>
             </CardContent>
         </Card>
     );
