@@ -236,7 +236,7 @@ export const getAllAvailableRooms = async() => {
     try {
         const [rooms] = await db.query(
             `
-            select r.room_number, t.type_name, t.capacity, r.price, r.description, r.image_url
+            select r.room_id, r.room_number, t.type_name, t.capacity, r.price, r.description, r.image_url
             from Rooms r join RoomType t on r.room_type = t.type_id
             where r.status = 'available'
             `
