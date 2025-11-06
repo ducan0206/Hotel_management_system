@@ -1,4 +1,4 @@
-import {fetchAllBookings, fetchBookingByID} from '../services/bookingService.js'
+import {fetchBookingByID, addingBooking, getCustomerBooking} from '../services/bookingService.js'
 import {createNewAccount, getAccountById, updatingAccount} from '../services/accountService.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -11,7 +11,7 @@ export const createAccount = async(request, response) => {
     try {
         const newAccount = await createNewAccount(request.body);
         if(newAccount.status === 400) {
-            response.status(400).json({message: 'Creating account fail.'})
+            response.status(400).json(newAccount.message)
         }
         response.status(201).json(newAccount.data);
     } catch (error) {
@@ -66,7 +66,10 @@ export const updateAccount = async(request, response) => {
     try {
         const id = Number(request.params.id);
         const updated = await updatingAccount(id, request.body);
-
+        if(updated.status === 404) {
+            response.status(404).json({message: updated.message});
+        }
+        response.status(200).json(updated.data);
     } catch (error) {
         console.log('Error: updateAccount function', error.message);
         response.status(500).json({message: 'System error'})
@@ -78,7 +81,7 @@ export const viewAccount = async(request, response) => {
         const id = Number(request.params.id);
         const account = await getAccountById(id);
         if(account.status === 404) {
-            response.status(404).json({message: 'Not found.'});
+            response.status(404).json({message: account.message});
         }
         response.status(200).json(account.data);
     } catch (error) {
@@ -87,21 +90,27 @@ export const viewAccount = async(request, response) => {
     }
 }
 
+// get booking by customer id
 export const getAllBooking = async(request, response) => {
     try {
-        const bookings = await fetchAllBookings();
-        response.status(200).json(bookings);
+        const id = Number(request.params.cus_id);
+        const booking = await fetchBookingByID(id);
+        if(booking.status === 404) {
+            response.status(404).json(booking.message);
+        }
+        response.status(200).json(booking.data);
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
         response.status(500).json({message: "System error"})
     }
 }
 
+// get booking by customer id and booking id
 export const getBookingByID = async(request, response) => {
     try {
-        const id = parseInt(request.params.id, 10)
-        const booking = await fetchBookingByID(id);
-        response.status(200).json(booking);
+        const cus_id = parseInt(request.params.cus_id, 10);
+        const booking_id = parseInt(request.params.id, 10);
+        const booking = await getCustomerBooking(cus_id, booking_id);
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
         response.status(500).json({message: "System error"})
@@ -110,7 +119,8 @@ export const getBookingByID = async(request, response) => {
 
 export const addNewBooking = async(request, response) => {
     try {
-        
+        const newBooking = await addingBooking(request.body);
+        response.status(200).json(newBooking.data);
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
         response.status(500).json({message: "System error"})

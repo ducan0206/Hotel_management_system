@@ -1,5 +1,6 @@
 import db from '../config/db.js'
 
+// admin
 export const fetchAllBookings = async() => {
     try {
         const [bookings] = await db.query(
@@ -8,7 +9,10 @@ export const fetchAllBookings = async() => {
             from Bookings b join Account a on b.user_id = a.user_id
             `
         );
-        return bookings;
+        return {
+            status: 200,
+            data: bookings
+        }
     } catch (error) {
         console.log('Error: fetchAllBookings function', error);
         return error;
@@ -20,7 +24,10 @@ export const fetchBookingByID = async(id) => {
     try {
         const [existingId] = await db.query("select * from Account where user_id = ?", [id]);
         if(existingId.length === 0) {
-            throw new Error(`Account with id ${id} not found.`);
+            return {
+                status: 404,
+                message: `Account with id ${id} not found.`
+            }
         }
         const [bookings] = await db.query(
             `
@@ -29,7 +36,10 @@ export const fetchBookingByID = async(id) => {
             where a.user_id = ?
             `, [id]
         )
-        return bookings;
+        return {
+            status: 200, 
+            data: bookings
+        }
     } catch (error) {
         console.log('Error: fetchBookingByID function', error);
         return error;
@@ -110,6 +120,56 @@ export const deletingBooking = async(id) => {
         return {message: `Booking with id ${id} has been deleted.`};
     } catch (error) {
         console.log('Error: deletingBooking function', error);
+        return error;
+    }
+}
+
+export const addingBooking = async(bookingData) => {
+
+}
+
+export const getCustomerBooking = async(cus_id, booking_id) => {
+    try {
+        const [existingUser] = await db.query(
+            `
+            select * from Account where user_id = ? and role = 'customer'
+            `, [cus_id]
+        )
+        if(existingUser.length === 0) {
+            return {
+                status: 404,
+                message: `User with id ${id} not found.`
+            }
+        }
+        const [existingBooking] = await db.query(
+            `
+            select * from Bookings where booking_id = ? and user_id = ?
+            `, [booking_id, cus_id]
+        )
+        if(existingBooking.length === 0) {
+            return {
+                status: 404,
+                message: `Booking with id ${id} not found.`
+            }
+        }
+        const [booking] = await db.query(
+            `
+            select a.full_name, a.phone, a.email, b.booking_id, r.room_number, t.type_name, r.image_url, d. nights, b.total_price, 
+            from Bookings b join BookingDetails d on d.booking_id = b.booking_id
+                            join Rooms r on r.room_id = d.room_id
+                            join RoomType t on t.type_id = r.room_type
+                            join Account a on a.user_id = b.user_id
+                            left join ServiceOrdered o on o.booking_id = b.booking_id
+                            left join Services s on s.service_id = o.service_id
+            where b.booking_id = ? and user_id = ?
+            `, [booking_id, cus_id]
+        )
+        return {
+            status: 200,
+            data: booking[0]
+        }
+    } catch (error) {
+        console.log('Error: getCustomerBooking function', error.message);
         return error;
     }
 }
