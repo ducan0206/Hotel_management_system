@@ -4,6 +4,7 @@ import {BookingBar} from '../common/BookingBar.tsx'
 import {Amenities} from '../common/Amenities.tsx'
 import {Testimonials} from '../common/Testimonials.tsx'
 import {Contact} from '../common/Contact.tsx'
+import {About} from '../common/About.tsx'
 
 const Home  = () => {
     return (
@@ -11,6 +12,7 @@ const Home  = () => {
             <MainHeader/>
             <section className="container item-center p-5">
                 <BookingBar/>
+                <About/>
                 <RoomCarousel/>
                 <Amenities/>
                 <Testimonials/>
