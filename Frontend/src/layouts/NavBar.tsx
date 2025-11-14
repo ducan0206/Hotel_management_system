@@ -43,21 +43,24 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
         }
     };
 
+    function returnHomePage() {
+        
+    }
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
-              <Hotel className="h-8 w-8 text-blue-600" />
-              <span className="text-xl">PASK Hotel</span>
+              <button className="logo" onClick={() => returnHomePage()}></button>
             </div>
             
             <div className="hidden md:flex items-center gap-8">
               <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
-              <a href="#about" className="text-gray-700 hover:text-blue-600 transition-colors">About</a>
+              <a href="#roomcarousel" className="text-gray-700 hover:text-blue-600 transition-colors">Rooms</a>              
               <a href="#amenities" className="text-gray-700 hover:text-blue-600 transition-colors">Services</a>
+              <a href="#about" className="text-gray-700 hover:text-blue-600 transition-colors">About</a>
               <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors">Contact</a>
-              <a href="#roomcarousel" className="text-gray-700 hover:text-blue-600 transition-colors">Rooms</a>
             </div>
 
             <div className="flex items-center gap-3">

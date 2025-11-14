@@ -35,7 +35,7 @@ const RoomCarousel = () => {
     if (errorMessage) return <div className="text-danger mb-5 mt-5 text-center">Error: {errorMessage}</div>
 
     return (
-        <div>
+        <div id="roomcarousel">
             <div className="grid gap-5">
                 <h1 className="flex justify-center mt-10"> Our Rooms & Suites </h1>
                 <h2 className="flex justify-center item-center mb-10 text-white-500"> Experience luxury and comfort in our carefully designed rooms and suites, each offering stunning views and premium amenities. </h2>

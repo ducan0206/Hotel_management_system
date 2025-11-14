@@ -196,3 +196,11 @@ h1 {
   }
 }
 
+.logo {
+  background-image: url('/logo.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+}
