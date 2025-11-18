@@ -4,6 +4,7 @@ import Footer from '../src/layouts/Footer.tsx'
 import NavBar from '../src/layouts/NavBar.tsx'
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom'; // 1. Nh? import Outlet
 import { AuthProvider } from '../src/context/AuthContext.tsx'
+import { Toaster } from 'sonner';
 
 // 2. T?o Layout Component (Ho?c tách ra file riêng n?u mu?n)
 const MainLayout = () => {
@@ -21,6 +22,7 @@ const MainLayout = () => {
 function App() {
     return (
         <>
+        <Toaster richColors />
         <AuthProvider>
             <main>
                 <Router>

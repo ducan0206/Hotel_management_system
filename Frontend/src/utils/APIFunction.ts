@@ -15,5 +15,31 @@ export const getAllRooms = async() => {
         return res.data;
     } catch (error) {
         console.log("Get all rooms error: ", error)
+        throw error;
     }
+}
+
+export const createAccount = async (userData: {
+    fullName: string;
+    phone: string;
+    username: string;
+    email: string;
+    password: string;}) => {
+    try {
+        const res = await api.post("/user/customer/register", userData);
+        return res.data;
+    } catch (error) {
+        console.log("Create account error: ", error)
+        throw error;
+    }
+}
+
+export const login = async (credentials: {username: string; password: string;}) => {
+    try {
+        const res = await api.post("/user/customer/login", credentials);
+        return res.data;
+    } catch (error) {
+        console.log("Login error: ", error)
+        throw error;
+    }   
 }
