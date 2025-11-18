@@ -75,7 +75,7 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
                       <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                         <Avatar>
                           <AvatarFallback>
-                            {user.name.charAt(0).toUpperCase()}
+                            {user.full_name.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>   
                       </Button>
@@ -83,7 +83,7 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>
                         <div>
-                          <p>{user.name}</p>
+                          <p>{user.full_name}</p>
                           <p className="text-sm text-gray-500">{user.email}</p>
                         </div>
                       </DropdownMenuLabel>

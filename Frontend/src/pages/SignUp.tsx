@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Input } from "../ui/input.tsx";
 import { Button } from "../ui/button.tsx";
 import { User, Lock, Mail, Phone, PartyPopper } from "lucide-react";
-import { useNavigate } from 'react-router-dom'
-import { createAccount, login } from '../utils/APIFunction.ts';
-import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useAuth } from '../context/AuthContext.tsx';
 
 export function SignIn() {
   const [isLogin, setIsLogin] = useState(true);
@@ -22,33 +22,34 @@ export function SignIn() {
     password: "",
     confirmPassword: "",
   });
-
+  const { login, register  } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async(e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
-      const data = await login({
-        username: loginData.username,
-        password: loginData.password});
+      const success = await login(loginData.username, loginData.password); 
+        
+      if (!success) {
+        toast.error(<span className='mess'>Invalid username or password.</span>);
+        return;
+      }
+
       toast.success(
         <span className='mess'><PartyPopper /> Login successful! Welcome back. </span>
       );
-      setLoginData({
-        username: "",
-        password: "",
-      });
-      setIsLogin(true);
+      setLoginData({ username: "", password: "", });
+      setIsLogin(true); 
       navigate('/');
+
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Error logging in.";
-      toast.error(<span className='mess'>{errorMessage}</span>);  
+      const errorMessage = error.response?.data?.message || "System error during login.";
+      toast.error(<span className='mess'>{errorMessage}</span>); 
     } finally {
       setIsLoading(false);
     }
-
-    console.log("Login:", loginData);
   };
 
   const handleRegister = async(e: React.FormEvent) => {
@@ -59,9 +60,9 @@ export function SignIn() {
     }
     setIsLoading(true);
     try {
-      const data = await createAccount({
+      await register({
         fullName: registerData.fullName,
-        phone: registerData.phone,
+        phone: registerData.phone, 
         username: registerData.username,
         email: registerData.email,
         password: registerData.password,
@@ -70,7 +71,7 @@ export function SignIn() {
         <span className='mess'><PartyPopper /> Account created successfully! </span>
       );
       setIsLogin(true);
-      setRegisterData({
+      setRegisterData({ 
         fullName: "",
         phone: "",
         username: "",
@@ -80,11 +81,10 @@ export function SignIn() {
       });
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || "Error creating account.";
-      toast.error(<span className='mess'>{errorMessage}</span>);
+      toast.error(<span className='mess'>Registration failed: {error.message}</span>);
     } finally {
       setIsLoading(false);
     }
-
     console.log("Register:", registerData);
   };
 
