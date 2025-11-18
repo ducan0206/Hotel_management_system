@@ -1,4 +1,4 @@
-import { Card, CardContent } from "../component/ui/card";
+import { Card, CardContent } from "../ui/card";
 
 interface AmenityCardProps {
   icon: React.ReactNode;

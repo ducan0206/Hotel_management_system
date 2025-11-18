@@ -1,5 +1,5 @@
-import { Card, CardContent } from '../component/ui/card.tsx';
-import { Button } from '../component/ui/button.tsx';
+import { Card, CardContent } from '../ui/card.tsx';
+import { Button } from '../ui/button.tsx';
 import { Users, Maximize } from "lucide-react";
 import { ImageWithFallback } from "../helper/ImageWithFallback.tsx";
 

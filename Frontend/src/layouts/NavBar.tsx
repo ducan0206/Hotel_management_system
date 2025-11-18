@@ -1,9 +1,10 @@
 import {useState} from 'react'
-import { Hotel, LogIn, User, LogOut } from "lucide-react";
-import {Button} from '../component/ui/button.tsx'
-import {Avatar, AvatarFallback} from '../component/ui/avatar.tsx'
-import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem} from '../component/ui/dropdown-menu.tsx'
+import {LogIn, User, LogOut } from "lucide-react";
+import {Button} from '../ui/button.tsx'
+import {Avatar, AvatarFallback} from '../ui/avatar.tsx'
+import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem} from '../ui/dropdown-menu.tsx'
 import { useAuth } from '../context/AuthContext.tsx';
+import {useNavigate} from 'react-router-dom'
 
 interface CustomerHomeProps {
     roomsData: Array<{
@@ -28,6 +29,8 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loginOpen, setLoginOpen] = useState(false);
     const [registerOpen, setRegisterOpen] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleViewDetails = (room: typeof roomsData[0]) => {
         setSelectedRoom(room);
@@ -56,11 +59,11 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
             </div>
             
             <div className="hidden md:flex items-center gap-8">
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
-              <a href="#roomcarousel" className="text-gray-700 hover:text-blue-600 transition-colors">Rooms</a>              
-              <a href="#amenities" className="text-gray-700 hover:text-blue-600 transition-colors">Services</a>
-              <a href="#about" className="text-gray-700 hover:text-blue-600 transition-colors">About</a>
-              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors">Contact</a>
+              <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Home</a>
+              <a href="#about" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">About</a>
+              <a href="#roomcarousel" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Rooms</a>              
+              <a href="#amenities" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Services</a>
+              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Contact</a>
             </div>
 
             <div className="flex items-center gap-3">
@@ -105,7 +108,7 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
                   <Button variant="outline" onClick={onAdminLogin}>
                     Admin
                   </Button>
-                  <Button variant="outline" onClick={() => setLoginOpen(true)}>
+                  <Button variant="outline" onClick={() => navigate('/signin')}>
                     <LogIn className="h-4 w-4 mr-2" />
                     Sign In
                   </Button>

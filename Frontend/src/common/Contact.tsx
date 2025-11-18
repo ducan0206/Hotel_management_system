@@ -1,7 +1,7 @@
 import {MapPin, Phone, Mail} from 'lucide-react'
-import {Card, CardContent} from '../component/ui/card.tsx'
-import {Button} from '../component/ui/button.tsx'
-import {Input} from '../component/ui/input.tsx'
+import {Card, CardContent} from '../ui/card.tsx'
+import {Button} from '../ui/button.tsx'
+import {Input} from '../ui/input.tsx'
 
 export const Contact = () => {
     return (

@@ -1,4 +1,4 @@
-import {Button} from '../component/ui/button.tsx'
+import {Button} from '../ui/button.tsx'
 
 export const About = () => {
     return (
