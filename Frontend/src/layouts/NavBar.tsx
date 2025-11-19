@@ -10,7 +10,7 @@ const NavBar = () => {
     const { user, logout, isAuthenticated } = useAuth();
 
     const navigate = useNavigate();
-
+    
     const handleBookNow = () => {
         if (!isAuthenticated) {
             navigate('/signin', { state: { defaultTab: 'login' } }); 

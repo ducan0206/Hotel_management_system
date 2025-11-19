@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import type { Room } from "../pages/Room.tsx";
 import { ImageWithFallback } from "../helper/ImageWithFallback";
 import { Users, Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2 } from "lucide-react";
+import { useAuth } from "../context/AuthContext.tsx";
 
 interface RoomCardProps {
   room: Room;
@@ -11,6 +13,18 @@ interface RoomCardProps {
 }
 
 export function RoomCard({ room, viewMode }: RoomCardProps) {
+  const { user } = useAuth();
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user && user.role !== "customer") {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
+
   const getStatusBadge = (status: Room["status"]) => {
     switch (status) {
       case "available":
@@ -108,17 +122,27 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
                   <p className="text-sm text-gray-500">per night</p>
                 </div>
                 
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
+                {
+                  isAdmin ? (
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="mt-5 hover:bg-cyan-600 hover:text-white transition-colors cursor-pointer" onClick={() => alert('Booking functionality coming soon!')}>
+                        Book Now
+                      </Button>
+                    </div>
+                  )
+                }
               </div>
             </div>
           </CardContent>
@@ -184,14 +208,24 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
             <p className="text-2xl text-cyan-600">${room.price}</p>
             <p className="text-xs text-gray-500">per night</p>
           </div>
-          <div className="flex gap-1">
-            <Button variant="outline" size="sm">
-              <Eye className="w-4 h-4" />
-            </Button>
-            <Button variant="outline" size="sm">
-              <Edit className="w-4 h-4" />
-            </Button>
-          </div>
+          { isAdmin ? (
+            <>
+            <div className="flex gap-1">
+              <Button variant="outline" size="sm">
+                <Eye className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                <Edit className="w-4 h-4" />
+              </Button>
+            </div>
+            </>
+          ) : (
+            <div className="flex gap-1">
+              <Button variant="outline" size="sm" className="hover:bg-cyan-600 hover:text-white transition-colors cursor-pointer" onClick={() => alert('Booking functionality coming soon!')}>
+                Book Now
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
