@@ -1,56 +1,30 @@
-import {useState} from 'react'
-import {LogIn, User, LogOut } from "lucide-react";
+import {LogIn, User, LogOut, TicketCheck } from "lucide-react";
 import {Button} from '../ui/button.tsx'
 import {Avatar, AvatarFallback} from '../ui/avatar.tsx'
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem} from '../ui/dropdown-menu.tsx'
 import { useAuth } from '../context/AuthContext.tsx';
 import {useNavigate} from 'react-router-dom'
 
-interface CustomerHomeProps {
-    roomsData: Array<{
-        name: string;
-        image: string;
-        price: string;
-        capacity: string;
-        size: string;
-        description: string;
-        fullDescription: string;
-        images: string[];
-        amenities: string[];
-        bedType: string;
-        maxGuests: number;
-    }>;
-    onAdminLogin: () => void;
-}
 
-const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
+const NavBar = () => { 
     const { user, logout, isAuthenticated } = useAuth();
-    const [selectedRoom, setSelectedRoom] = useState<typeof roomsData[0] | null>(null);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [loginOpen, setLoginOpen] = useState(false);
-    const [registerOpen, setRegisterOpen] = useState(false);
 
     const navigate = useNavigate();
 
-    console.log("Is Authenticated:", isAuthenticated);
-    console.log("NavBar User Data:", user);
-
-    const handleViewDetails = (room: typeof roomsData[0]) => {
-        setSelectedRoom(room);
-        setDialogOpen(true);
-    };
-
     const handleBookNow = () => {
         if (!isAuthenticated) {
-        setLoginOpen(true);
+            navigate('/signin', { state: { defaultTab: 'login' } }); 
         } else {
-        // Handle booking logic
-        alert('Booking functionality coming soon!');
+            alert('Booking functionality coming soon!');
         }
+    };
+    
+    const handleAdminLogin = () => {
+        navigate('/admin-login'); 
     };
 
     function returnHomePage() {
-        
+        navigate('/');
     }
 
     return (
@@ -62,9 +36,9 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
             </div>
             
             <div className="hidden md:flex items-center gap-8">
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Home</a>
+              <a href="/" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Home</a>
               <a href="#about" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">About</a>
-              <a href="#roomcarousel" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Rooms</a>              
+              <a href="#roomcarousel" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Rooms</a> 
               <a href="#amenities" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Services</a>
               <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors text-lg">Contact</a>
             </div>
@@ -72,34 +46,47 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
             <div className="flex items-center gap-3">
               {isAuthenticated && user?.role === 'customer' ? (
                 <>
-                  <Button onClick={handleBookNow}>Book Now</Button>
+                  <Button onClick={handleBookNow} className="ml-5">Book Now</Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                      <Button 
+                        variant="ghost" 
+                        className="relative h-10 w-10 rounded-full ring-2 ring-transparent transition-all duration-200 hover:ring-cyan-500 hover:scale-[1.05] shadow-md"
+                      >
                         <Avatar>
-                          <AvatarFallback>
+                          <AvatarFallback className="bg-cyan-600 text-white font-semibold text-lg cursor-pointer w-full h-full flex items-center justify-center rounded-full">
                             {user.full_name.charAt(0).toUpperCase()}
                           </AvatarFallback>
-                        </Avatar>   
+                        </Avatar>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>
+                    
+                    <DropdownMenuContent 
+                      align="end"
+                      className="w-64 p-2 rounded-lg border border-gray-300 bg-white shadow-2xl z-50 
+                                 data-[state=open]:animate-in data-[state=closed]:animate-out 
+                                 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 
+                                 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 
+                                 data-[side=bottom]:slide-in-from-top-2 transition-all duration-150"
+                    >
+                      <DropdownMenuLabel className="p-2">
                         <div>
-                          <p>{user.full_name}</p>
-                          <p className="text-sm text-gray-500">{user.email}</p>
+                          <p className="text-base font-bold">{user.full_name}</p>
+                          <p className="text-sm text-gray-500 truncate">{user.email}</p>
                         </div>
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>
+                      
+                      <DropdownMenuItem className="p-2 transition-colors hover:bg-cyan-50 hover:text-cyan-700 cursor-pointer font-bold">
                         <User className="mr-2 h-4 w-4" />
                         My Profile
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem className="p-2 transition-colors hover:bg-cyan-50 hover:text-cyan-700 cursor-pointer font-bold">
+                        < TicketCheck className="mr-2 h-4 w-4" />
                         My Bookings
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={logout}>
+                      <DropdownMenuItem onClick={logout} className="p-2 text-red-600 transition-colors hover:bg-red-50 cursor-pointer font-bold">
                         <LogOut className="mr-2 h-4 w-4" />
                         Sign Out
                       </DropdownMenuItem>
@@ -108,14 +95,14 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" onClick={onAdminLogin}>
+                  <Button variant="outline" onClick={handleAdminLogin}> 
                     Admin
                   </Button>
                   <Button variant="outline" onClick={() => navigate('/signin')}>
                     <LogIn className="h-4 w-4 mr-2" />
                     Sign In
                   </Button>
-                  <Button onClick={() => setRegisterOpen(true)}>Sign Up</Button>
+                  <Button onClick={() => navigate('/signin', { state: { defaultTab: 'register' } })}>Sign Up</Button>
                 </>
               )}
             </div>

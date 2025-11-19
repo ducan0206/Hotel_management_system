@@ -1,10 +1,10 @@
 import MainHeader from '../layouts/MainHeader.tsx'
-import RoomCarousel from '../common/RoomCarousel.tsx'
-import {BookingBar} from '../common/BookingBar.tsx'
-import {Amenities} from '../common/Amenities.tsx'
-import {Testimonials} from '../common/Testimonials.tsx'
-import {Contact} from '../common/Contact.tsx'
-import {About} from '../common/About.tsx'
+import RoomCarousel from '../component/RoomCarousel.tsx'
+import {BookingBar} from '../component/BookingBar.tsx'
+import {Amenities} from '../component/Amenities.tsx'
+import {Testimonials} from '../component/Testimonials.tsx'
+import {Contact} from '../component/Contact.tsx'
+import {About} from '../component/About.tsx'
 
 const Home  = () => {
     return (

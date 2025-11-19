@@ -1,4 +1,4 @@
-import {AmenityCard}  from '../common/AmenityCard'
+import {AmenityCard}  from './AmenityCard'
 import {Utensils, Wifi, Dumbbell, Waves, Car, Wind} from 'lucide-react'
 
 export const Amenities = () => {

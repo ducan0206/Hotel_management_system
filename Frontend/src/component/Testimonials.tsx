@@ -1,4 +1,4 @@
-import {TestimonialCard} from '../common/TestimonialCard.tsx'
+import {TestimonialCard} from './TestimonialCard.tsx'
 
 export const Testimonials = () => {
     return (
