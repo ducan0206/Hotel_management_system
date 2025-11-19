@@ -26,21 +26,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
+  // Trong file AuthContext.tsx, trong hàm login
   const login = async (username: string, password: string) => {
     try {
-      const userData = await loginUser({ username, password }); 
-      console.log("Context Login User Data:", userData.user_id);
-      if (userData) { 
-        console.log(1);
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData)); 
+      const apiResponse = await loginUser({ username, password }); 
+      const userDetails = apiResponse.user; 
+      const token = apiResponse.token; // L?y token
+
+      if (userDetails && userDetails.user_id) { 
+        const dataToStore: User = { 
+          user_id: userDetails.user_id,
+          username: userDetails.username,
+          full_name: userDetails.full_name,
+          email: userDetails.email,
+          role: userDetails.role,
+          token: token 
+        };
+            
+        setUser(dataToStore);
+        localStorage.setItem('user', JSON.stringify(dataToStore)); 
         return true;
       }
       return false;
-    } catch (error) {
-      console.error("Context Login Failed:", error);
-      throw error;
-    }
+      } catch (error) {
+        console.error("Context Login Failed:", error);
+        throw error; // Ném l?i ?? SignIn.tsx b?t
+      }
   };
 
   const logout = () => {

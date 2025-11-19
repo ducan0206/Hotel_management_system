@@ -32,6 +32,9 @@ const NavBar = ({ roomsData, onAdminLogin }: CustomerHomeProps) => {
 
     const navigate = useNavigate();
 
+    console.log("Is Authenticated:", isAuthenticated);
+    console.log("NavBar User Data:", user);
+
     const handleViewDetails = (room: typeof roomsData[0]) => {
         setSelectedRoom(room);
         setDialogOpen(true);
