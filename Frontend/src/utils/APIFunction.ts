@@ -19,6 +19,16 @@ export const getAllRooms = async() => {
     }
 }
 
+export const fetchRooms = async () => {
+    try {
+        const res = await api.get("/all-rooms");
+        return res.data;
+    } catch (error) {
+        console.log("Fetch rooms error: ", error)
+        throw error;
+    }
+}
+
 export const createAccount = async (userData: {
     fullName: string;
     phone: string;
@@ -43,3 +53,4 @@ export const login = async (credentials: {username: string; password: string;}) 
         throw error;
     }   
 }
+

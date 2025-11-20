@@ -4,7 +4,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import type { Room } from "../pages/Room.tsx";
 import { ImageWithFallback } from "../helper/ImageWithFallback";
-import { Users, Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2 } from "lucide-react";
+import { Users, Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2, Utensils } from "lucide-react";
 import { useAuth } from "../context/AuthContext.tsx";
 
 interface RoomCardProps {
@@ -54,6 +54,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
     if (lower.includes("wifi")) return <Wifi className="w-4 h-4" />;
     if (lower.includes("tv")) return <Tv className="w-4 h-4" />;
     if (lower.includes("bar")) return <Wine className="w-4 h-4" />;
+    if (lower.includes("breakfast")) return <Utensils className="w-4 h-4" />;
     return null;
   };
 
@@ -63,8 +64,8 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
         <div className="flex flex-col sm:flex-row">
           <div className="w-full sm:w-48 h-48 sm:h-auto relative flex-shrink-0">
             <ImageWithFallback
-              src={room.image}
-              alt={room.name}
+              src={room.image_url}
+              alt={room.type_name}
               className="w-full h-full object-cover"
             />
             <div className="absolute top-3 right-3">{getStatusBadge(room.status)}</div>
@@ -75,8 +76,8 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
               <div className="flex-1">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="text-gray-900 mb-1">Room {room.id}</h3>
-                    <p className="text-sm text-gray-600">{room.name}</p>
+                    <h3 className="text-gray-900 mb-1">Room {room.room_number}</h3>
+                    <p className="text-sm text-gray-600">{room.type_name}</p>
                   </div>
                 </div>
 
@@ -87,19 +88,19 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
                   </div>
                   <div className="flex items-center gap-1">
                     <Maximize className="w-4 h-4" />
-                    <span>{room.size}m²</span>
+                    <span>{room.area}m<sup>2</sup></span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Layers className="w-4 h-4" />
                     <span>Floor {room.floor}</span>
                   </div>
                   <div>
-                    <Badge variant="outline">{getTypeLabel(room.type)}</Badge>
+                    <Badge variant="outline">{getTypeLabel(room.standard)}</Badge>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {room.amenities.slice(0, 5).map((amenity, index) => (
+                  {room.services.slice(0, 5).map((amenity, index) => (
                     <div
                       key={index}
                       className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded"
@@ -108,9 +109,9 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
                       <span>{amenity}</span>
                     </div>
                   ))}
-                  {room.amenities.length > 5 && (
+                  {room.services.length > 5 && (
                     <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                      +{room.amenities.length - 5} khác
+                      +{room.services.length - 5} khác
                     </div>
                   )}
                 </div>
@@ -155,20 +156,20 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
       <div className="relative h-48">
         <ImageWithFallback
-          src={room.image}
-          alt={room.name}
+          src={room.image_url}
+          alt={room.type_name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-3 right-3">{getStatusBadge(room.status)}</div>
         <div className="absolute top-3 left-3">
-          <Badge variant="secondary">{getTypeLabel(room.type)}</Badge>
+          <Badge variant="secondary">{getTypeLabel(room.standard)}</Badge>
         </div>
       </div>
 
       <CardContent className="p-4">
         <div className="mb-3">
-          <h3 className="text-gray-900 mb-1">Room {room.id}</h3>
-          <p className="text-sm text-gray-600">{room.name}</p>
+          <h3 className="text-gray-900 mb-1">Room {room.room_number}</h3>
+          <p className="text-sm text-gray-600">{room.type_name}</p>
         </div>
 
         <div className="flex flex-wrap gap-3 mb-4 text-sm text-gray-600">
@@ -178,7 +179,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
           </div>
           <div className="flex items-center gap-1">
             <Maximize className="w-4 h-4" />
-            <span>{room.size}m²</span>
+            <span>{room.area}m<sup>2</sup></span>
           </div>
           <div className="flex items-center gap-1">
             <Layers className="w-4 h-4" />
@@ -187,7 +188,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {room.amenities.slice(0, 3).map((amenity, index) => (
+          {room.services.slice(0, 3).map((amenity, index) => (
             <div
               key={index}
               className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded"
@@ -196,9 +197,9 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
               <span>{amenity}</span>
             </div>
           ))}
-          {room.amenities.length > 3 && (
+          {room.services.length > 3 && (
             <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
-              +{room.amenities.length - 3}
+              +{room.services.length - 3}
             </div>
           )}
         </div>

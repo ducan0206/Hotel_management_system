@@ -13,9 +13,9 @@ const NavBar = () => {
     
     const handleBookNow = () => {
         if (!isAuthenticated) {
-            navigate('/signin', { state: { defaultTab: 'login' } }); 
+          navigate('/signin', { state: { defaultTab: 'login' } }); 
         } else {
-            alert('Booking functionality coming soon!');
+          navigate('/all-rooms');
         }
     };
     

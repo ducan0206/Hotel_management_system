@@ -9,10 +9,13 @@ interface RoomCardProps {
     price: string;
     capacity: string;
     description: string;
+    area: number;
+    floor: number;
+    standard: string;
+    amenities: string[];
 }
 
-export function RoomCard({ name, image, price, capacity, description }: RoomCardProps) {
-
+export function RoomCard({ name, image, price, capacity, description, area }: RoomCardProps) {
     return (
         <Card className="overflow-hidden hover:shadow-xl transition-shadow w-full h-auto max-w-sm">
             <div className="relative h-64">
@@ -35,6 +38,7 @@ export function RoomCard({ name, image, price, capacity, description }: RoomCard
                     </div>
                     <div className="flex items-center gap-2">
                         <Maximize className="h-4 w-4" />
+                        <span className="text-sm">{area} m<sup>2</sup></span>
                     </div>
                 </div>
                 <Button className="w-full cursor-pointer">View Details</Button>

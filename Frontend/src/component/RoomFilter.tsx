@@ -19,7 +19,7 @@ export function RoomFilters({ rooms, onFilterChange }: RoomFiltersProps) {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedCapacity, setSelectedCapacity] = useState<string>("all");
 
-  const roomTypes = Array.from(new Set(rooms.map((r) => r.type)));
+  const roomTypes = Array.from(new Set(rooms.map((r) => r.standard)));
   const statuses = [
     { value: "available", label: "Available" },
     { value: "occupied", label: "Occupied" },
@@ -36,7 +36,7 @@ export function RoomFilters({ rooms, onFilterChange }: RoomFiltersProps) {
 
     // Filter by type
     if (selectedTypes.length > 0) {
-      filtered = filtered.filter((room) => selectedTypes.includes(room.type));
+      filtered = filtered.filter((room) => selectedTypes.includes(room.standard));
     }
 
     // Filter by status
@@ -122,9 +122,9 @@ export function RoomFilters({ rooms, onFilterChange }: RoomFiltersProps) {
                   htmlFor={`type-${type}`}
                   className="text-sm capitalize cursor-pointer"
                 >
-                  {type === "standard" && "Standard"}
-                  {type === "deluxe" && "Deluxe"}
-                  {type === "suite" && "Suite"}
+                  {type === "Standard" && "Standard"}
+                  {type === "Deluxe" && "Deluxe"}
+                  {type === "Suite" && "Suite"}
                 </label>
               </div>
             ))}
@@ -162,10 +162,10 @@ export function RoomFilters({ rooms, onFilterChange }: RoomFiltersProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              <SelectItem value="2">2 people</SelectItem>
-              <SelectItem value="3">3 people</SelectItem>
-              <SelectItem value="4">4 people</SelectItem>
-              <SelectItem value="6">6 people</SelectItem>
+              <SelectItem value="2">2+ people</SelectItem>
+              <SelectItem value="3">3+ people</SelectItem>
+              <SelectItem value="4">4+ people</SelectItem>
+              <SelectItem value="6">6+ people</SelectItem>
             </SelectContent>
           </Select>
         </div>

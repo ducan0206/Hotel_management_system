@@ -12,6 +12,10 @@ interface IRoom {
     price: number;
     description: string;
     image_url: string;
+    area: number;
+    floor: number;
+    standard: string;
+    amenities: string[];
 }
 
 const RoomCarousel = () => {
@@ -70,6 +74,10 @@ const RoomCarousel = () => {
                             price={room.price.toString()}
                             capacity={room.capacity.toString()}
                             description={room.description}
+                            area={room.area}
+                            floor={room.floor}
+                            standard={room.standard}
+                            amenities={room.amenities}
                         />
                     ))}
                 </div>
