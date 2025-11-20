@@ -54,3 +54,21 @@ export const login = async (credentials: {username: string; password: string;}) 
     }   
 }
 
+export const getAvailableRooms = async (check_in: string, check_out: string, capacity: number) => {
+    try {
+        const res = await api.get("/user/available-rooms", {
+            params: {
+                check_in,
+                check_out,
+                capacity
+            }
+        });
+        return {
+            status: 200,
+            data: res.data
+        }
+    } catch (error) {
+        console.log("Get available rooms error: ", error)
+        throw error;
+    }
+}

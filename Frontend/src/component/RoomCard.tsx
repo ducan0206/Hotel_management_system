@@ -29,7 +29,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
     switch (status) {
       case "available":
         return <Badge className="bg-green-500">Available</Badge>;
-      case "occupied":
+      case "booked":
         return <Badge className="bg-red-500">Occupied</Badge>;
       case "maintenance":
         return <Badge className="bg-yellow-500">Maintence</Badge>;

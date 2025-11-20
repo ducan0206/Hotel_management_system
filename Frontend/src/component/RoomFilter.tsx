@@ -22,7 +22,7 @@ export function RoomFilters({ rooms, onFilterChange }: RoomFiltersProps) {
   const roomTypes = Array.from(new Set(rooms.map((r) => r.standard)));
   const statuses = [
     { value: "available", label: "Available" },
-    { value: "occupied", label: "Occupied" },
+    { value: "booked", label: "Occupied" },
     { value: "maintenance", label: "Maintenance" },
   ];
 

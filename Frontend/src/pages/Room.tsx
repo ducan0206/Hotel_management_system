@@ -2,119 +2,10 @@ import { useState, useEffect } from "react";
 import { RoomCard } from "../component/RoomCard";
 import { RoomFilters } from "../component/RoomFilter.tsx";
 import { LayoutGrid, List, BedSingle } from "lucide-react";
-import { fetchRooms } from "../utils/APIFunction.ts";
-
-// export interface Room {
-//   id: string;
-//   type: string;
-//   standard: string;
-//   price: number;
-//   capacity: number;
-//   status: string;
-//   image: string;
-//   amenities: string[];
-//   floor: number;
-//   area: number;
-// }
-
-// const mockRooms: Room[] = [
-//   {
-//     id: "101",
-//     name: "Deluxe Ocean View",
-//     type: "deluxe",
-//     price: 250,
-//     capacity: 2,
-//     status: "available",
-//     image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar", "Ocean View", "Balcony"],
-//     floor: 1,
-//     size: 35,
-//   },
-//   {
-//     id: "102",
-//     name: "Executive Suite",
-//     type: "suite",
-//     price: 450,
-//     capacity: 4,
-//     status: "available",
-//     image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar", "Kitchen", "Living Room", "City View"],
-//     floor: 1,
-//     size: 60,
-//   },
-//   {
-//     id: "201",
-//     name: "Standard Room",
-//     type: "standard",
-//     price: 150,
-//     capacity: 2,
-//     status: "occupied",
-//     image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar"],
-//     floor: 2,
-//     size: 25,
-//   },
-//   {
-//     id: "202",
-//     name: "Premium Suite",
-//     type: "suite",
-//     price: 500,
-//     capacity: 4,
-//     status: "available",
-//     image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar", "Jacuzzi", "Ocean View", "Balcony"],
-//     floor: 2,
-//     size: 70,
-//   },
-//   {
-//     id: "301",
-//     name: "Deluxe Room",
-//     type: "deluxe",
-//     price: 280,
-//     capacity: 3,
-//     status: "available",
-//     image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar", "City View"],
-//     floor: 3,
-//     size: 40,
-//   },
-//   {
-//     id: "302",
-//     name: "Standard Plus",
-//     type: "standard",
-//     price: 180,
-//     capacity: 2,
-//     status: "maintenance",
-//     image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar", "Work Desk"],
-//     floor: 3,
-//     size: 28,
-//   },
-//   {
-//     id: "401",
-//     name: "Royal Suite",
-//     type: "suite",
-//     price: 800,
-//     capacity: 6,
-//     status: "available",
-//     image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar", "Kitchen", "Living Room", "Dining Room", "Ocean View", "Balcony"],
-//     floor: 4,
-//     size: 100,
-//   },
-//   {
-//     id: "402",
-//     name: "Deluxe King",
-//     type: "deluxe",
-//     price: 300,
-//     capacity: 2,
-//     status: "occupied",
-//     image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
-//     amenities: ["WiFi", "TV", "Mini Bar", "King Bed", "City View"],
-//     floor: 4,
-//     size: 38,
-//   },
-// ];
+import { getAvailableRooms, fetchRooms } from "../utils/APIFunction.ts";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export interface Room {
   room_id: string;
@@ -136,19 +27,42 @@ const RoomsPage = () => {
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const loadRooms = async () => {
-      try {
+      const queryParams = new URLSearchParams(location.search);
+      const check_in = queryParams.get("checkIn");
+      const check_out = queryParams.get("checkOut");
+      const guests = queryParams.get("capacity");
+      if(!check_in || !check_out || !guests) {
         const data = await fetchRooms();
         setRooms(data);
         setFilteredRooms(data);
+        console.log("Missing search parameters, displaying empty list.");
+        return;
+      }
+
+      try {
+        const response = await getAvailableRooms(check_in, check_out, parseInt(guests));
+                
+        if (response.status === 200) {
+          console.log(1);
+          setRooms(response.data);
+          setFilteredRooms(response.data);
+        } else if (response.status === 404) {
+          const data = await fetchRooms();
+          setRooms(data);
+          setFilteredRooms(data);
+        }
       } catch (error) {
-        console.error("Error fetching rooms:", error);
-      } 
+        console.error("Error fetching available rooms:", error);
+        toast.error("Could not load rooms."); 
+      }
     };
     loadRooms();
-    console.log(rooms);
-  }, []);
+  }, [location.search, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50 mt-16">
