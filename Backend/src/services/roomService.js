@@ -215,23 +215,49 @@ export const deletingRoomType = async(id) => {
 // customer
 export const getAvailableRooms = async(data) => {
     try {   
-        const {check_in, check_out} = data;
+        const {check_in, check_out, capacity} = data;
         if(!check_in || !check_out) {
             return {
                 status: 400,
                 message: 'Both check_in and check_out are required'
             }
         }
+
+
+        // Chuy?n ??i các chu?i ngày tháng sang ??i t??ng Date ?? so sánh
+        const checkInDate = new Date(check_in);
+        const checkOutDate = new Date(check_out);
+
+        // Ki?m tra xem check_in có l?n h?n ho?c b?ng check_out không.
+        // Logic: Check-out ph?i sau Check-in
+        if (checkInDate >= checkOutDate) {
+            return {
+                status: 400,
+                message: 'Check-out date must be after check-in date.'
+            }
+        }
+        
+        // OPTIONAL: Ki?m tra ngày check-in có ph?i là quá kh? không
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // ??t gi? v? 0 ?? so sánh ch? ngày
+        if (checkInDate < today) {
+            return {
+                status: 400,
+                message: 'Check-in date cannot be in the past.'
+            }
+        }
+
+
         const [rooms] = await db.query(
             `
-            select r.room_number, t.type_name, t.capacity, r.price, r.description, r.image_url
+            select r.*, t.type_name, t.capacity
             from Rooms r join RoomType t on r.room_type = t.type_id
             where r.room_id not in (
                 select d.room_id
                 from Bookings b join BookingDetails d on b.booking_id = d.booking_id
-                where b.status not in ('cancelled', 'checked_out') and (b.check_in < ? and b.check_out > ?)
+                where b.status not in ('cancelled', 'checked_out') and (b.check_in < ? and b.check_out > ?) and t.capacity >= ?
             ) and r.status = 'available'
-            `, [check_in, check_out]
+            `, [check_in, check_out, parseInt(capacity)]
         )
         if(rooms.length === 0) {
             return {

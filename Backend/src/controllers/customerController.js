@@ -158,7 +158,7 @@ export const deleteBooking = async(request, response) => {
 
 export const getAllAvailableRooms = async(request, response) => {
     try {
-        const rooms = await getAvailableRooms(request.body);
+        const rooms = await getAvailableRooms(request.query);
         if(rooms.status !== 200) {
             return response.status(rooms.status).json(rooms.message);
         }
