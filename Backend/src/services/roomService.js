@@ -35,16 +35,29 @@ export const fetchRoomByID = async(id) => {
     }
 }
 
-export const addRoom = async({room_number, room_type, price, status, description, image_url}) => {
+export const addRoom = async({room_number, room_type, price, status, description, image_url, area, standard, floor, services}) => {
     try {
         const [type] = await db.query('select type_id from RoomType where type_name = ?', [room_type]);
         if(type.length === 0) {
             throw new Error(`Room Type ${room_type} not existed.`);
         }
         const room_type_id = type[0].type_id;
+        let servicesJson = null;
+
+        if (services) {
+            let serviceData = services;
+            if (typeof services === 'string') {
+                try {
+                    serviceData = JSON.parse(services);
+                } catch (e) {
+                    throw new Error('Services field must be a valid JSON array or object.');
+                }
+            }            
+            servicesJson = JSON.stringify(serviceData);
+        }
         const [result] = await db.query(
-            "insert into Rooms (room_number, room_type, price, status, description, image_url) VALUES (?, ?, ?, ?, ?, ?)",
-            [room_number, room_type_id, price, status, description, image_url]
+            "insert into Rooms (room_number, room_type, price, status, description, image_url, area, standard, floor, services) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [room_number, room_type_id, price, status, description, image_url, area, standard, floor, servicesJson]
         );
         const [rows] = await db.query(
             `
@@ -53,7 +66,11 @@ export const addRoom = async({room_number, room_type, price, status, description
             where r.room_id = ?
             `, [result.insertId]
         );
-        return rows[0];
+        const newRoom = rows[0];
+        if (newRoom.services) {
+            newRoom.services = Array.isArray(newRoom.services) ? newRoom.services : [];       
+        }
+        return newRoom;
     } catch (error) {
         console.log('Error: addRoom function', error.message);
         return error;
@@ -236,7 +253,7 @@ export const getAllAvailableRooms = async() => {
     try {
         const [rooms] = await db.query(
             `
-            select r.room_id, r.room_number, t.type_name, t.capacity, r.price, r.description, r.image_url
+            select r.room_id, r.room_number, t.type_name, t.capacity, r.price, r.description, r.image_url, r.area, r.standard, r.floor, r.services
             from Rooms r join RoomType t on r.room_type = t.type_id
             where r.status = 'available'
             `

@@ -1,5 +1,5 @@
 import db from '../config/db.js'
-import {getAllAvailableRooms} from '../services/roomService.js'
+import {getAllAvailableRooms, fetchAllRooms} from '../services/roomService.js'
 
 export const getAvailableRooms = async(request, response) => {
     try {
@@ -12,4 +12,14 @@ export const getAvailableRooms = async(request, response) => {
         console.log('Error: getAvailableRooms function', error.message);
         response.status(500).json({message: 'System error'});
     }
+}
+
+export const getAllRooms = async(request, response) => {
+    try {
+        const rooms = await fetchAllRooms();
+        response.status(200).json(rooms);
+    } catch (error) {
+        console.log('Error: getAllRooms function', error.message);
+        response.status(500).json({message: 'System error'});
+    }   
 }

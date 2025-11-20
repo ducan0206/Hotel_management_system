@@ -23,6 +23,12 @@ export async function initRoomsModel() {
             status ENUM('available', 'booked', 'maintenance') DEFAULT 'available',
             description TEXT,
             image_url VARCHAR(255),  -- store file path or URL
+            area INT,
+            standard enum('Deluxe', 'Suite', 'Standard') not null,
+            floor INT,
+            services JSON,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             foreign key (room_type) references RoomType(type_id)
                 on update cascade
                 on delete set null

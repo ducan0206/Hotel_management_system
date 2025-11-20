@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 
 export const createNewAccount = async(userData) => {
     try {
-        const {user_name, password, full_name, phone, email} = userData;
+        const {username, password, fullName, phone, email} = userData;
         const [existingUser] = await db.query(
             `
             select * from Account where email = ?
@@ -17,20 +17,23 @@ export const createNewAccount = async(userData) => {
             `
             insert into Account (username, password_hash, full_name, phone, email, role, created_at) 
             values (?, ?, ?, ?, ?, ?, NOW())
-            `, [user_name, hashedPass, full_name, phone, email, "customer"]
+            `, [username, hashedPass, fullName, phone, email, "customer"]
         )
         const [newUser] = await db.query(
             `
-            select * from Account where user_id = ?
+            select user_id, username, full_name, phone, email, role, created_at from Account where user_id = ?
             `, [result.insertId]
         )
         return {
-            status: 200,
-            data: existingUser[0]
+            status: 201,
+            data: newUser[0]
         }
     } catch (error) {
         console.log('Error: createNewAccount function', error.message);
-        return error;
+        return {
+            status: 500,
+            message: 'System error'
+        };
     }
 }
 

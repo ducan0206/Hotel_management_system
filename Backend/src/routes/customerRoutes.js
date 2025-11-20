@@ -8,9 +8,9 @@ import {getAllBooking, getBookingByID, addNewBooking, updateBooking, deleteBooki
 const customerRoute = express.Router();
 
 // account
-customerRoute.post("/customer", createAccount);
+customerRoute.post("/customer/register", createAccount);
 
-customerRoute.post("customer/login", loginAccount);
+customerRoute.post("/customer/login", loginAccount);
 
 customerRoute.put("/customer/:id", updateAccount);
 
