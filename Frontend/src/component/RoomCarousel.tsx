@@ -3,6 +3,7 @@ import { getAllRooms } from "../utils/APIFunction";
 import { RoomCard } from "../room/RoomCard";
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNavigate } from "react-router-dom"
+import RoomDetailDialog from '../component/RoomDetailDialog.tsx'
 
 interface IRoom {
     id: string;
@@ -15,12 +16,14 @@ interface IRoom {
     area: number;
     floor: number;
     standard: string;
-    amenities: string[];
+    services: string[];
 }
 
-const RoomCarousel = () => {
+const RoomCarousel = ({}) => {
     const [rooms, setRooms] = useState<IRoom[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,6 +41,12 @@ const RoomCarousel = () => {
             setCurrentIndex(currentIndex - 1);
         }
     };
+
+    function handleViewDetails(room: IRoom) {
+        console.log(room);
+        setSelectedRoom(room);
+        setDialogOpen(true);
+    }
 
     return (
         <section id="roomcarousel" className="py-20">
@@ -77,7 +86,8 @@ const RoomCarousel = () => {
                             area={room.area}
                             floor={room.floor}
                             standard={room.standard}
-                            amenities={room.amenities}
+                            amenities={room.services}
+                            onViewDetails={() => handleViewDetails(room)}
                         />
                     ))}
                 </div>
@@ -85,6 +95,16 @@ const RoomCarousel = () => {
                 <button onClick={() => navigate('/all-rooms')} className="mx-auto flex justify-center mt-10 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors cursor-pointer">
                     View All Rooms
                 </button>
+
+                {
+                    dialogOpen && selectedRoom && (
+                        <RoomDetailDialog
+                            room={selectedRoom}
+                            onOpenChange={setDialogOpen}
+                            open={dialogOpen}
+                        />
+                    )
+                }
             </div>
         </section>
     );

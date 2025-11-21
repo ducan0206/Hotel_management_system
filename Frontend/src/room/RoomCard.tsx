@@ -13,9 +13,10 @@ interface RoomCardProps {
     floor: number;
     standard: string;
     amenities: string[];
+    onViewDetails?: () => void
 }
 
-export function RoomCard({ name, image, price, capacity, description, area }: RoomCardProps) {
+export function RoomCard({ name, image, price, capacity, description, area, onViewDetails }: RoomCardProps) {
     return (
         <Card className="overflow-hidden hover:shadow-xl transition-shadow w-full h-auto max-w-sm">
             <div className="relative h-64">
@@ -41,7 +42,7 @@ export function RoomCard({ name, image, price, capacity, description, area }: Ro
                         <span className="text-sm">{area} m<sup>2</sup></span>
                     </div>
                 </div>
-                <Button className="w-full cursor-pointer">View Details</Button>
+                <Button className="w-full cursor-pointer" onClick={onViewDetails}>View Details</Button>
             </CardContent>
         </Card>
     );
