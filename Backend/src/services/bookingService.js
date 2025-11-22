@@ -133,9 +133,132 @@ export const deletingBooking = async(id) => {
     }
 }
 
-export const addingBooking = async(bookingData) => {
-
+const getServicesDetailByName = async(services) => {
+    if(!services || services.length === 0) {
+        return [];
+    }
+    const placeholders = services.map(() => '?').join(', ');
+    const [rows] = await db.query(
+        `
+        SELECT service_id, price 
+        FROM Services
+        WHERE service_name IN (?)
+        `, [services]
+    );
+    return rows;
 }
+
+export const addingBooking = async (bookingData) => {
+    const { user_id, check_in, check_out, room_id, room_price, services } = bookingData;
+
+    // --- VALIDATE NGÀY ---
+    const checkIn = new Date(check_in);
+    const checkOut = new Date(check_out);
+
+    if (checkOut <= checkIn) {
+        throw new Error("Check out date must be after check in date.");
+    }
+
+    const nights = Math.ceil(Math.abs(checkOut - checkIn) / (1000 * 3600 * 24));
+    const roomPrice = nights * room_price;
+
+    let totalServicePrice = 0;
+    let totalBookingPrice = roomPrice;
+
+    try {
+        // --- T?O BOOKING ---
+        const [newBooking] = await db.query(
+            `
+            INSERT INTO Bookings (
+                user_id, check_in, check_out, status, payment_status, created_at, updated_at
+            ) VALUES (?, ?, ?, 'booked', 'not paid', NOW(), NOW())
+            `,
+            [user_id, check_in, check_out]
+        );
+
+        const booking_id = newBooking.insertId;
+
+        // --- T?O BOOKING DETAIL ---
+        await db.query(
+            `
+            INSERT INTO BookingDetails (booking_id, room_id, price, nights)
+            VALUES (?, ?, ?, ?)
+            `,
+            [booking_id, room_id, room_price, nights]
+        );
+
+        // --- D?CH V? (N?U CÓ) ---
+        if (Array.isArray(services) && services.length > 0) {
+            const serviceRows = await getServicesDetailByName(services);
+
+            const serviceOrderPromises = serviceRows.map(srv => {
+                totalServicePrice += parseFloat(srv.price);
+
+                return db.query(
+                    `
+                    INSERT INTO ServiceOrdered 
+                    (booking_id, service_id, total_price, status, created_at, quantity)
+                    VALUES (?, ?, ?, 'pending', NOW(), 1)
+                    `,
+                    [booking_id, srv.service_id, srv.price]
+                );
+            });
+
+            await Promise.all(serviceOrderPromises);
+        }
+
+        // --- C?P NH?T T?NG TI?N ---
+        totalBookingPrice += totalServicePrice;
+
+        await db.query(
+            `
+            UPDATE Bookings
+            SET total_price = ?
+            WHERE booking_id = ?
+            `,
+            [totalBookingPrice, booking_id]
+        );
+
+        // --- L?Y THÔNG TIN BOOKING ===
+        const [bookingInfo] = await db.query(
+            `
+            SELECT 
+                b.booking_id, a.user_id, a.full_name, a.phone, a.email, 
+                t.type_name, r.room_number, r.image_url,
+                d.price AS room_price_per_night, d.nights,
+                b.check_in, b.check_out, b.payment_status, b.total_price
+            FROM Bookings b 
+            JOIN BookingDetails d ON d.booking_id = b.booking_id
+            JOIN Account a ON a.user_id = b.user_id
+            JOIN Rooms r ON r.room_id = d.room_id
+            JOIN RoomType t ON t.type_id = r.room_type
+            WHERE b.booking_id = ?
+            `,
+            [booking_id]
+        );
+
+        const [servicesOrdered] = await db.query(
+            `
+            SELECT s.service_name, o.total_price AS service_cost, o.quantity
+            FROM ServiceOrdered o
+            JOIN Services s ON s.service_id = o.service_id
+            WHERE o.booking_id = ?
+            `,
+            [booking_id]
+        );
+
+        return {
+            status: 200,
+            bookingInfo: bookingInfo[0],
+            serviceInfo: servicesOrdered
+        };
+
+    } catch (error) {
+        console.error("Error in addingBooking:", error);
+        throw error;
+    }
+};
+
 
 export const getCustomerBooking = async(cus_id, booking_id) => {
     try {

@@ -126,7 +126,7 @@ export const getBookingByID = async(request, response) => {
 export const addNewBooking = async(request, response) => {
     try {
         const newBooking = await addingBooking(request.body);
-        return response.status(200).json(newBooking.data);
+        return response.status(200).json(newBooking);
     } catch (error) {
         console.log('Error: getAllBooking funtion', error.message);
         return response.status(500).json({message: "System error"})
