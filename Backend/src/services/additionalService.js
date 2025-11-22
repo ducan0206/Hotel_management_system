@@ -3,7 +3,16 @@ import db from '../config/db.js'
 export const fetchAllServices = async() => {
     try {
         const [rows] = await db.query("select * from Services");
-        return rows;
+        if(rows.length === 0) {
+            return {
+                status: 404,
+                message: 'There is no available services now.'
+            }
+        }
+        return {
+            status: 200,
+            data: rows
+        }
     } catch (error) {
         console.log('Error: fetchAllServices function', error);
         return error;
