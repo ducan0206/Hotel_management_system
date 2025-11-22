@@ -6,6 +6,7 @@ import type { Room } from "../pages/Room.tsx";
 import { ImageWithFallback } from "../helper/ImageWithFallback";
 import { Users, Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2, Utensils } from "lucide-react";
 import { useAuth } from "../context/AuthContext.tsx";
+import { useNavigate } from 'react-router-dom'
 
 interface RoomCardProps {
   room: Room;
@@ -14,7 +15,7 @@ interface RoomCardProps {
 
 export function RoomCard({ room, viewMode }: RoomCardProps) {
   const { user } = useAuth();
-
+  const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -57,6 +58,10 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
     if (lower.includes("breakfast")) return <Utensils className="w-4 h-4" />;
     return null;
   };
+
+  const handleBooking = () => {
+    navigate(`/booking/${room.room_id}`, {state: {selectedRoom: room}})
+  }
 
   if (viewMode === "list") {
     return (
@@ -138,7 +143,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
                     </div>
                   ) : (
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="mt-5 hover:bg-cyan-600 hover:text-white transition-colors cursor-pointer" onClick={() => alert('Booking functionality coming soon!')}>
+                      <Button variant="outline" size="sm" className="mt-5 hover:bg-cyan-600 hover:text-white transition-colors cursor-pointer" onClick={handleBooking}>
                         Book Now
                       </Button>
                     </div>
@@ -222,7 +227,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
             </>
           ) : (
             <div className="flex gap-1">
-              <Button variant="outline" size="sm" className="hover:bg-cyan-600 hover:text-white transition-colors cursor-pointer" onClick={() => alert('Booking functionality coming soon!')}>
+              <Button variant="outline" size="sm" className="hover:bg-cyan-600 hover:text-white transition-colors cursor-pointer" onClick={handleBooking}>
                 Book Now
               </Button>
             </div>

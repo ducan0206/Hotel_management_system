@@ -68,7 +68,6 @@ export function RoomFilters({ rooms, onFilterChange }: RoomFiltersProps) {
         filtered = filtered.filter(room => IDs.has(room.room_id));
       }
       onFilterChange(filtered);
-      console.log(filtered);
     }
     
     applyFiltered();
