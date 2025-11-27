@@ -72,3 +72,13 @@ export const getAvailableRooms = async (check_in: string, check_out: string, cap
         throw error;
     }
 }
+
+export const getAllAdditionalServices = async () => {
+    try {
+        const res = await api.get("/all-services");
+        return res;
+    } catch (error) {
+        console.log("Get all additional services error: ", error);
+        throw error;
+    }
+}

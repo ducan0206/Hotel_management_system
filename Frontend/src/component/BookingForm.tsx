@@ -1,21 +1,47 @@
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Checkbox } from '../ui/checkbox.tsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button } from "../ui/button";
 import type { BookingData } from "../pages/Booking.tsx";
-import { CalendarIcon, User, Mail, Phone, MapPin } from "lucide-react";
+import { Car, SquareParking, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles } from "lucide-react";
 import { format } from "date-fns";
+import { getAllAdditionalServices } from '../utils/APIFunction.ts'
 
 interface BookingFormProps {
   bookingData: BookingData;
   onBookingChange: (updates: Partial<BookingData>) => void;
 }
 
+interface AdditionalServices {
+  service_id: number;
+  service_name: string;
+  price: number;
+  description: string;
+  status: string;
+}
+
 export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) {
+  const [services, setServices] = useState<AdditionalServices[]>([]);
+  const [extraService, setExtraService] = useState([""]);
+
+  useEffect(() => {
+    const loadAdditionalServices = async() => {
+      try {
+        const data = await getAllAdditionalServices();
+        setServices(data.data);
+      } catch (error) {
+        console.error("Fetch additional services fail.", error);
+      }
+    }
+    loadAdditionalServices()
+  }, [])
+
   const handleGuestInfoChange = (field: string, value: string) => {
     onBookingChange({
       guestInfo: {
@@ -33,6 +59,30 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
       },
     });
   };
+
+  const getAmenityIcon = (amenity: string) => {
+    const lower = amenity.toLowerCase();
+    if (lower.includes("taxi")) return <Car className="w-4 h-4" />;
+    if (lower.includes("car")) return <Car className="w-4 h-4" />;
+    if (lower.includes("parking")) return <SquareParking className="w-4 h-4" />;
+    if (lower.includes("meeting")) return <Projector className="w-4 h-4" />;
+    if (lower.includes("laundry")) return <WashingMachine className="w-4 h-4" />;
+    if (lower.includes("tennis")) return <LandPlot className="w-4 h-4" />;
+    if (lower.includes("airport")) return <Plane className="w-4 h-4" />;
+    if (lower.includes("gift")) return <Gift className="w-4 h-4" />;
+    if (lower.includes("spa")) return <Bubbles className="w-4 h-4" />;
+    return null;
+  };
+
+  function toggleAdditionalService(service: AdditionalServices) {
+    let newSelected: string[];
+    if(extraService.includes(service.service_name)) {
+      newSelected = extraService.filter(item => item === service.service_name);
+    } else {
+      newSelected = [... extraService, service.service_name];
+    }
+    setExtraService(newSelected);
+  }
 
   return (
     <div className="space-y-6">
@@ -228,54 +278,70 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+      
+      {/* Additional services */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold">Additional Services</CardTitle>
+          <p className="text-sm text-slate-500">
+            Choose extra services to enhance your stay
+          </p>
+        </CardHeader>
 
-          <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
-              <Input
-                id="address"
-                placeholder="Street address"
-                className="pl-10"
-                value={bookingData.guestInfo.address}
-                onChange={(e) => handleGuestInfoChange("address", e.target.value)}
-              />
-            </div>
-          </div>
+        <CardContent>
+          <div className="space-y-4">
+            {services.map((service) => {
+              const isSelected = extraService.includes(service.service_name);
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
-              <Input
-                id="city"
-                placeholder="New York"
-                value={bookingData.guestInfo.city}
-                onChange={(e) => handleGuestInfoChange("city", e.target.value)}
-              />
-            </div>
+              return (
+                <div
+                  key={service.service_id}
+                  onClick={() => toggleAdditionalService(service)}
+                  className={`
+                    group relative flex items-start p-4 rounded-xl border cursor-pointer transition-all 
+                    ${isSelected 
+                      ? "border-blue-500 bg-blue-50 shadow-sm ring-1 ring-blue-400" 
+                      : "border-slate-200 hover:border-blue-400 hover:shadow-sm hover:bg-slate-50"
+                    }
+                  `}
+                >
+                  {/* Checkbox */}
+                  <Checkbox
+                    checked={isSelected}
+                    onCheckedChange={() => {}}
+                    className="flex justify-center mt-1 cursor-pointer items-center"
+                  />
 
-            <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
-              <Input
-                id="country"
-                placeholder="United States"
-                value={bookingData.guestInfo.country}
-                onChange={(e) => handleGuestInfoChange("country", e.target.value)}
-              />
-            </div>
+                  {/* Content */}
+                  <div className="ml-4 flex flex-1 items-center justify-between">
+                      <div className="grid gap-1">
+                        <div className="flex items-center gap-2">
+                          {getAmenityIcon(service.service_name)}
+                          <Label 
+                            htmlFor={`service-${service.service_id}`} 
+                            className="font-semibold text-slate-900 text-base cursor-pointer"
+                          >
+                            {service.service_name}
+                          </Label>
+                        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="zipCode">Zip Code</Label>
-              <Input
-                id="zipCode"
-                placeholder="10001"
-                value={bookingData.guestInfo.zipCode}
-                onChange={(e) => handleGuestInfoChange("zipCode", e.target.value)}
-              />
-            </div>
+                        <p className="text-sm text-slate-500 leading-snug pr-4">
+                          {service.description}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-lg text-blue-600 font-bold">${service.price}</span>
+                      </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
+
 
       {/* Special Requests */}
       <Card>

@@ -7,6 +7,7 @@ import { ImageWithFallback } from "../helper/ImageWithFallback";
 import { Users, Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2, Utensils } from "lucide-react";
 import { useAuth } from "../context/AuthContext.tsx";
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 interface RoomCardProps {
   room: Room;
@@ -60,7 +61,11 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
   };
 
   const handleBooking = () => {
-    navigate(`/booking/${room.room_id}`, {state: {selectedRoom: room}})
+    if(room.status !== "available") {
+      toast.error('This room is unavailable now.')
+    } else {
+      navigate(`/booking/${room.room_id}`, {state: {selectedRoom: room}})
+    }
   }
 
   if (viewMode === "list") {
