@@ -3,7 +3,7 @@ import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import type { Room } from "../pages/Room.tsx";
-import { ImageWithFallback } from "../helper/ImageWithFallback";
+import { ImageWithFallback } from "../utils/ImageWithFallback.tsx";
 import { Users, Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2, Utensils } from "lucide-react";
 import { useAuth } from "../context/AuthContext.tsx";
 import { useNavigate } from 'react-router-dom'

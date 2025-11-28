@@ -8,7 +8,7 @@ import { Input } from "../ui/input";
 import type { Room } from "../pages/Room.tsx";
 import { Button } from "../ui/button.tsx";
 import { RotateCcw } from "lucide-react";
-import { getAvailableRooms } from '../utils/APIFunction.ts'
+import { getAvailableRooms } from '../apis/APIFunction.ts'
 
 interface RoomFiltersProps {
   rooms: Room[];

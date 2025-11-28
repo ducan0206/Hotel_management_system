@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllRooms } from "../utils/APIFunction";
+import { getAllRooms } from "../apis/APIFunction";
 import { RoomCard } from "../room/RoomCard";
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNavigate } from "react-router-dom"

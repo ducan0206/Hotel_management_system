@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator.tsx";
 import type { BookingData } from "../pages/Booking.tsx";
-import { ImageWithFallback } from "../helper/ImageWithFallback";
+import { ImageWithFallback } from "../utils/ImageWithFallback.tsx";
 import { CalendarIcon, Users, MapPin, Wifi, Tv, Wine } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 

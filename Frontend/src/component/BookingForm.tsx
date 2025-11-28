@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import type { BookingData } from "../pages/Booking.tsx";
 import { Car, SquareParking, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles } from "lucide-react";
 import { format } from "date-fns";
-import { getAllAdditionalServices } from '../utils/APIFunction.ts'
+import { getAllAdditionalServices } from '../apis/APIFunction.ts'
 
 interface BookingFormProps {
   bookingData: BookingData;
@@ -28,7 +28,7 @@ interface AdditionalServices {
 
 export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) {
   const [services, setServices] = useState<AdditionalServices[]>([]);
-  const [extraService, setExtraService] = useState([""]);
+  const [extraService, setExtraService] = useState<AdditionalServices[]>([]);
 
   useEffect(() => {
     const loadAdditionalServices = async() => {
@@ -75,15 +75,13 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
   };
 
   function toggleAdditionalService(service: AdditionalServices) {
-    let newSelected: string[];
-    if(extraService.includes(service.service_name)) {
-      newSelected = extraService.filter(item => item === service.service_name);
-    } else {
-      newSelected = [... extraService, service.service_name];
-    }
-    setExtraService(newSelected);
+    setExtraService(prev => 
+      prev.includes(service)
+        ? prev.filter(item => item !== service)   
+        : [...prev, service]                      
+    );
   }
-
+  
   return (
     <div className="space-y-6">
       {/* Dates and Guests */}
@@ -293,7 +291,7 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
         <CardContent>
           <div className="space-y-4">
             {services.map((service) => {
-              const isSelected = extraService.includes(service.service_name);
+              const isSelected = extraService.includes(service);
 
               return (
                 <div
@@ -310,7 +308,7 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
                   {/* Checkbox */}
                   <Checkbox
                     checked={isSelected}
-                    onCheckedChange={() => {}}
+                    onCheckedChange={() => toggleAdditionalService(service)}
                     className="flex justify-center mt-1 cursor-pointer items-center"
                   />
 
@@ -321,7 +319,7 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
                           {getAmenityIcon(service.service_name)}
                           <Label 
                             htmlFor={`service-${service.service_id}`} 
-                            className="font-semibold text-slate-900 text-base cursor-pointer"
+                            className="font-semibold text-slate-900 text-lg cursor-pointer"
                           >
                             {service.service_name}
                           </Label>

@@ -1,7 +1,7 @@
 import { Card, CardContent } from '../ui/card.tsx';
 import { Button } from '../ui/button.tsx';
 import { Users, Maximize } from "lucide-react";
-import { ImageWithFallback } from "../helper/ImageWithFallback.tsx";
+import { ImageWithFallback } from "../utils/ImageWithFallback.tsx";
 
 interface RoomCardProps {
     name: string;
