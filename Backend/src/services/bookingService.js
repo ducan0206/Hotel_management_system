@@ -149,7 +149,7 @@ const getServicesDetailByName = async(services) => {
 }
 
 export const addingBooking = async (bookingData) => {
-    const { user_id, check_in, check_out, room_id, room_price, services } = bookingData;
+    const { user_id, check_in, check_out, room_id, room_status, room_price, services } = bookingData;
 
     // --- VALIDATE NGÀY ---
     const checkIn = new Date(check_in);
