@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { RoomCard } from "../component/RoomCard";
+import { RoomCard } from "../component/RoomCard.tsx";
 import { RoomFilters } from "../component/RoomFilter.tsx";
 import { LayoutGrid, List, BedSingle } from "lucide-react";
-import { getAvailableRooms, fetchRooms } from "../apis/APIFunction.ts";
+import { getAvailableRooms, fetchRooms } from "../../apis/APIFunction.ts";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";

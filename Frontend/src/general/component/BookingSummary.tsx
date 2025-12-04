@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { Separator } from "../ui/separator.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card.tsx";
+import { Button } from "../../ui/button.tsx";
+import { Badge } from "../../ui/badge.tsx";
+import { Separator } from "../../ui/separator.tsx";
 import type { BookingData } from "../pages/Booking.tsx";
 import { ImageWithFallback } from "../utils/ImageWithFallback.tsx";
 import { CalendarIcon, Users, MapPin, Wifi, Tv, Wine } from "lucide-react";

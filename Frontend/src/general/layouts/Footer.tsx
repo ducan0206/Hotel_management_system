@@ -1,6 +1,6 @@
 import {Hotel} from 'lucide-react'
-import {Button} from '../ui/button.tsx'
-import {Input} from '../ui/input.tsx'
+import {Button} from '../../ui/button.tsx'
+import {Input} from '../../ui/input.tsx'
 
 const Footer = () => {
     return (

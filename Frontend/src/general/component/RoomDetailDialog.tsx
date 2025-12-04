@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
-import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../../ui/dialog';
+import { Button } from "../../ui/button";
 import { ImageWithFallback } from "../utils/ImageWithFallback"
 import { Users, Maximize, Wifi, Tv, Coffee, Wind, Bath, Wine, Utensils } from "lucide-react";
 

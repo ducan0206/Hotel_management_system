@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Label } from "../ui/label";
-import { Slider } from "../ui/slider";
-import { Checkbox } from "../ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Input } from "../ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card.tsx";
+import { Label } from "../../ui/label.tsx";
+import { Slider } from "../../ui/slider.tsx";
+import { Checkbox } from "../../ui/checkbox.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select.tsx";
+import { Input } from "../../ui/input.tsx";
 import type { Room } from "../pages/Room.tsx";
-import { Button } from "../ui/button.tsx";
+import { Button } from "../../ui/button.tsx";
 import { RotateCcw } from "lucide-react";
-import { getAvailableRooms } from '../apis/APIFunction.ts'
+import { getAvailableRooms } from '../../apis/APIFunction.ts'
 
 interface RoomFiltersProps {
   rooms: Room[];

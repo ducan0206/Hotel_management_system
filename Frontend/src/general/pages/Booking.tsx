@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { BookingForm } from "../component/BookingForm";
-import { BookingSummary } from "../component/BookingSummary";
+import { BookingForm } from "../component/BookingForm.tsx";
+import { BookingSummary } from "../component/BookingSummary.tsx";
 import { Hotel, ArrowLeft } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button.tsx";
 import { useNavigate, useLocation } from 'react-router-dom'
-import type { Room } from '../pages/Room.tsx'
+import type { Room } from './Room.tsx'
 
 export interface BookingData {
     room: Room;

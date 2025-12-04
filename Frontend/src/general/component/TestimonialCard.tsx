@@ -1,6 +1,6 @@
-import { Card, CardContent } from "../ui/card.tsx";
+import { Card, CardContent } from "../../ui/card.tsx";
 import { Star } from "lucide-react";
-import { Avatar, AvatarFallback } from "../ui/avatar.tsx";
+import { Avatar, AvatarFallback } from "../../ui/avatar.tsx";
 
 interface TestimonialCardProps {
   name: string;

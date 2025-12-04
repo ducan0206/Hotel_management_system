@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
+import { Card, CardContent } from "../../ui/card.tsx";
+import { Badge } from "../../ui/badge.tsx";
+import { Button } from "../../ui/button.tsx";
 import type { Room } from "../pages/Room.tsx";
 import { ImageWithFallback } from "../utils/ImageWithFallback.tsx";
 import { Users, Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2, Utensils } from "lucide-react";

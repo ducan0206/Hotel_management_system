@@ -1,7 +1,7 @@
-import {LogIn, User, LogOut, TicketCheck } from "lucide-react";
-import {Button} from '../ui/button.tsx'
-import {Avatar, AvatarFallback} from '../ui/avatar.tsx'
-import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem} from '../ui/dropdown-menu.tsx'
+import {LogIn, User, LogOut, TicketCheck, ShieldUser } from "lucide-react";
+import {Button} from '../../ui/button.tsx'
+import {Avatar, AvatarFallback} from '../../ui/avatar.tsx'
+import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem} from '../../ui/dropdown-menu.tsx'
 import { useAuth } from '../context/AuthContext.tsx';
 import {useNavigate} from 'react-router-dom'
 
@@ -20,7 +20,7 @@ const NavBar = () => {
     };
     
     const handleAdminLogin = () => {
-        navigate('/admin-login'); 
+        navigate('/hotel/auth'); 
     };
 
     function returnHomePage() {
@@ -96,6 +96,7 @@ const NavBar = () => {
               ) : (
                 <>
                   <Button variant="outline" onClick={handleAdminLogin}> 
+                    <ShieldUser></ShieldUser>
                     Admin
                   </Button>
                   <Button variant="outline" onClick={() => navigate('/signin')}>

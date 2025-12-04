@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Calendar } from "../ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Checkbox } from '../ui/checkbox.tsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card.tsx";
+import { Label } from "../../ui/label.tsx";
+import { Input } from "../../ui/input.tsx";
+import { Textarea } from "../../ui/textarea.tsx";
+import { Calendar } from "../../ui/calendar.tsx";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover.tsx";
+import { Checkbox } from '../../ui/checkbox.tsx'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select.tsx";
+import { Button } from "../../ui/button.tsx";
 import type { BookingData } from "../pages/Booking.tsx";
 import { Car, SquareParking, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles } from "lucide-react";
 import { format } from "date-fns";
-import { getAllAdditionalServices } from '../apis/APIFunction.ts'
+import { getAllAdditionalServices } from '../../apis/APIFunction.ts'
 
 interface BookingFormProps {
   bookingData: BookingData;

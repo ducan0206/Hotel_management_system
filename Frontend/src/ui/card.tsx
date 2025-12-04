@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {cn} from '../utils/utils';
+import {cn} from '../general/utils/utils';
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -47,4 +47,14 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-export {Card, CardContent, CardHeader, CardTitle};
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <p
+      data-slot="card-description"
+      className={cn("text-muted-foreground", className)}
+      {...props}
+    />
+  );
+}
+
+export {Card, CardContent, CardHeader, CardTitle, CardDescription};

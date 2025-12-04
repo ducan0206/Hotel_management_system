@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { getAllRooms } from "../apis/APIFunction";
-import { RoomCard } from "../room/RoomCard";
+import { getAllRooms } from "../../apis/APIFunction.ts";
+import { RoomCard } from "../room/RoomCard.tsx";
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNavigate } from "react-router-dom"
-import RoomDetailDialog from '../component/RoomDetailDialog.tsx'
+import RoomDetailDialog from './RoomDetailDialog.tsx'
 
 interface IRoom {
     id: string;

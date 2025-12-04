@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Input } from "../ui/input.tsx";
-import { Button } from "../ui/button.tsx";
+import { Input } from "../../ui/input.tsx";
+import { Button } from "../../ui/button.tsx";
 import { User, Lock, Mail, Phone, PartyPopper } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';

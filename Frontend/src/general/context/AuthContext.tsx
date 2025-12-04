@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import { createAccount, login as loginUser} from '../apis/APIFunction.ts';
+import { createAccount, login as loginUser} from '../../apis/APIFunction.ts';
 
 interface User {
   user_id: string | number; 
