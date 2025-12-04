@@ -6,7 +6,7 @@ import generalRoute from './routes/generalRoute.js'
 import {initRoomsModel, initRoomTypeModel} from '../src/models/rooms.js'
 import {initPaymentModel} from '../src/models/payments.js'
 import {initBookingsModel, initBookingDetailsModel} from '../src/models/bookings.js'
-import {initAccountsModel} from './models/account.js'
+import {initAccountsModel, initEmployeesModel, initCustomersModel} from './models/account.js'
 import {initServiceModel, initServiceOrderedModel} from '../src/models/service.js'
 import cors from 'cors'
 import cloudinary from '../src/config/cloudinary.js'
@@ -34,6 +34,8 @@ const startServer = async () => {
         await db.getConnection();
 
         await initAccountsModel();
+        await initEmployeesModel();
+        await initCustomersModel();
         await initRoomTypeModel();
         await initRoomsModel();
         await initBookingsModel();

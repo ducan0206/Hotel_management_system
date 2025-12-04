@@ -3,6 +3,48 @@ import {fetchAllServices, addNewService, updatingService, deletingService, fetch
 import {fetchAllBookings, fetchBookingByID, updatingBooking, addNewBooking, deletingBooking} from '../services/bookingService.js'
 import {fetchAllPayments, fetchPaymentByID, addNewPayment} from '../services/paymentService.js'
 import {fetchAllCustomers, getInfo, deletingCustomer, updatingCustomerInfo} from '../helper/customer.js'
+import {createNewAccount} from '../services/accountService.js'
+
+// reception management
+export const createNewReception = async(request, response) => {
+    try {
+        const newAccount = await createNewAccount(request.body);
+        if(newAccount.status !== 400) {
+            return response.status(newAccount.message).json(newAccount.message)
+        }
+        return response.status(201).json(newAccount.data);
+    } catch (error) {
+        console.log("createNewReception function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const getAllReceptions = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log("getAllReceptions function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const deleteReception = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log("deleteReception function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
+
+export const updateReception = async(request, response) => {
+    try {
+
+    } catch (error) {
+        console.log("updateReception function error: ", error.message);
+        response.status(500).json({message: "System error"});
+    }
+}
 
 // room management
 export const getAllRooms = async(request, response) => {

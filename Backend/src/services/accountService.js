@@ -1,9 +1,32 @@
 import db from '../config/db.js'
 import bcrypt from 'bcrypt'
 
+async function generateEmployeeId() {
+    const [rows] = await db.query(`
+        SELECT NV_id FROM Employees ORDER BY CAST(SUBSTRING(NV_id, 4) AS UNSIGNED) DESC LIMIT 1
+    `);
+
+    if (rows.length === 0) return "NV_1";
+
+    const lastNumber = parseInt(rows[0].NV_id.split("_")[1]);
+    return `NV_${lastNumber + 1}`;
+}
+
+async function generateCustomerId() {
+    const [rows] = await db.query(`
+        SELECT KH_id FROM Customers ORDER BY CAST(SUBSTRING(KH_id, 4) AS UNSIGNED) DESC LIMIT 1
+    `);
+
+    if (rows.length === 0) return "KH_1";
+
+    const lastNumber = parseInt(rows[0].KH_id.split("_")[1]);
+    return `KH_${lastNumber + 1}`;
+}
+
+
 export const createNewAccount = async(userData) => {
     try {
-        const {username, password, fullName, phone, email} = userData;
+        const {username, password, fullName, phone, email, role} = userData;
         const [existingUser] = await db.query(
             `
             select * from Account where email = ?
@@ -17,8 +40,31 @@ export const createNewAccount = async(userData) => {
             `
             insert into Account (username, password_hash, full_name, phone, email, role, created_at) 
             values (?, ?, ?, ?, ?, ?, NOW())
-            `, [username, hashedPass, fullName, phone, email, "customer"]
+            `, [username, hashedPass, fullName, phone, email, role]
         )
+
+
+        const accountId = result.insertId;
+        let generatedId = null;
+
+        if(role === 'employee') {
+            generatedId = await generateEmployeeId();
+            await db.query(
+                `
+                insert into Employees (NV_id, account_id) values (?, ?)
+                `, [generatedId, accountId]
+            )
+        }
+
+        if(role === 'customer') {
+            generatedId = await generateCustomerId();
+            await db.query(
+                `
+                insert into Customers (KH_id, account_id) values (?, ?)
+                `, [generatedId, accountId]
+            )
+        }
+
         const [newUser] = await db.query(
             `
             select user_id, username, full_name, phone, email, role, created_at from Account where user_id = ?
