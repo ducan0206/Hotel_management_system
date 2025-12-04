@@ -57,7 +57,7 @@ const ReceptionLogin = () => {
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
 
             {/* --- LEFT PANEL --- */}
-            <div className="hidden lg:flex bg-gradient-to-br from-green-600 via-green-700 to-green-900 p-12 flex-col justify-between relative overflow-hidden">
+            <div className="hidden lg:flex bg-gradient-to-br from-green-600 via-green-700 to-green-900 p-12 flex-col justify-between relative overflow-hidden rounded-r-full">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-green-400/20 rounded-full blur-3xl"></div>
 
