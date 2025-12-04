@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (userData: any) => {
     try {
-      await createAccount(userData);
+      await createAccount({ ...userData, role: 'customer' });
       return true;
     } catch (error) {
       console.error("Context Registration Failed:", error);

@@ -6,9 +6,10 @@ import { Alert, AlertDescription } from '../ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { AlertCircle, Hotel, ArrowLeft, Shield, Lock, Mail } from 'lucide-react';
 import { useAuth } from '../general/context/AuthContext';
+import { useNavigate } from 'react-router-dom'
 
 const ReceptionLogin = () => {
-
+    const navigate = useNavigate();
     const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,7 +21,7 @@ const ReceptionLogin = () => {
     };
 
     function onBack() {
-
+        navigate('/');
     }
 
     return (
@@ -154,7 +155,7 @@ const ReceptionLogin = () => {
                                 size="lg"
                                 disabled={loading}
                                 >
-                                    {loading ? '?ang ??ng nh?p...' : '??ng nh?p'}
+                                    {loading ? 'Logging in...' : 'Log in'}
                                 </Button>
                                 <div className="pt-4 border-t">
                                     <p className="text-xs text-center text-gray-500">
