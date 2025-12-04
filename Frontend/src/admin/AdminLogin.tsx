@@ -5,7 +5,7 @@ import { Label } from '../ui/label';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { AlertCircle, Hotel, ArrowLeft, Shield, Lock, Mail } from 'lucide-react';
-import { useAuth } from '../general/context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLoginPage = () => {

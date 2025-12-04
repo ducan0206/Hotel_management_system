@@ -4,7 +4,7 @@ import { Button } from "../../ui/button.tsx";
 import { User, Lock, Mail, Phone, PartyPopper } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useAuth } from '../context/AuthContext.tsx';
+import { useAuth } from '../../context/AuthContext.tsx';
 
 export function SignIn() {
   const [isLogin, setIsLogin] = useState(true);

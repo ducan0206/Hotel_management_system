@@ -10,7 +10,7 @@ import ReceptionLoginPage from './admin/ReceptionLogin.tsx'
 
 import AnimatedPage from './AnimatedPage.tsx'
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom'; 
-import { AuthProvider } from './general/context/AuthContext.tsx'
+import { AuthProvider } from './context/AuthContext.tsx'
 import { Toaster } from 'sonner';
 import { AnimatePresence } from "framer-motion";
 
