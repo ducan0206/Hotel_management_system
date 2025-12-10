@@ -30,6 +30,15 @@ export function SignIn() {
     setIsLoading(true);
 
     try {
+      console.log(1);
+      if(loginData.username.trim() === '') {
+        toast.error(<span className='mess'>Username is required</span>);
+        return;
+      }
+      if(loginData.password.trim() === '') {
+        toast.error(<span className='mess'>Password is required</span>);
+        return;
+      }
       const success = await login(loginData.username, loginData.password); 
         
       if (!success) {
@@ -108,7 +117,6 @@ export function SignIn() {
                     className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
                     value={loginData.username}
                     onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
-                    required
                   />
                   <User className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 </div>
@@ -119,7 +127,6 @@ export function SignIn() {
                     className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
                     value={loginData.password}
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    required
                   />
                   <Lock className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 </div>
