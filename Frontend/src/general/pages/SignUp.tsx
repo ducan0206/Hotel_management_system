@@ -89,8 +89,12 @@ export function SignIn() {
         confirmPassword: "",
       });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Error creating account.";
-      toast.error(<span className='mess'>Registration failed: {error.message}</span>);
+      // ========== ERROR HANDLING - Hiển thị lỗi chi tiết từ backend (Sơn - 07/12/2025) ==========
+      // Lấy message từ backend response (error.response.data.message)
+      // Nếu không có thì dùng error.message, nếu vẫn không có thì dùng message mặc định
+      const errorMessage = error.response?.data?.message || error.message || "Error creating account.";
+      // Hiển thị toast error với message chi tiết (VD: "Password must contain at least 1 uppercase letter.")
+      toast.error(<span className='mess'>{errorMessage}</span>);
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +109,7 @@ export function SignIn() {
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-cyan-100 to-cyan-200 p-4">
       <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[650px] flex flex-col md:block">
         
-        {/* --- LOGIN FORM SECTION (N?m b�n TR�I, hi?n khi isLogin = true) --- */}
+        {/* --- LOGIN FORM SECTION (N?m b�n TR�I, hi?n khi isLogin = true) --- */}
         <div className={`w-full md:w-1/2 h-full p-8 md:p-12 flex flex-col justify-center transition-all duration-700 ease-in-out md:absolute md:top-0 md:left-0 ${isLogin ? "md:opacity-100 md:z-20 md:translate-x-0" : "md:opacity-0 md:z-10 md:-translate-x-[20%]"}`}>
              <div className={!isLogin ? "hidden md:block" : ""}>
               <h2 className="text-4xl font-bold mb-6 text-gray-800 text-center">Sign In</h2>
@@ -147,7 +151,7 @@ export function SignIn() {
           </div>
         </div>
 
-        {/* --- REGISTER FORM SECTION (N?m b�n PH?I, hi?n khi isLogin = false) --- */}
+        {/* --- REGISTER FORM SECTION (N?m b�n PH?I, hi?n khi isLogin = false) --- */}
         <div className={`w-full md:w-1/2 h-full p-8 md:p-12 flex flex-col justify-center transition-all duration-700 ease-in-out md:absolute md:top-0 md:left-1/2 ${!isLogin ? "md:opacity-100 md:z-20 md:translate-x-0" : "md:opacity-0 md:z-10 md:translate-x-[20%]"}`}>
             <div className={isLogin ? "hidden md:block" : ""}>
               <h2 className="text-4xl font-bold mb-6 text-gray-800 text-center">Create Account</h2>
@@ -232,16 +236,16 @@ export function SignIn() {
             </div>
         </div>
 
-        {/* --- OVERLAY SECTION (Ph?n m�u xanh ch?y qua ch?y l?i) --- */}
+        {/* --- OVERLAY SECTION (Ph?n m�u xanh ch?y qua ch?y l?i) --- */}
         <div className={`hidden md:block absolute top-0 left-0 h-full w-1/2 bg-gradient-to-br from-cyan-400 via-cyan-500 to-teal-600 text-white transition-transform duration-700 ease-in-out z-50 ${isLogin ? "translate-x-full rounded-l-[100px]" : "translate-x-0 rounded-r-[100px]"}`}>
            {/* Decorative Circles */}
            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-white/20 rounded-full blur-3xl animate-pulse"></div>
            <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/20 rounded-full blur-3xl animate-pulse"></div>
            
-           {/* N?i dung b�n trong Overlay */}
+           {/* N?i dung b�n trong Overlay */}
            <div className="relative h-full w-full flex flex-col justify-center items-center text-center px-12">
               
-              {/* 1. N?i dung G?i � Sign Up (Hi?n khi ?ang ? trang Login) */}
+              {/* 1. N?i dung G?i � Sign Up (Hi?n khi ?ang ? trang Login) */}
               <div className={`absolute w-full transition-all duration-700 ${isLogin ? "opacity-100 translate-x-0 delay-200 pointer-events-auto" : "opacity-0 translate-x-[20%] pointer-events-none"}`}>
                   <h1 className="text-5xl font-bold mb-6">Hello, Friend!</h1>
                   <p className="text-lg mb-8 opacity-90 leading-relaxed">
@@ -255,7 +259,7 @@ export function SignIn() {
                   </button>
               </div>
 
-              {/* 2. N?i dung G?i � Sign In (Hi?n khi ?ang ? trang Register) */}
+              {/* 2. N?i dung G?i � Sign In (Hi?n khi ?ang ? trang Register) */}
               <div className={`absolute w-full transition-all duration-700 ${!isLogin ? "opacity-100 translate-x-0 delay-200 pointer-events-auto" : "opacity-0 -translate-x-[20%] pointer-events-none"}`}>
                   <h1 className="text-5xl font-bold mb-6">Welcome Back!</h1>
                   <p className="text-lg mb-8 opacity-90 leading-relaxed">
