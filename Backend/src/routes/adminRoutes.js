@@ -5,7 +5,7 @@ import {getAllRooms, getRoomByID, addNewRoom, updateRoom, deleteRoom, createNewR
         getAllBookings, getBookingByID, updateBooking, createNewBooking, deleteBooking,
         getAllPayments, getPaymentsById, createPayment,
         getAllCustomers, getCustomerInfo, updateCustomerInfo, deleteCustomer,
-        createNewReception, getAllReceptions, deleteReception, updateReception
+        createNewReception, getAllReceptions, deleteReception, updateReception, loginReceptionistAccount
 } from '../controllers/adminController.js'
 
 
@@ -13,6 +13,8 @@ const adminRoute = express.Router();
 
 // reception management
 adminRoute.post("/reception", createNewReception);
+
+adminRoute.post("/reception/login", loginReceptionistAccount)
 
 adminRoute.get("/reception", getAllReceptions);
 

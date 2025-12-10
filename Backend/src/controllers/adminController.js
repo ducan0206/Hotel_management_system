@@ -4,18 +4,63 @@ import {fetchAllBookings, fetchBookingByID, updatingBooking, addNewBooking, dele
 import {fetchAllPayments, fetchPaymentByID, addNewPayment} from '../services/paymentService.js'
 import {fetchAllCustomers, getInfo, deletingCustomer, updatingCustomerInfo} from '../helper/customer.js'
 import {createNewAccount} from '../services/accountService.js'
+import db from '../config/db.js'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 // reception management
 export const createNewReception = async(request, response) => {
     try {
         const newAccount = await createNewAccount(request.body);
         if(newAccount.status !== 400) {
-            return response.status(newAccount.message).json(newAccount.message)
+            return response.status(newAccount.status).json(newAccount.message)
         }
         return response.status(201).json(newAccount.data);
     } catch (error) {
         console.log("createNewReception function error: ", error.message);
         response.status(500).json({message: "System error"});
+    }
+}
+
+export const loginReceptionistAccount = async(request, response) => {
+    try {
+        const {username, password} = request.body;
+        if(!username || !password) {
+            return response.status(400).json({message: 'Username and password are required.'});
+        }
+        const [rows] = await db.query(
+            `
+            select * from Account where username = ? and role = 'employee'
+            `, [username]
+        )
+        if(rows.length === 0) {
+            return response.status(404).json({message: 'Account not found.'});
+        }
+        const user = rows[0];
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if(!isMatch) {
+            return response.status(401).json({message: "Invalid credentials."})
+        }
+        const token = jwt.sign(
+            {user_id: user.user_id, role: user.role},
+            process.env.JWT_SECRET,
+            { expiresIn: "2h"}
+        )
+        response.status(200).json(
+            {
+                message: 'Login sucessful',
+                user: {
+                    user_id: user.user_id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role
+                },
+                token
+            }
+        )
+    } catch (error) {
+        console.log('Error: loginAccount error', error.message);
+        return response.status(500).json({message: 'System error'})
     }
 }
 

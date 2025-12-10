@@ -39,7 +39,7 @@ export const loginAccount = async(request, response) => {
         }
         const [rows] = await db.query(
             `
-            select * from Account where username = ?
+            select * from Account where username = ? and role = 'customer'
             `, [username]
         )
         if(rows.length === 0) {
