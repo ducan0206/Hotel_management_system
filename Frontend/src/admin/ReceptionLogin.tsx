@@ -27,7 +27,15 @@ const ReceptionLogin = () => {
         setLoading(true);
 
         try {
-            const success = await login(loginData.username, loginData.password);
+            if(loginData.username.trim() === '') {
+                toast.error(<span className='mess'>Username is required</span>);
+                return;
+            }
+            if(loginData.password.trim() === '') {
+                toast.error(<span className='mess'>Password is required</span>);
+                return;
+            } 
+            const success = await login(loginData.username, loginData.password, "employee");
 
             if (!success) {
                 toast.error(<span className="mess">Invalid username or password.</span>);
@@ -147,7 +155,6 @@ const ReceptionLogin = () => {
                                             className="pl-10"
                                             value={loginData.username}
                                             onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
-                                            required
                                         />
                                     </div>
                                 </div>
@@ -163,7 +170,6 @@ const ReceptionLogin = () => {
                                             className="pl-10"
                                             value={loginData.password}
                                             onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                                            required
                                         />
                                     </div>
                                 </div>

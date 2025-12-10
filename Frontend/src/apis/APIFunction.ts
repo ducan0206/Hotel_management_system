@@ -44,10 +44,15 @@ export const createAccount = async (userData: {
     }
 }
 
-export const login = async (credentials: {username: string; password: string;}) => {
+export const login = async (credentials: {username: string; password: string;}, role: string) => {
     try {
-        const res = await api.post("/user/customer/login", credentials);
-        return res.data;
+        if(role === 'employee') {
+            const res = await api.post("/admin/reception/login", credentials);
+            return res.data;
+        } else if (role === 'customer') {
+            const res = await api.post("/user/customer/login", credentials);
+            return res.data;
+        }
     } catch (error) {
         console.log("Login error: ", error)
         throw error;

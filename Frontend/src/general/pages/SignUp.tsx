@@ -39,7 +39,7 @@ export function SignIn() {
         toast.error(<span className='mess'>Password is required</span>);
         return;
       }
-      const success = await login(loginData.username, loginData.password); 
+      const success = await login(loginData.username, loginData.password, "customer"); 
         
       if (!success) {
         toast.error(<span className='mess'>Invalid username or password.</span>);

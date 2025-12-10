@@ -12,7 +12,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (username: string, password: string, role: string) => Promise<boolean>;
   register: (userData: any) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -27,9 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   // Trong file AuthContext.tsx, trong hàm login
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string, role: string) => {
     try {
-      const apiResponse = await loginUser({ username, password }); 
+      const apiResponse = await loginUser({ username, password}, role); 
       const userDetails = apiResponse.user; 
       const token = apiResponse.token; // L?y token
 
@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false;
       } catch (error) {
         console.error("Context Login Failed:", error);
-        throw error; // Ném l?i ?? SignIn.tsx b?t
+        throw error; 
       }
   };
 
