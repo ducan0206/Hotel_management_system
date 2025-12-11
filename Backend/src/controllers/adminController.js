@@ -8,6 +8,50 @@ import db from '../config/db.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
+// admin login
+export const adminLogin = async(request, response) => {
+    try {
+        const {username, password} = request.body;
+        console.log(username, password)
+        if(!username || !password) {
+            return response.status(400).json({message: 'Username and password are required.'});
+        }
+        const [rows] = await db.query(
+            `
+            select * from Account where email = ? and role = 'admin'
+            `, [username]
+        )
+        if(rows.length === 0) {
+            return response.status(404).json({message: 'Account not found.'});
+        }
+        const user = rows[0];
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if(!isMatch) {
+            return response.status(401).json({message: "Invalid credentials."})
+        }
+        const token = jwt.sign(
+            {user_id: user.user_id, role: user.role},
+            process.env.JWT_SECRET,
+            { expiresIn: "2h"}
+        )
+        response.status(200).json(
+            {
+                message: 'Login sucessful',
+                user: {
+                    user_id: user.user_id,
+                    full_name: user.full_name,
+                    email: user.email,
+                    role: user.role
+                },
+                token
+            }
+        )
+    } catch (error) {
+        console.log('Error: loginAccount error', error.message);
+        return response.status(500).json({message: 'System error'})
+    }
+}
+
 // reception management
 export const createNewReception = async(request, response) => {
     try {
