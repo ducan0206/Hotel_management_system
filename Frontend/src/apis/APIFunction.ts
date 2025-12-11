@@ -52,6 +52,9 @@ export const login = async (credentials: {username: string; password: string;}, 
         } else if (role === 'customer') {
             const res = await api.post("/user/customer/login", credentials);
             return res.data;
+        } else if (role === 'admin') {
+            const res = await api.post("/admin/login", credentials);
+            return res.data;
         }
     } catch (error) {
         console.log("Login error: ", error)

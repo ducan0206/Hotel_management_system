@@ -7,17 +7,45 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { AlertCircle, Hotel, ArrowLeft, Shield, Lock, Mail } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner'
+import { PartyPopper } from 'lucide-react'
 
 const AdminLoginPage = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [adminData, setAdminData] = useState({
+        email: "",
+        password: "",
+    })
 
     const handleSubmit = async (e: React.FormEvent) => {
-        
+        e.preventDefault();
+        setLoading(true);
+        try {
+            if(adminData.email.trim() === '') {
+                toast.error(<span className='mess'>Email is required</span>)
+            } else if(adminData.password.trim() === '') {
+                toast.error(<span className='mess'>Password is required</span>)
+            }
+            const success = await login(adminData.email, adminData.password, "admin");
+            if (!success) {
+                toast.error(<span className='mess'>Invalid username or password.</span>);
+                return;
+            }
+
+            toast.success(
+                <span className='mess'><PartyPopper /> Login successful! Welcome back. </span>
+            );
+            setAdminData({ email: "", password: ""});
+            navigate('/')
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || "System error during login.";
+            toast.error(<span className='mess'>{errorMessage}</span>); 
+        } finally {
+            setLoading(false);
+        }
     };
 
     function onBack() {
@@ -111,7 +139,7 @@ const AdminLoginPage = () => {
                                 </Alert>
                                 )}
                                 <div className="space-y-2">
-                                    <Label htmlFor="admin-email">Administrator email</Label>
+                                    <Label htmlFor="admin-email">Administrator user</Label>
                                     <div className="relative">
                                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                                         <Input
@@ -119,8 +147,8 @@ const AdminLoginPage = () => {
                                         type="email"
                                         placeholder="admin@hotel.com"
                                         className="pl-10"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        value={adminData.email}
+                                        onChange={(e) => setAdminData({ ...adminData, email: e.target.value })}
                                         required
                                         />
                                     </div>
@@ -134,8 +162,8 @@ const AdminLoginPage = () => {
                                         type="password"
                                         placeholder="????????"
                                         className="pl-10"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
+                                        value={adminData.password}
+                                        onChange={(e) => setAdminData({ ...adminData, password: e.target.value })}
                                         required
                                         />
                                     </div>
