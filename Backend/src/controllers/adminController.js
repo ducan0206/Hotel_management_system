@@ -119,7 +119,7 @@ export const getAllReceptions = async(request, response) => {
 
 export const deleteReception = async(request, response) => {
     try {
-
+        
     } catch (error) {
         console.log("deleteReception function error: ", error.message);
         response.status(500).json({message: "System error"});

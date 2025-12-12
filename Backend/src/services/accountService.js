@@ -27,54 +27,37 @@ async function generateCustomerId() {
 export const createNewAccount = async(userData) => {
     try {
         const {username, password, fullName, phone, email, role} = userData;
-    
-        // ========== VALIDATION FOR CUSTOMER REGISTRATION (Sơn - Date: 07/12/2025) ==========
-        // Thứ tự kiểm tra: fullName -> phone -> username -> email -> password
-        // Mỗi field được validate riêng để thông báo lỗi cụ thể cho người dùng
         
         if(role === 'customer') {
-            // ========== 1. FULLNAME VALIDATION ==========
-            // Kiểm tra fullName có tồn tại không
             if(!fullName) {
                 return { status: 400, message: 'Full name is required.' };
             }
-            // Kiểm tra fullName không chỉ là khoảng trắng
             if(!fullName.trim()) {
                 return { status: 400, message: 'Full name cannot be empty or contain only whitespace.' };
             }
 
-            // ========== 2. PHONE VALIDATION ==========
-            // Kiểm tra phone có tồn tại không
             if(!phone) {
                 return { status: 400, message: 'Phone number is required.' };
             }
-            // Kiểm tra phone không chỉ là khoảng trắng
             if(!phone.trim()) {
                 return { status: 400, message: 'Phone number cannot be empty or contain only whitespace.' };
             }
-            // Kiểm tra phone chỉ chứa số từ 0-9
             if(!/^\d+$/.test(phone)) {
                 return { status: 400, message: 'Phone number can only contain digits (0-9).' };
             }
 
-            // ========== 3. USERNAME VALIDATION ==========
-            // Kiểm tra username có tồn tại không
             if(!username) {
                 return { status: 400, message: 'Username is required.' };
             }
-            // Kiểm tra username không chỉ là khoảng trắng
             if(!username.trim()) {
                 return { status: 400, message: 'Username cannot be empty or contain only whitespace.' };
             }
-            // Kiểm tra username không được chứa khoảng trắng (đầu, giữa, cuối)
             if(/\s/.test(username)) {
                 return { status: 400, message: 'Username cannot contain whitespace.' };
             }
-            // Kiểm tra username phải có ít nhất 8 ký tự
             if(username.length < 8) {
                 return { status: 400, message: 'Username must be at least 8 characters long.' };
             }
-            // Kiểm tra username đã tồn tại trong database chưa
             const [existingUsername] = await db.query(
                 `select * from Account where username = ?`,
                 [username]
@@ -83,54 +66,39 @@ export const createNewAccount = async(userData) => {
                 return { status: 400, message: 'Username already exists. Please choose another username.' };
             }
 
-            // ========== 4. EMAIL VALIDATION ==========
-            // Kiểm tra email có tồn tại không
             if(!email) {
                 return { status: 400, message: 'Email is required.' };
             }
-            // Kiểm tra email không chỉ là khoảng trắng
             if(!email.trim()) {
                 return { status: 400, message: 'Email cannot be empty or contain only whitespace.' };
             }
-            // Kiểm tra email đúng format (example@gmail.com)
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if(!emailRegex.test(email)) {
                 return { status: 400, message: 'Invalid email format. Please use format: example@gmail.com' };
             }
 
-            // ========== 5. PASSWORD VALIDATION ==========
-            // Kiểm tra password có tồn tại không
             if(!password) {
                 return { status: 400, message: 'Password is required.' };
             }
-            // Kiểm tra password không chỉ là khoảng trắng
             if(!password.trim()) {
                 return { status: 400, message: 'Password cannot be empty or contain only whitespace.' };
             }
-            // Kiểm tra password phải có ít nhất 8 ký tự
             if(password.length < 8) {
                 return { status: 400, message: 'Password must be at least 8 characters long.' };
             }
-            // Kiểm tra password không được chứa khoảng trắng (đầu, giữa, cuối)
             if(/\s/.test(password)) {
                 return { status: 400, message: 'Password cannot contain whitespace.' };
             }
-            // Kiểm tra password phải có ít nhất 1 chữ cái in hoa (A-Z)
             if(!/[A-Z]/.test(password)) {
                 return { status: 400, message: 'Password must contain at least 1 uppercase letter.' };
             }
-            // Kiểm tra password phải có ít nhất 1 chữ số (0-9)
             if(!/\d/.test(password)) {
                 return { status: 400, message: 'Password must contain at least 1 digit.' };
             }
-            // Kiểm tra password phải có ít nhất 1 ký tự đặc biệt (!@#$%^&*...)
             if(!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
                 return { status: 400, message: 'Password must contain at least 1 special character.' };
             }
         }
-        // ========== END VALIDATION ==========
-
-        // Check if email already exists
         const [existingUser] = await db.query(
             `
             select * from Account where email = ?

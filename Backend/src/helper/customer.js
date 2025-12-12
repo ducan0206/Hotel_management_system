@@ -2,7 +2,7 @@ import db from '../config/db.js'
 
 export const fetchAllCustomers = async() => {
     try {
-        const customers = await db.query(
+        const [customers] = await db.query(
             `
             select user_id, full_name, phone, email, created_at from Account 
             where role = 'customer';
