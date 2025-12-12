@@ -90,3 +90,23 @@ export const getAllAdditionalServices = async () => {
         throw error;
     }
 }
+
+export const createReceptionAccount = async (employeeData: {username: string, password: string, fullName: string, phone: string, email: string, role: string }) => {
+    try {
+        const res = await api.post("/admin/reception", employeeData);
+        return res.data
+    } catch (error) {
+        console.log("Create employee account error: ", error);
+        throw error;
+    }
+}
+
+export const deleteReceptionAccount = async (employeeID: number) => {
+    try {
+        const res = await api.delete(`/admin/reception/${employeeID}`);
+        return res.data;
+    } catch (error) {
+        console.log("Delete employee account error: ", error);
+        throw error;
+    }
+}
