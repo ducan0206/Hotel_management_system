@@ -48,7 +48,7 @@ const ReceptionLogin = () => {
                 </span>
             );
 
-            navigate('/');
+            navigate('/admin/dashboard');
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || "System error during login.";
             toast.error(<span className="mess">{errorMessage}</span>);

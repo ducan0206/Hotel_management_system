@@ -1,18 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card";
 import { Button } from "../../ui/button";
-import { 
-  Hotel, 
-  Users, 
-  DollarSign, 
-  Calendar, 
-  BedDouble, 
-  UserCheck, 
-  Settings,
-  Bell,
-  Search,
-  Menu,
-  Home
-} from "lucide-react";
+import { Hotel, Users, DollarSign, Calendar, BedDouble, UserCheck, Settings, Bell, Search, Menu, Home } from "lucide-react";
 import { StatCard } from "../components/StatCard";
 import { BookingChart } from "../components/BookingChart";
 import { RecentBookings } from "../components/RecentBookings";
@@ -21,15 +9,13 @@ import { Input } from "../../ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom'
 
-interface AdminDashboardProps {
-  onNavigateHome: () => void;
-}
-
-export function AdminDashboard({ onNavigateHome }: AdminDashboardProps) {
+const Dashboard = () => {
   const { user } = useAuth();
   const [currentView, setCurrentView] = useState<'dashboard' | 'reception'>('dashboard');
   const isAdmin = user?.role === 'admin';
+  const navigate = useNavigate();
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -80,7 +66,7 @@ export function AdminDashboard({ onNavigateHome }: AdminDashboardProps) {
           <Button 
             variant="ghost" 
             className="w-full justify-start gap-3"
-            onClick={onNavigateHome}
+            onClick={() => navigate('/')}
           >
             <Home className="h-4 w-4" />
             Customer View
@@ -243,3 +229,5 @@ export function AdminDashboard({ onNavigateHome }: AdminDashboardProps) {
     </div>
   );
 }
+
+export default Dashboard

@@ -7,6 +7,7 @@ import Booking from './general/pages/Booking.tsx'
 import AdminLoginPage from './admin/AdminLogin.tsx'
 import HotelAuthentication from './admin/HotelAuthentication.tsx'
 import ReceptionLoginPage from './admin/ReceptionLogin.tsx'
+import Dashboard from './admin/pages/Dashboard.tsx'
 
 import AnimatedPage from './AnimatedPage.tsx'
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom'; 
@@ -45,6 +46,7 @@ const AppRoutes = () => {
         <Route path="/admin/auth" element={<AnimatedPage><AdminLoginPage /></AnimatedPage>} />
         <Route path="/reception/auth" element={<AnimatedPage><ReceptionLoginPage /></AnimatedPage>} />
         <Route path="/hotel/auth" element={<AnimatedPage><HotelAuthentication /></AnimatedPage>} />
+        <Route path="/admin/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
 
       </Routes>
     </AnimatePresence>
