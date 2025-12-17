@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { createAccount, login as loginUser, createNewReceptionAccount, deleteExistedReceptionAccount, getAllReceptionists} from '../apis/APIFunction.ts';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 interface User {
     user_id: string | number; 
@@ -18,7 +19,7 @@ interface AuthContextType {
     login: (username: string, password: string, role: string) => Promise<boolean>;
     register: (userData: any) => Promise<boolean>;
     logout: () => void;
-    receptionAccounts: Array<{ id: number, username: string, password: string, full_name: string, phone: string, email: string, role: string, created_at: string }>;
+    receptionAccounts: Array<{ user_id: number, username: string, password: string, full_name: string, phone: string, email: string, role: string, created_at: string }>;
     isAuthenticated: boolean;
 }
 
@@ -36,6 +37,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         enabled: user?.role === 'admin', 
     });
 
+    console.log("Reception Accounts in AuthContext: ", receptionAccounts);
+
     // warning
     const createReceptionAccount = async (employeeData: any) => {
         try {
@@ -52,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const deleteReceptionAccount = async (employeeID: number) => {
         try {
             await deleteExistedReceptionAccount(employeeID);
+            toast.success(<span className='mess'>Delete reception account successfully!</span>);
             refetchReceptionists();
             return true;
         } catch (error) {

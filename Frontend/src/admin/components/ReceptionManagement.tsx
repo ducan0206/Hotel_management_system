@@ -352,7 +352,7 @@ export function ReceptionManagement() {
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => handleDeleteAccount(account.id)}
+                                                onClick={() => handleDeleteAccount(account.user_id)}
                                                 className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                             >
                                                 <Trash2 className="h-4 w-4" />
