@@ -1,6 +1,35 @@
 import db from '../config/db.js'
 import bcrypt from 'bcrypt'
 
+export async function fetchAllReceptions() {
+    try {
+        const [rows] = await db.query(`
+            SELECT a.user_id, a.full_name, a.phone, a.email, a.created_at
+            FROM Account a
+            JOIN Employees e ON a.user_id = e.account_id
+            WHERE a.role = 'employee'
+        `);
+
+        if (rows.length === 0) {
+            return {
+                status: 404,
+                message: 'No receptionists found.'
+            };
+        }
+
+        return {
+            status: 200,
+            data: rows
+        };
+    } catch (error) {
+        console.log('Error: fetchAllReceptions function', error.message);
+        return {
+            status: 500,
+            message: 'System error'
+        };
+    }
+}
+
 async function generateEmployeeId() {
     const [rows] = await db.query(`
         SELECT NV_id FROM Employees ORDER BY CAST(SUBSTRING(NV_id, 4) AS UNSIGNED) DESC LIMIT 1

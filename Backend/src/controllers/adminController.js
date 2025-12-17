@@ -3,7 +3,7 @@ import {fetchAllServices, addNewService, updatingService, deletingService, fetch
 import {fetchAllBookings, fetchBookingByID, updatingBooking, addNewBooking, deletingBooking} from '../services/bookingService.js'
 import {fetchAllPayments, fetchPaymentByID, addNewPayment} from '../services/paymentService.js'
 import {fetchAllCustomers, getInfo, deletingCustomer, updatingCustomerInfo} from '../helper/customer.js'
-import {createNewAccount} from '../services/accountService.js'
+import {createNewAccount, fetchAllReceptions} from '../services/accountService.js'
 import db from '../config/db.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -56,7 +56,7 @@ export const adminLogin = async(request, response) => {
 export const createNewReception = async(request, response) => {
     try {
         const newAccount = await createNewAccount(request.body);
-        if(newAccount.status !== 400) {
+        if(newAccount.status !== 201) {
             return response.status(newAccount.status).json(newAccount.message)
         }
         return response.status(201).json(newAccount.data);
@@ -110,7 +110,11 @@ export const loginReceptionistAccount = async(request, response) => {
 
 export const getAllReceptions = async(request, response) => {
     try {
-
+        const receptions = await fetchAllReceptions();
+        if (receptions.status !== 200) {
+            return response.status(receptions.status).json({ message: receptions.message });
+        }
+        response.status(200).json(receptions.data);
     } catch (error) {
         console.log("getAllReceptions function error: ", error.message);
         response.status(500).json({message: "System error"});
