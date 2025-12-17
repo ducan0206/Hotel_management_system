@@ -18,7 +18,7 @@ interface AuthContextType {
     login: (username: string, password: string, role: string) => Promise<boolean>;
     register: (userData: any) => Promise<boolean>;
     logout: () => void;
-    receptionAccounts: Array<{ id: number, username: string, password: string, fullName: string, phone: string, email: string, role: string, createdAt: string }>;
+    receptionAccounts: Array<{ id: number, username: string, password: string, fullName: string, phone: string, email: string, role: string, created_at: string }>;
     isAuthenticated: boolean;
 }
 
@@ -36,28 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         enabled: user?.role === 'admin', 
     });
 
-    // const [receptionAccounts, setReceptionAccount] = useState([
-    //     {
-    //         id: 1,
-    //         username: "recep1",
-    //         password: "123",
-    //         fullName: "Nguyen Van A",
-    //         phone: "0123456789",
-    //         email: "reception1@gmail.com",
-    //         role: "employee", 
-    //         createdAt: "",
-    //     },
-    //     {
-    //         id: 2,
-    //         username: "recep2",
-    //         password: "123",
-    //         fullName: "Nguyen Van B",
-    //         phone: "0123456789",
-    //         email: "reception2@gmail.com",
-    //         role: "employee", 
-    //         createdAt: ""
-    //     }
-    // ]);
+    console.log("Reception Accounts in Context: ", receptionAccounts);
 
     // warning
     const createReceptionAccount = async (employeeData: any) => {

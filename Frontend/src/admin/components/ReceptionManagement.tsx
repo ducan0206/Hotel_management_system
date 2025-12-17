@@ -15,7 +15,6 @@ export function ReceptionManagement() {
     const [dialogOpen, setDialogOpen] = useState(false);
     
     // Form States
-    const [username, setUsername] = useState(''); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -326,7 +325,7 @@ export function ReceptionManagement() {
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="h-4 w-4 text-gray-400" />
-                                                {account.createdAt}
+                                                {account.created_at}
                                             </div>
                                         </TableCell>
                                         <TableCell>
