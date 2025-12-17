@@ -15,6 +15,7 @@ export function ReceptionManagement() {
     const [dialogOpen, setDialogOpen] = useState(false);
     
     // Form States
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -66,13 +67,14 @@ export function ReceptionManagement() {
         try {
             const result = await createReceptionAccount({
                 username: email.split('@')[0], 
-                password,
-                fullname,
-                phone,
-                email,
+                password: password,
+                fullName: fullname,
+                phone: phone,
+                email: email,
                 role: 'employee' 
             });
             
+            console.log(1);
             if (result) {
                 setSuccess('Create account successfully!');
                 setFullname('');
@@ -157,7 +159,7 @@ export function ReceptionManagement() {
                                     <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                                     <Input
                                         id="name"
-                                        placeholder="Nguy?n V?n A"
+                                        placeholder="Nguyen Van A"
                                         className="pl-10"
                                         value={fullname}
                                         onChange={(e) => setFullname(e.target.value)}
@@ -193,11 +195,23 @@ export function ReceptionManagement() {
                             </div>
 
                             <div className="space-y-2">
+                                <Label htmlFor="username">Username</Label>
+                                <Input
+                                    id="username"
+                                    type="text"
+                                    placeholder="PaskReception"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
                                 <Input
                                     id="password"
                                     type="password"
-                                    placeholder="????????"
+                                    placeholder="********"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -209,7 +223,7 @@ export function ReceptionManagement() {
                                 <Input
                                     id="confirm-password"
                                     type="password"
-                                    placeholder="????????"
+                                    placeholder="********"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
@@ -224,14 +238,14 @@ export function ReceptionManagement() {
                                     onClick={() => setDialogOpen(false)}
                                     disabled={isLoading}
                                 >
-                                    H?y
+                                    Cancel
                                 </Button>
                                 <Button 
                                     type="submit" 
                                     className="flex-1 bg-green-600 hover:bg-green-700"
                                     disabled={isLoading}
                                 >
-                                    {isLoading ? '?ang t?o...' : 'T?o tài kho?n'}
+                                    {isLoading ? 'Creating...' : 'Create Account'}
                                 </Button>
                             </div>
                         </form>
@@ -307,7 +321,7 @@ export function ReceptionManagement() {
                                                 <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
                                                     <UserIcon className="h-4 w-4 text-green-600" />
                                                 </div>
-                                                <span className="font-medium">{account.fullname || account.fullName}</span>
+                                                <span className="font-medium">{account.full_name}</span>
                                             </div>
                                         </TableCell>
                                         <TableCell>

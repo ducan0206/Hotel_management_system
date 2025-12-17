@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import { createAccount, login as loginUser, createReceptionAccount, deleteReceptionAccount, getAllReceptionists} from '../apis/APIFunction.ts';
-import { useQuery } from '@tanstack/react-query';
+import { createAccount, login as loginUser, createNewReceptionAccount, deleteExistedReceptionAccount, getAllReceptionists} from '../apis/APIFunction.ts';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface User {
     user_id: string | number; 
@@ -18,7 +18,7 @@ interface AuthContextType {
     login: (username: string, password: string, role: string) => Promise<boolean>;
     register: (userData: any) => Promise<boolean>;
     logout: () => void;
-    receptionAccounts: Array<{ id: number, username: string, password: string, fullName: string, phone: string, email: string, role: string, created_at: string }>;
+    receptionAccounts: Array<{ id: number, username: string, password: string, full_name: string, phone: string, email: string, role: string, created_at: string }>;
     isAuthenticated: boolean;
 }
 
@@ -30,18 +30,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    const { data: receptionAccounts} = useQuery({
+    const { data: receptionAccounts, refetch: refetchReceptionists } = useQuery({
         queryKey: ['receptionists'],
         queryFn: getAllReceptionists,
         enabled: user?.role === 'admin', 
     });
 
-    console.log("Reception Accounts in Context: ", receptionAccounts);
-
     // warning
     const createReceptionAccount = async (employeeData: any) => {
         try {
-            await createReceptionAccount(employeeData);
+            await createNewReceptionAccount(employeeData);
+            refetchReceptionists();
             return true;
         } catch (error) {
             console.log("Create Reception Account fail: ", error);
@@ -52,7 +51,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // warning
     const deleteReceptionAccount = async (employeeID: number) => {
         try {
-            await deleteReceptionAccount(employeeID);
+            await deleteExistedReceptionAccount(employeeID);
+            refetchReceptionists();
             return true;
         } catch (error) {
             console.log("Delete Reception Account fail: ", error);
