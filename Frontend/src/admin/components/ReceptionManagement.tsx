@@ -7,28 +7,27 @@ import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Alert, AlertDescription } from '../../ui/alert';
 import { useAuth } from '../../context/AuthContext';
-import { AlertCircle, Users, UserPlus, CheckCircle2, UserIcon, Mail, Trash2, Calendar, } from 'lucide-react';
+import { AlertCircle, Users, UserPlus, CheckCircle2, UserIcon, Mail, Trash2, Calendar, Phone } from 'lucide-react';
 
 export function ReceptionManagement() {
-    // Gi? s? useAuth cung c?p danh sách accounts và các hàm x? lý
     const { receptionAccounts, createReceptionAccount, deleteReceptionAccount, user } = useAuth();
     
     const [dialogOpen, setDialogOpen] = useState(false);
     
     // Form States
-    const [username, setUsername] = useState(''); // Thêm field này n?u API c?n username riêng
+    const [username, setUsername] = useState(''); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [fullname, setFullname] = useState('');
-    const [phone, setPhone] = useState(''); // Thêm state cho phone
+    const [phone, setPhone] = useState(''); 
     
     // UI States
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // Ki?m tra quy?n Admin
+    // Check role admin
     if (user?.role !== 'admin') {
         return (
             <div className="flex items-center justify-center h-full">
@@ -37,7 +36,7 @@ export function ReceptionManagement() {
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
                             <AlertDescription>
-                                B?n không có quy?n truy c?p trang này. Ch? Admin m?i có th? qu?n lý tài kho?n Reception.
+                                You do not have permission to access this page.
                             </AlertDescription>
                         </Alert>
                     </CardContent>
@@ -77,14 +76,12 @@ export function ReceptionManagement() {
             
             if (result) {
                 setSuccess('Create account successfully!');
-                // Reset form
                 setFullname('');
                 setEmail('');
                 setPhone('');
                 setPassword('');
                 setConfirmPassword('');
                 
-                // ?óng dialog sau 1.5s
                 setTimeout(() => {
                     setDialogOpen(false);
                     setSuccess('');
@@ -104,7 +101,6 @@ export function ReceptionManagement() {
         if (window.confirm('Are you sure you want to delete this account?')) {
             try {
                 await deleteReceptionAccount(id);
-                // Gi? s? deleteReceptionAccount trong context t? ??ng c?p nh?t state receptionAccounts
             } catch (error) {
                 console.error("Delete failed", error);
                 alert("Delete failed. Please try again.");
@@ -296,6 +292,7 @@ export function ReceptionManagement() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Full Name</TableHead>
+                                <TableHead>Phone</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Created Date</TableHead>
                                 <TableHead>Status</TableHead>
@@ -316,6 +313,12 @@ export function ReceptionManagement() {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
+                                                <Phone className="h-4 w-4 text-gray-400" />
+                                                {account.phone}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
                                                 <Mail className="h-4 w-4 text-gray-400" />
                                                 {account.email}
                                             </div>
@@ -323,7 +326,6 @@ export function ReceptionManagement() {
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="h-4 w-4 text-gray-400" />
-                                                {/* Format date n?u c?n, ví d?: new Date(account.createdAt).toLocaleDateString() */}
                                                 {account.createdAt}
                                             </div>
                                         </TableCell>

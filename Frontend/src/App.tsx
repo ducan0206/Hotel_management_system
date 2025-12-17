@@ -14,57 +14,62 @@ import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'rea
 import { AuthProvider } from './context/AuthContext.tsx'
 import { Toaster } from 'sonner';
 import { AnimatePresence } from "framer-motion";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const MainLayout = () => {
-  return (
-    <>
-      <NavBar/>
-      <div className="min-h-screen"> 
-        <Outlet /> 
-      </div>
-      <Footer />
-    </>
-  );
+    return (
+        <>
+        <NavBar/>
+        <div className="min-h-screen"> 
+            <Outlet /> 
+        </div>
+        <Footer />
+        </>
+    );
 };
 
+const queryClient = new QueryClient();
+
 const AppRoutes = () => {
-  const location = useLocation();
+    const location = useLocation();
 
-  return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+    return (
+        <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
 
-        {/* USER PAGES */}
-        <Route element={<MainLayout />}> 
-          <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
-          <Route path="/all-rooms" element={<AnimatedPage><RoomsPage /></AnimatedPage>} />
-          <Route path="/booking/:room_id" element={<AnimatedPage><Booking /></AnimatedPage>} />
-        </Route>
+                {/* USER PAGES */}
+                <Route element={<MainLayout />}> 
+                <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
+                <Route path="/all-rooms" element={<AnimatedPage><RoomsPage /></AnimatedPage>} />
+                <Route path="/booking/:room_id" element={<AnimatedPage><Booking /></AnimatedPage>} />
+                </Route>
 
-        {/* AUTH PAGES */}
-        <Route path="/signin" element={<AnimatedPage><SignIn /></AnimatedPage>} />
-        <Route path="/admin/auth" element={<AnimatedPage><AdminLoginPage /></AnimatedPage>} />
-        <Route path="/reception/auth" element={<AnimatedPage><ReceptionLoginPage /></AnimatedPage>} />
-        <Route path="/hotel/auth" element={<AnimatedPage><HotelAuthentication /></AnimatedPage>} />
-        <Route path="/admin/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
+                {/* AUTH PAGES */}
+                <Route path="/signin" element={<AnimatedPage><SignIn /></AnimatedPage>} />
+                <Route path="/admin/auth" element={<AnimatedPage><AdminLoginPage /></AnimatedPage>} />
+                <Route path="/reception/auth" element={<AnimatedPage><ReceptionLoginPage /></AnimatedPage>} />
+                <Route path="/hotel/auth" element={<AnimatedPage><HotelAuthentication /></AnimatedPage>} />
+                <Route path="/admin/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
 
-      </Routes>
-    </AnimatePresence>
-  );
+            </Routes>
+        </AnimatePresence>
+    );
 };
 
 function App() {
-  return (
-    <>
-      <Toaster richColors />
-      
-      <AuthProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
-      </AuthProvider>
-    </>
-  );
+    return (
+        <>
+        <Toaster richColors />
+        
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <Router>
+                    <AppRoutes />
+                </Router>
+            </AuthProvider>
+        </QueryClientProvider>
+        </>
+    );
 }
 
 export default App;

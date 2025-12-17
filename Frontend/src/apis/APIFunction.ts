@@ -110,3 +110,13 @@ export const deleteReceptionAccount = async (employeeID: number) => {
         throw error;
     }
 }
+
+export const getAllReceptionists = async () => {
+    try {
+        const res = await api.get("/admin/reception");
+        return res.data;
+    } catch (error) {
+        console.log("Get all receptionists error: ", error);
+        throw error;
+    }   
+}

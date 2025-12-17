@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import { createAccount, login as loginUser, createReceptionAccount, deleteReceptionAccount} from '../apis/APIFunction.ts';
+import { createAccount, login as loginUser, createReceptionAccount, deleteReceptionAccount, getAllReceptionists} from '../apis/APIFunction.ts';
+import { useQuery } from '@tanstack/react-query';
 
 interface User {
     user_id: string | number; 
@@ -29,28 +30,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    const [receptionAccounts, setReceptionAccount] = useState([
-        {
-            id: 1,
-            username: "recep1",
-            password: "123",
-            fullName: "Nguyen Van A",
-            phone: "0123456789",
-            email: "reception1@gmail.com",
-            role: "employee", 
-            createdAt: "",
-        },
-        {
-            id: 2,
-            username: "recep2",
-            password: "123",
-            fullName: "Nguyen Van B",
-            phone: "0123456789",
-            email: "reception2@gmail.com",
-            role: "employee", 
-            createdAt: ""
-        }
-    ]);
+    const { data: receptionAccounts} = useQuery({
+        queryKey: ['receptionists'],
+        queryFn: getAllReceptionists,
+        enabled: user?.role === 'admin', 
+    });
+
+    // const [receptionAccounts, setReceptionAccount] = useState([
+    //     {
+    //         id: 1,
+    //         username: "recep1",
+    //         password: "123",
+    //         fullName: "Nguyen Van A",
+    //         phone: "0123456789",
+    //         email: "reception1@gmail.com",
+    //         role: "employee", 
+    //         createdAt: "",
+    //     },
+    //     {
+    //         id: 2,
+    //         username: "recep2",
+    //         password: "123",
+    //         fullName: "Nguyen Van B",
+    //         phone: "0123456789",
+    //         email: "reception2@gmail.com",
+    //         role: "employee", 
+    //         createdAt: ""
+    //     }
+    // ]);
 
     // warning
     const createReceptionAccount = async (employeeData: any) => {
