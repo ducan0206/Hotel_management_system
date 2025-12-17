@@ -30,6 +30,36 @@ export async function fetchAllReceptions() {
     }
 }
 
+export async function deleteReceptionByID(id) {
+    try {
+        const [existingAccount] = await db.query(
+            `
+            select * from Account where user_id = ? AND role = 'employee'
+            `, [id]
+        )
+        if(existingAccount.length === 0) {
+            return {
+                status: 404,
+                message: `Receptionist with id ${id} not found.`
+            }
+        }   
+        await db.query(
+            `
+            delete from Account where user_id = ?   
+            `, [id]
+        )
+        return {
+            status: 204
+        }
+    } catch (error) {
+        console.log('Error: deleteReceptionByID function', error.message);
+        return {
+            status: 500,
+            message: 'System error'
+        };
+    }
+}
+
 async function generateEmployeeId() {
     const [rows] = await db.query(`
         SELECT NV_id FROM Employees ORDER BY CAST(SUBSTRING(NV_id, 4) AS UNSIGNED) DESC LIMIT 1

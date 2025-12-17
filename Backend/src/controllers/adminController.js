@@ -3,7 +3,7 @@ import {fetchAllServices, addNewService, updatingService, deletingService, fetch
 import {fetchAllBookings, fetchBookingByID, updatingBooking, addNewBooking, deletingBooking} from '../services/bookingService.js'
 import {fetchAllPayments, fetchPaymentByID, addNewPayment} from '../services/paymentService.js'
 import {fetchAllCustomers, getInfo, deletingCustomer, updatingCustomerInfo} from '../helper/customer.js'
-import {createNewAccount, fetchAllReceptions} from '../services/accountService.js'
+import {createNewAccount, fetchAllReceptions, deleteReceptionByID} from '../services/accountService.js'
 import db from '../config/db.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -123,7 +123,11 @@ export const getAllReceptions = async(request, response) => {
 
 export const deleteReception = async(request, response) => {
     try {
-        
+        const result = await deleteReceptionByID(request.params.id);
+        if (result.status !== 204) {
+            return response.status(result.status).json({ message: result.message });
+        }
+        return response.status(204).json({message: "Receptionist deleted successfully."});
     } catch (error) {
         console.log("deleteReception function error: ", error.message);
         response.status(500).json({message: "System error"});
