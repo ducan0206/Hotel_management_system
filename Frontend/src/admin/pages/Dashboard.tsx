@@ -49,16 +49,6 @@ const Dashboard = () => {
             <Users className="h-4 w-4" />
             Guests
           </Button>
-          {isAdmin && (
-            <Button 
-              variant={currentView === 'reception' ? 'default' : 'ghost'}
-              className="w-full justify-start gap-3 bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => setCurrentView('reception')}
-            >
-              <UserCheck className="h-4 w-4" />
-              Reception Management
-            </Button>
-          )}
           <Button variant="ghost" className="w-full justify-start gap-3">
             <DollarSign className="h-4 w-4" />
             Revenue
@@ -71,6 +61,16 @@ const Dashboard = () => {
             <Home className="h-4 w-4" />
             Customer View
           </Button>
+          {isAdmin && (
+            <Button 
+              variant={currentView === 'reception' ? 'default' : 'ghost'}
+              className="w-full justify-start gap-3 bg-green-600 hover:bg-green-700 text-white"
+              onClick={() => setCurrentView('reception')}
+            >
+              <UserCheck className="h-4 w-4" />
+              Reception Management
+            </Button>
+          )}
         </nav>
 
         <div className="p-4 border-t border-gray-200">
