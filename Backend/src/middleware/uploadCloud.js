@@ -1,13 +1,16 @@
-import multer from "multer"
-import { CloudinaryStorage } from "multer-storage-cloudinary"
-import cloudinary from '../config/cloudinary.js'
+import multer from "multer";
+import cloudinary from "../config/cloudinary.js";
+import pkg from 'multer-storage-cloudinary';
 
-const storage = new CloudinaryStorage ({
-    cloudinary,
+// Th? l?y CloudinaryStorage theo c? 2 cách ?? ??m b?o không b? sót
+const CloudinaryStorage = pkg.CloudinaryStorage || pkg;
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
     params: {
-        folder: "hotel_rooms", // folder name in cloudinary
-        allowed_format: ["jpg", "jpeg", "png", "webp"],
+        folder: "hotel_rooms",
+        allowed_formats: ["jpg", "jpeg", "png", "webp"],
     },
 });
 
-export const uploadCloud = multer({storage});
+export const uploadCloud = multer({ storage });
