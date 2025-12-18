@@ -19,16 +19,6 @@ export const getAllRooms = async() => {
     }
 }
 
-export const fetchRooms = async () => {
-    try {
-        const res = await api.get("/all-rooms");
-        return res.data;
-    } catch (error) {
-        console.log("Fetch rooms error: ", error)
-        throw error;
-    }
-}
-
 export const createAccount = async (userData: {
     fullName: string;
     phone: string;
@@ -119,4 +109,45 @@ export const getAllReceptionists = async () => {
         console.log("Get all receptionists error: ", error);
         throw error;
     }   
+}
+
+// room management APIs 
+export const getAllRoomTypes = async () => {
+    try {
+        const res = await api.get("/admin/room-types");
+        return res.data;
+    } catch (error) {
+        console.log("Get all room types error: ", error);
+        throw error;
+    }
+}
+
+export const addNewRoomType = async (roomTypeData: {type_name: string, capacity: number}) => {
+    try {
+        const res = await api.post("/admin/new-room-type", roomTypeData);  
+        return res.data;
+    } catch (error) {
+        console.log("Add new room type error: ", error);
+        throw error;
+    }   
+}
+
+export const fetchRooms = async () => {
+    try {
+        const res = await api.get("/all-rooms");
+        return res.data;
+    } catch (error) {
+        console.log("Fetch rooms error: ", error)
+        throw error;
+    }
+}
+
+export const addNewRoom = async (roomData: {room_number: string, room_type: string, price: number, status: string, description: string, image_url: string, area: number, standard: number, floor: number, services?: string[]}) => {
+    try {
+        const res = await api.post("/admin/new-room", roomData);
+        return res.data;
+    } catch (error) {
+        console.log("Add new room error: ", error);
+        throw error;
+    }
 }

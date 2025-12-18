@@ -37,8 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         enabled: user?.role === 'admin', 
     });
 
-    console.log("Reception Accounts in AuthContext: ", receptionAccounts);
-
     // warning
     const createReceptionAccount = async (employeeData: any) => {
         try {
