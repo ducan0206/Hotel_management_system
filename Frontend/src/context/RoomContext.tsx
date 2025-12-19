@@ -10,7 +10,7 @@ export interface RoomType {
 
 export interface Room {
     room_id: string | number;
-    room_type: RoomType;
+    room_type: string;
     room_number: string;
     price: number;
     status: 'available' | 'booked' | 'maintenance';
@@ -31,8 +31,8 @@ interface RoomContextType {
     deleteRoomType: (id: string | number) => void;
     addRoom: (roomData: any) => Promise<void>;
     updateRoom: (id: string, room: Partial<Room>) => void;
-    deleteRoom: (id: string) => void;
-    getRoomType: () => void;
+    deleteRoom: (id: number) => void;
+    getRoomTypeById: (id: string | number) => RoomType | undefined;
 }
 
 const RoomContext = createContext<RoomContextType | undefined>(undefined);
@@ -78,13 +78,13 @@ export function RoomProvider({ children }: { children: ReactNode }) {
 
     };
 
-    const deleteRoom = (id: string) => {
+    const deleteRoom = (id: number) => {
         
     };
 
-    const getRoomType = () => {
-        refetchRoomTypes();
-    }
+    const getRoomTypeById = (id: string | number) => {
+        return undefined;
+    };
 
     return (
         <RoomContext.Provider value={{
@@ -96,7 +96,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
             addRoom,
             updateRoom,
             deleteRoom,
-            getRoomType
+            getRoomTypeById
         }}>
             {children}
         </RoomContext.Provider>

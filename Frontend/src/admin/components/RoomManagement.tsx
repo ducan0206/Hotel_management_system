@@ -13,7 +13,7 @@ import { useRooms } from '../../context/RoomContext';
 import { toast } from 'sonner';
 
 export function RoomManagement() {
-    const { rooms, roomTypes, addRoom, updateRoom, deleteRoom, getRoomType } = useRooms();
+    const { rooms, roomTypes, addRoom, updateRoom, deleteRoom, getRoomTypeById } = useRooms();
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [editingRoom, setEditingRoom] = useState<any>(null);
@@ -118,7 +118,7 @@ export function RoomManagement() {
 
         setIsEditDialogOpen(true);
     };
-    const handleDelete = (id: string) => {
+    const handleDelete = (id: number) => {
         if (confirm('B?n có ch?c ch?n mu?n xóa phòng này?')) {
             deleteRoom(id);
             toast.success('Xóa phòng thành công!');
@@ -300,26 +300,19 @@ export function RoomManagement() {
                                 <TableHead>T?ng</TableHead>
                                 <TableHead>Tr?ng thái</TableHead>
                                 <TableHead>Giá</TableHead>
-                                <TableHead>Hình ?nh</TableHead>
                                 <TableHead className="text-right">Thao tác</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {rooms.map((room) => {
-                                const roomType = getRoomType();
+                                const roomType = getRoomTypeById(room.room_type);
                                 return (
-                                <TableRow key={room.id}>
+                                <TableRow key={room.room_id}>
                                     <TableCell>{room.room_number}</TableCell>
                                     <TableCell>{roomType?.type_name || 'N/A'}</TableCell>
                                     <TableCell>T?ng {room.floor}</TableCell>
                                     <TableCell>{getStatusBadge(room.status)}</TableCell>
-                                    <TableCell>{roomType ? formatPrice(roomType.base_price) : 'N/A'}</TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-1">
-                                            <ImageIcon className="h-4 w-4 text-gray-400" />
-                                            <span className="text-sm">{room.images.length} ?nh</span>
-                                        </div>
-                                    </TableCell>
+                                    <TableCell>{room ? formatPrice(room.price) : 'N/A'}</TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex items-center justify-end gap-2">
                                             <Button
@@ -332,7 +325,7 @@ export function RoomManagement() {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                onClick={() => handleDelete(room.room_id)}
+                                                onClick={() => handleDelete(Number(room.room_id))}
                                             >
                                                 <Trash2 className="h-4 w-4 text-red-600" />
                                             </Button>
