@@ -9,7 +9,16 @@ export const fetchAllRooms = async() => {
             from Rooms r join RoomType t on r.room_type = t.type_id
             `
         );
-        return rows;
+        if(rows.length === 0) {
+            return {
+                status: 404,
+                message: 'No rooms found.'
+            }
+        }
+        return {
+            status: 200,
+            data: rows
+        }
     } catch (error) {
         console.log('Error: fetchAllRooms function', error.message);
         return error;
@@ -70,7 +79,10 @@ export const addRoom = async({room_number, room_type, price, status, description
         if (newRoom.services) {
             newRoom.services = Array.isArray(newRoom.services) ? newRoom.services : [];       
         }
-        return newRoom;
+        return {
+            status: 201,
+            data: newRoom
+        }
     } catch (error) {
         console.log('Error: addRoom function', error.message);
         return error;

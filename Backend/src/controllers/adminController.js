@@ -147,7 +147,10 @@ export const updateReception = async(request, response) => {
 export const getAllRooms = async(request, response) => {
     try {
         const rooms = await fetchAllRooms();
-        response.status(200).json(rooms);
+        if (rooms.status !== 200) {
+            return response.status(rooms.status).json({ message: rooms.message });
+        }
+        response.status(200).json(rooms.data);
     } catch (error) {
         console.log("getAllRooms function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -179,7 +182,7 @@ export const addNewRoom = async(request, response) => {
         if(!newRoom) {
             return response.status(500).json({message: "System error"});
         }
-        response.status(201).json(newRoom);
+        response.status(201).json(newRoom.data);
     } catch (error) {
         console.log("addNewRoom function error: ", error.message);
         response.status(500).json({message: "System error"});

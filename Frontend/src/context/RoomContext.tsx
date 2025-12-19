@@ -24,14 +24,15 @@ export interface Room {
 }
 
 interface RoomContextType {
-  roomTypes: RoomType[];
-  rooms: Room[];
-  addRoomType: (roomTypeData: any) => Promise<void>;
-  updateRoomType: (id: string, roomType: Partial<RoomType>) => void;
-  deleteRoomType: (id: string | number) => void;
-  addRoom: (roomData: any) => Promise<void>;
-  updateRoom: (id: string, room: Partial<Room>) => void;
-  deleteRoom: (id: string) => void;
+    roomTypes: RoomType[];
+    rooms: Room[];
+    addRoomType: (roomTypeData: any) => Promise<void>;
+    updateRoomType: (id: string, roomType: Partial<RoomType>) => void;
+    deleteRoomType: (id: string | number) => void;
+    addRoom: (roomData: any) => Promise<void>;
+    updateRoom: (id: string, room: Partial<Room>) => void;
+    deleteRoom: (id: string) => void;
+    getRoomType: () => void;
 }
 
 const RoomContext = createContext<RoomContextType | undefined>(undefined);
@@ -81,6 +82,10 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         
     };
 
+    const getRoomType = () => {
+        refetchRoomTypes();
+    }
+
     return (
         <RoomContext.Provider value={{
             roomTypes,
@@ -91,6 +96,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
             addRoom,
             updateRoom,
             deleteRoom,
+            getRoomType
         }}>
             {children}
         </RoomContext.Provider>

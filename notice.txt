@@ -1,0 +1,16 @@
+Room {
+	number,
+	type, 
+	standard,
+	service,
+	area,
+	floor,
+	status,
+	description,
+	price
+}
+
+RoomType {
+	type,
+	capacity
+}

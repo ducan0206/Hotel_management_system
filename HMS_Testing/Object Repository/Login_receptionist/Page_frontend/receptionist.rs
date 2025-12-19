@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>receptionist</name>
+   <tag></tag>
+   <elementGuidId>a8a89146-7e41-4f7e-9906-d48c6d0da6a0</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value></value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//div[@id='root']/div/div/div/div/div[2]</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:text=&quot;ReceptionistManage bookings, check-ins, check-outs and customer support.&quot;i</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>div</value>
+      <webElementGuid>88797c97-6575-4ceb-b114-a932722d7cc6</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>data-slot</name>
+      <type>Main</type>
+      <value>card</value>
+      <webElementGuid>f8da3827-44af-48ed-b00b-2bc561573b32</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>bg-card text-card-foreground flex flex-col gap-6 rounded-xl border hover:shadow-lg transition cursor-pointer</value>
+      <webElementGuid>3929baef-678c-4889-8e08-d17fac6b7c98</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>ReceptionistManage bookings, check-ins, check-outs and customer support.</value>
+      <webElementGuid>45da0477-e042-4bfc-8d53-716a16c04333</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;root&quot;)/div[@class=&quot;min-h-screen&quot;]/div[@class=&quot;min-h-screen flex items-center justify-center bg-blue-100 p-6&quot;]/div[@class=&quot;w-full max-w-xl space-y-6&quot;]/div[@class=&quot;grid grid-cols-1 md:grid-cols-2 gap-6 mt-8&quot;]/div[@class=&quot;bg-card text-card-foreground flex flex-col gap-6 rounded-xl border hover:shadow-lg transition cursor-pointer&quot;]</value>
+      <webElementGuid>9af3747b-6d9b-406f-8909-8a26f538d50d</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//div[@id='root']/div/div/div/div/div[2]</value>
+      <webElementGuid>3e30a57c-8559-4510-a118-3333d33d729c</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Full system control including reservations, users, room types and services.'])[1]/following::div[1]</value>
+      <webElementGuid>b55a9920-20eb-4f6e-8f38-12539ebf5b58</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Administrator'])[1]/following::div[2]</value>
+      <webElementGuid>0e33d9a6-1e70-4e5a-bc5c-4e446478d426</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//div/div/div/div/div/div[2]</value>
+      <webElementGuid>d921dd90-eec1-4d75-8ea0-e72b8ca12144</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//div[(text() = 'ReceptionistManage bookings, check-ins, check-outs and customer support.' or . = 'ReceptionistManage bookings, check-ins, check-outs and customer support.')]</value>
+      <webElementGuid>0513e22b-1c9b-47dd-8a77-d15c95756912</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>
