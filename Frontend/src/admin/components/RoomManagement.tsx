@@ -286,7 +286,7 @@ export function RoomManagement() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Danh sách phòng</CardTitle>
+                    <CardTitle>List of rooms</CardTitle>
                     <CardDescription>
                         T?ng s? {rooms.length} phòng
                     </CardDescription>
