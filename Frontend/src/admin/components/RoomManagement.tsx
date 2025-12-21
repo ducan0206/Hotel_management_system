@@ -127,10 +127,10 @@ export function RoomManagement() {
 
     const getStatusBadge = (status: string) => {
         const statusConfig = {
-            available: { label: '', variant: 'default' as const, className: 'bg-green-100 text-green-800' },
-            occupied: { label: 'Occupied', variant: 'default' as const, className: 'bg-blue-100 text-blue-800' },
-            maintenance: { label: 'Maintenance', variant: 'default' as const, className: 'bg-orange-100 text-orange-800' },
-            reserved: { label: 'Reserved', variant: 'default' as const, className: 'bg-purple-100 text-purple-800' }
+            available: { label: 'Tr?ng', variant: 'default' as const, className: 'bg-green-100 text-green-800' },
+            occupied: { label: '?ang ?', variant: 'default' as const, className: 'bg-blue-100 text-blue-800' },
+            maintenance: { label: 'B?o trì', variant: 'default' as const, className: 'bg-orange-100 text-orange-800' },
+            reserved: { label: '?ã ??t', variant: 'default' as const, className: 'bg-purple-100 text-purple-800' }
         };
         const config = statusConfig[status as keyof typeof statusConfig];
         return (
@@ -244,12 +244,12 @@ export function RoomManagement() {
                     <DialogTrigger asChild>
                         <Button onClick={() => resetForm()}>
                         <Plus className="h-4 w-4 mr-2" />
-                            Add new room
+                            Add New Room
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Add new room</DialogTitle>
+                            <DialogTitle>Add New Room</DialogTitle>
                             <DialogDescription>
                                 Enter detailed information for the new room
                             </DialogDescription>
@@ -268,7 +268,7 @@ export function RoomManagement() {
                 <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Edit room</DialogTitle>
+                            <DialogTitle>Edit Room</DialogTitle>
                             <DialogDescription>
                                 Update room information
                             </DialogDescription>
@@ -288,15 +288,15 @@ export function RoomManagement() {
                 <CardHeader>
                     <CardTitle>List of rooms</CardTitle>
                     <CardDescription>
-                        Total {rooms.length} rooms
+                        Total rooms: {rooms.length}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Room number</TableHead>
-                                <TableHead>Room type</TableHead>
+                                <TableHead>Room Number</TableHead>
+                                <TableHead>Room Type</TableHead>
                                 <TableHead>Floor</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Price</TableHead>

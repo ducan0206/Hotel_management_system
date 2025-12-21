@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { getAllRoomTypes, addNewRoomType, fetchRooms, addNewRoom } from '../apis/APIFunction';
 import { useQuery } from '@tanstack/react-query';
 
@@ -9,18 +9,21 @@ export interface RoomType {
 }
 
 export interface Room {
-    room_id: string | number;
-    room_type: string;
-    room_number: string;
-    price: number;
-    status: 'available' | 'booked' | 'maintenance';
-    description: string;
-    image_url: string;
-    area: number;
-    standard: 'Deluxe' | 'Suite' | 'Standard';
-    floor: number;
-    services: string[];
-    created_at: string;
+    room_id: number,
+    room_type: number,       
+    room_number: string,
+    price: number,
+    status: 'available' | 'booked' | 'maintenance',
+    description: string,
+    image_url: string,
+    area: number,
+    standard: 'Deluxe' | 'Suite' | 'Standard',
+    floor: number,
+    services: any,            
+    created_at: string,
+    updated_at: string,
+    type_name: string,
+    capacity: number
 }
 
 interface RoomContextType {

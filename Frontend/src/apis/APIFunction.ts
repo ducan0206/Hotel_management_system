@@ -135,7 +135,11 @@ export const addNewRoomType = async (roomTypeData: {type_name: string, capacity:
 export const fetchRooms = async () => {
     try {
         const res = await api.get("/all-rooms");
-        return res.data;
+        if (res.data?.status === 404) {
+            console.log("No rooms found.");
+            return [];
+        }
+        return Array.isArray(res.data?.data) ? res.data.data : [];
     } catch (error) {
         console.log("Fetch rooms error: ", error)
         throw error;
