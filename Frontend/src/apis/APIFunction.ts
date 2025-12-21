@@ -9,6 +9,19 @@ const api = axios.create({
     },
 });
 
+export interface AddRoomPayload {
+    room_number: string;
+    room_type: string;
+    price: number;
+    status: string;
+    description: string;
+    area: number;
+    standard: string;
+    floor: number;
+    services?: string[];
+    image_url?: File | null;
+}
+
 export const getAllRooms = async() => {
     try {
         const res = await api.get("/available-rooms");
@@ -115,7 +128,11 @@ export const getAllReceptionists = async () => {
 export const getAllRoomTypes = async () => {
     try {
         const res = await api.get("/admin/room-types");
-        return res.data;
+        if (res.data?.status === 404) {
+            console.log("No room types found.");
+            return [];
+        }
+        return Array.isArray(res.data?.data) ? res.data.data : [];
     } catch (error) {
         console.log("Get all room types error: ", error);
         throw error;
@@ -146,12 +163,36 @@ export const fetchRooms = async () => {
     }
 }
 
-export const addNewRoom = async (roomData: {room_number: string, room_type: string, price: number, status: string, description: string, image_url: string, area: number, standard: number, floor: number, services?: string[]}) => {
+export const addNewRoom = async (roomData: AddRoomPayload) => {
     try {
-        const res = await api.post("/admin/new-room", roomData);
+        const formData = new FormData();
+
+        formData.append("room_number", roomData.room_number);
+        formData.append("room_type", roomData.room_type);
+        formData.append("price", String(roomData.price));
+        formData.append("status", roomData.status);
+        formData.append("description", roomData.description);
+        formData.append("area", String(roomData.area));
+        formData.append("standard", roomData.standard);
+        formData.append("floor", String(roomData.floor));
+
+        if (roomData.services?.length) {
+            formData.append("services", JSON.stringify(roomData.services));
+        }
+
+        if (roomData.image_url) {
+            formData.append("img", roomData.image_url); // ?? ph?i là "img"
+        }
+
+        const res = await api.post("/admin/add-room", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
         return res.data;
     } catch (error) {
-        console.log("Add new room error: ", error);
+        console.log("Add new room error:", error);
         throw error;
     }
-}
+};

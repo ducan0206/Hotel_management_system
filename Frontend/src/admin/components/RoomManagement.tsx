@@ -8,9 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '../../ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
 import { Badge } from '../../ui/badge';
-import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Plus, Pencil, Trash2, Upload } from 'lucide-react';
 import { useRooms } from '../../context/RoomContext';
 import { toast } from 'sonner';
+
+type RoomStatus = 'available' | 'booked' | 'reserved';
+type RoomStandard = 'Deluxe' | 'Suite' | 'Standard';
 
 export function RoomManagement() {
     const { rooms, roomTypes, addRoom, updateRoom, deleteRoom, getRoomTypeById } = useRooms();
@@ -19,18 +22,28 @@ export function RoomManagement() {
     const [editingRoom, setEditingRoom] = useState<any>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
   
-    const [formData, setFormData] = useState({
-        room_type: '',
-        room_number: '',
+    const [formData, setFormData] = useState<{
+        room_number: string;
+        room_type: string;
+        price: number;
+        status: RoomStatus;   // ?? QUAN TR?NG
+        description: string;
+        image: File | null;
+        area: number;
+        standard: RoomStandard;
+        floor: number;
+        services: string[];
+    }>({
+        room_number: "",
+        room_type: "",
         price: 0,
-        status: '',
-        description: '',
-        image_url: null as File | null,
+        status: "available", // ?? literal h?p l?
+        description: "",
+        image: null,
         area: 0,
-        standard: '',
+        standard: "Standard",
         floor: 0,
         services: [],
-        created_at: ''
     });
 
     const resetForm = () => {
@@ -38,86 +51,90 @@ export function RoomManagement() {
             room_type: '',
             room_number: '',
             price: 0,
-            status: '',
+            status: 'available',
             description: '',
-            image_url: null as File | null,
+            image: null as File | null,
             area: 0,
-            standard: '',
+            standard: 'Standard',
             floor: 0,
             services: [],
-            created_at: ''
         });
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files?.[0];
-        if (files) {
-            setFormData({
-                ...formData,
-                image_url: files
-            });
-            toast.success(`The image ${files.name} has been uploaded successfully!`);
+        const file = e.target.files?.[0];
+        if (file) {
+            setFormData(prev => ({
+                ...prev,
+                image: file
+            }));
+            toast.success(`Uploaded ${file.name}`);
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!formData.room_number || !formData.room_type || !formData.floor) {
             toast.error('Please fill in all required fields.');
             return;
         }
 
-        // Check if room number already exists (except when editing the same room)
-        const roomNumberExists = rooms.some(r => 
-            r.room_number === formData.room_number && (!editingRoom || r.room_id !== editingRoom.id)
+        const roomNumberExists = rooms.some(r =>
+            r.room_number === formData.room_number &&
+            (!editingRoom || r.room_id !== editingRoom.room_id)
         );
-        
+
         if (roomNumberExists) {
             toast.error('Room number already exists!');
             return;
         }
 
-        const roomData = {
+        const payload = {
             room_number: formData.room_number,
             room_type: formData.room_type,
-            floor: formData.floor,
+            price: formData.price,
             status: formData.status,
-            images: formData.image_url ? [formData.image_url] : ['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80'],
-            notes: formData.description  || undefined
+            description: formData.description,
+            area: formData.area,
+            standard: formData.standard,
+            floor: formData.floor,
+            services: formData.services,
+            image: formData.image, // ?? File
         };
 
-        if (isEditDialogOpen && editingRoom) {
-            //updateRoom(editingRoom.id, roomData);
-            toast.success('Update room successfully!');
-            setIsEditDialogOpen(false);
-        } else {
-            addRoom(roomData);
-            toast.success('Add room successfully!');
-            setIsAddDialogOpen(false);
+        try {
+            if (isEditDialogOpen && editingRoom) {
+                toast.success('Update room successfully!');
+                setIsEditDialogOpen(false);
+            } else {
+                await addRoom(payload);
+                toast.success('Add room successfully!');
+                setIsAddDialogOpen(false);
+            }
+            resetForm();
+            setEditingRoom(null);
+        } catch {
+            toast.error('Operation failed!');
         }
-
-        resetForm();
-        setEditingRoom(null);
     };
+
 
     const handleEdit = (room: any) => {
         setEditingRoom(room);
-
         setFormData({
             room_number: room.room_number,
-            room_type: room.type_name,     
-            floor: room.floor?.toString() ?? '',
-            status: room.status ?? 'available',
+            room_type: room.type_name,  
+            price: room.price,
+            status: room.status,
             description: room.description ?? '',
-            price: room.price ?? 0,
             area: room.area ?? 0,
-            standard: room.standard ?? '',
+            standard: room.standard ?? 'Standard',
+            floor: room.floor ?? 0,
             services: room.services ?? [],
-            image_url: null,
-            created_at: room.created_at ?? '',
+            image: null,
         });
-
         setIsEditDialogOpen(true);
     };
+
     const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to delete this room?')) {
             deleteRoom(id);
@@ -127,10 +144,9 @@ export function RoomManagement() {
 
     const getStatusBadge = (status: string) => {
         const statusConfig = {
-            available: { label: 'Tr?ng', variant: 'default' as const, className: 'bg-green-100 text-green-800' },
-            occupied: { label: '?ang ?', variant: 'default' as const, className: 'bg-blue-100 text-blue-800' },
-            maintenance: { label: 'B?o trì', variant: 'default' as const, className: 'bg-orange-100 text-orange-800' },
-            reserved: { label: '?ã ??t', variant: 'default' as const, className: 'bg-purple-100 text-purple-800' }
+            available: { label: 'Empty', variant: 'default' as const, className: 'bg-green-100 text-green-800' },
+            booked: { label: 'Occupied', variant: 'default' as const, className: 'bg-blue-100 text-blue-800' },
+            maintenance: { label: 'Maintenance', variant: 'default' as const, className: 'bg-orange-100 text-orange-800' },
         };
         const config = statusConfig[status as keyof typeof statusConfig];
         return (
@@ -141,7 +157,7 @@ export function RoomManagement() {
     };
 
     const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
     };
 
     const renderRoomDialog = (isEdit: boolean) => (
@@ -169,12 +185,48 @@ export function RoomManagement() {
                 </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor={isEdit ? 'edit-price' : 'price'}>Price ($) *</Label>
+                    <Input
+                        id={isEdit ? 'edit-price' : 'price'}
+                        type="number"
+                        value={formData.price}
+                        onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                        placeholder="1000000"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor={isEdit ? 'edit-area' : 'area'}>Area (m<sup>2</sup>) *</Label>
+                    <Input
+                        id={isEdit ? 'edit-area' : 'area'}
+                        type="number"
+                        value={formData.area}   
+                        onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
+                        placeholder="30"
+                    />
+                </div>
+            </div>
+
             <div className="space-y-2">
                 <Label htmlFor={isEdit ? 'edit-roomType' : 'roomType'}>Room Type *</Label>
-                <Select value={formData.room_type} onValueChange={(value) => setFormData({ ...formData, room_type: value })}>
+                <Select
+                    value={formData.room_type}
+                    onValueChange={(value) =>
+                        setFormData({ ...formData, room_type: value })
+                    }
+                >
                     <SelectTrigger>
                         <SelectValue placeholder="Select room type" />
                     </SelectTrigger>
+                    <SelectContent>
+                        {roomTypes.map(rt => (
+                            <SelectItem key={rt.type_id} value={rt.type_name}>
+                                {rt.type_name} ({rt.capacity})
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
                 </Select>
             </div>
 
@@ -186,9 +238,22 @@ export function RoomManagement() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="available">Available</SelectItem>
-                        <SelectItem value="occupied">Occupied</SelectItem>
+                        <SelectItem value="booked">Booked</SelectItem>
                         <SelectItem value="maintenance">Maintenance</SelectItem>
-                        <SelectItem value="reserved">Reserved</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor={isEdit ? 'edit-standard' : 'standard'}>Standard *</Label>
+                <Select value={formData.standard} onValueChange={(value: any) => setFormData({ ...formData, standard: value })}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select standard" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Deluxe">Deluxe</SelectItem>
+                        <SelectItem value="Suite">Suite</SelectItem>
+                        <SelectItem value="Standard">Standard</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -201,7 +266,6 @@ export function RoomManagement() {
                         ref={fileInputRef}
                         onChange={handleImageUpload}
                         accept="image/*"
-                        multiple
                         className="hidden"
                     />
                     <Button
@@ -221,12 +285,12 @@ export function RoomManagement() {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor={isEdit ? 'edit-notes' : 'notes'}>Notes</Label>
+                <Label htmlFor={isEdit ? 'edit-notes' : 'notes'}>Description</Label>
                 <Textarea
                     id={isEdit ? 'edit-notes' : 'notes'}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Notes about the room (if any)..."
+                    placeholder="Description about the room (if any)..."
                     rows={3}
                 />
             </div>
@@ -310,7 +374,7 @@ export function RoomManagement() {
                                 <TableRow key={room.room_id}>
                                     <TableCell>{room.room_number}</TableCell>
                                     <TableCell>{roomType?.type_name || 'N/A'}</TableCell>
-                                    <TableCell>T?ng {room.floor}</TableCell>
+                                    <TableCell>Floor {room.floor}</TableCell>
                                     <TableCell>{getStatusBadge(room.status)}</TableCell>
                                     <TableCell>{room ? formatPrice(room.price) : 'N/A'}</TableCell>
                                     <TableCell className="text-right">

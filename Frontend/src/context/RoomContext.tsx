@@ -26,13 +26,26 @@ export interface Room {
     capacity: number
 }
 
+export interface AddRoomPayload {
+    room_number: string;
+    room_type: string;        
+    price: number;
+    status: 'available' | 'booked' | 'reserved';
+    description: string;
+    area: number;
+    standard: 'Deluxe' | 'Suite' | 'Standard';
+    floor: number;
+    services?: string[];
+    image?: File | null;      
+}
+
 interface RoomContextType {
     roomTypes: RoomType[];
     rooms: Room[];
     addRoomType: (roomTypeData: any) => Promise<void>;
     updateRoomType: (id: string, roomType: Partial<RoomType>) => void;
     deleteRoomType: (id: string | number) => void;
-    addRoom: (roomData: any) => Promise<void>;
+    addRoom: (roomData: AddRoomPayload) => Promise<void>;
     updateRoom: (id: string, room: Partial<Room>) => void;
     deleteRoom: (id: number) => void;
     getRoomTypeById: (id: string | number) => RoomType | undefined;
@@ -46,7 +59,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         queryFn: getAllRoomTypes,
     });
 
-    const { data: rooms, refetch: refetchRooms } = useQuery({
+    const { data: rooms = [], refetch: refetchRooms } = useQuery({
         queryKey: ['rooms'],
         queryFn: fetchRooms,
     });
@@ -68,7 +81,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         
     };
 
-    const addRoom = async (roomData: any) => {
+    const addRoom = async (roomData: AddRoomPayload) => {
         try {
             await addNewRoom(roomData);
             refetchRooms();
@@ -85,9 +98,12 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         
     };
 
-    const getRoomTypeById = (id: string | number) => {
-        return undefined;
+    const getRoomTypeById = (id: string | number): RoomType | undefined => {
+        return roomTypes?.find(
+            (type: RoomType) => String(type.type_id) === String(id)
+        );
     };
+
 
     return (
         <RoomContext.Provider value={{
