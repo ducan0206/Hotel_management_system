@@ -46,6 +46,7 @@ export const fetchRoomByID = async(id) => {
 
 export const addRoom = async({room_number, room_type, price, status, description, image_url, area, standard, floor, services}) => {
     try {
+        console.log(status);
         const [type] = await db.query('select type_id from RoomType where type_name = ?', [room_type]);
         if(type.length === 0) {
             throw new Error(`Room Type ${room_type} not existed.`);
@@ -77,7 +78,11 @@ export const addRoom = async({room_number, room_type, price, status, description
         );
         const newRoom = rows[0];
         if (newRoom.services) {
-            newRoom.services = Array.isArray(newRoom.services) ? newRoom.services : [];       
+            try {
+                newRoom.services = JSON.parse(newRoom.services);
+            } catch (e) {
+                newRoom.services = [];
+            }
         }
         return {
             status: 201,
@@ -153,7 +158,16 @@ export const deletingRoom = async(id) => {
 export const fetchAllRoomTypes = async() => {
     try {
         const [rows] = await db.query("select * from RoomType");
-        return rows;
+        if(rows.length === 0) {
+            return {
+                status: 404,
+                message: 'No room types found.'
+            }
+        }
+        return {
+            status: 200,
+            data: rows
+        };
     } catch (error) {
         console.log('Error: fetchAllRoomTypes function', error.message);
         return error;

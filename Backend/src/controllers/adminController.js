@@ -170,24 +170,24 @@ export const getRoomByID = async(request, response) => {
     }
 }
 
-export const addNewRoom = async(request, response) => {
+export const addNewRoom = async (request, response) => {
     try {
-        // Cloudinary automatically provides a secure URL
+        console.log("BODY:", request.body);
+        console.log(request.file);
+
         const imageUrl = request.file ? request.file.path : null;
 
         const newRoom = await addRoom({
             ...request.body,
-            img_url: imageUrl
+            image_url: imageUrl
         });
-        if(!newRoom) {
-            return response.status(500).json({message: "System error"});
-        }
+
         response.status(201).json(newRoom.data);
     } catch (error) {
-        console.log("addNewRoom function error: ", error.message);
-        response.status(500).json({message: "System error"});
+        console.log("addNewRoom function error:", error.message);
+        response.status(500).json({ message: error.message || "System error" });
     }
-}
+};
 
 export const updateRoom = async(request, response) => {
     try {
@@ -220,6 +220,9 @@ export const deleteRoom = async(request, response) => {
 export const getAllRoomTypes = async(request, response) => {
     try {
         const result = await fetchAllRoomTypes();
+        if (result.status !== 200) {
+            return response.status(result.status).json({ message: result.message });
+        }
         response.status(200).json(result);
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);

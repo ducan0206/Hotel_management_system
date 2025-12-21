@@ -9,7 +9,6 @@ import {getAllRooms, getRoomByID, addNewRoom, updateRoom, deleteRoom, createNewR
         adminLogin
 } from '../controllers/adminController.js'
 
-
 const adminRoute = express.Router();
 
 // admin authentication
@@ -31,7 +30,7 @@ adminRoute.get("/all-rooms", getAllRooms);
 
 adminRoute.get("/room/:id", getRoomByID);
 
-adminRoute.post("/add-room", uploadCloud.single("img"), addNewRoom);
+adminRoute.post("/add-room", uploadCloud.single("image"), addNewRoom);
 
 adminRoute.put("/update-room/:id", updateRoom);
 
