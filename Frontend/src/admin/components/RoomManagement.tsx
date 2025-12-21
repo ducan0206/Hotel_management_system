@@ -87,11 +87,11 @@ export function RoomManagement() {
 
         if (isEditDialogOpen && editingRoom) {
             //updateRoom(editingRoom.id, roomData);
-            toast.success('C?p nh?t phòng thành công!');
+            toast.success('Update room successfully!');
             setIsEditDialogOpen(false);
         } else {
             addRoom(roomData);
-            toast.success('Thêm phòng m?i thành công!');
+            toast.success('Add room successfully!');
             setIsAddDialogOpen(false);
         }
 
@@ -119,18 +119,18 @@ export function RoomManagement() {
         setIsEditDialogOpen(true);
     };
     const handleDelete = (id: number) => {
-        if (confirm('B?n có ch?c ch?n mu?n xóa phòng này?')) {
+        if (confirm('Are you sure you want to delete this room?')) {
             deleteRoom(id);
-            toast.success('Xóa phòng thành công!');
+            toast.success('Delete room successfully!');
         }
     };
 
     const getStatusBadge = (status: string) => {
         const statusConfig = {
-            available: { label: 'Tr?ng', variant: 'default' as const, className: 'bg-green-100 text-green-800' },
-            occupied: { label: '?ang ?', variant: 'default' as const, className: 'bg-blue-100 text-blue-800' },
-            maintenance: { label: 'B?o trì', variant: 'default' as const, className: 'bg-orange-100 text-orange-800' },
-            reserved: { label: '?ã ??t', variant: 'default' as const, className: 'bg-purple-100 text-purple-800' }
+            available: { label: '', variant: 'default' as const, className: 'bg-green-100 text-green-800' },
+            occupied: { label: 'Occupied', variant: 'default' as const, className: 'bg-blue-100 text-blue-800' },
+            maintenance: { label: 'Maintenance', variant: 'default' as const, className: 'bg-orange-100 text-orange-800' },
+            reserved: { label: 'Reserved', variant: 'default' as const, className: 'bg-purple-100 text-purple-800' }
         };
         const config = statusConfig[status as keyof typeof statusConfig];
         return (
@@ -148,7 +148,7 @@ export function RoomManagement() {
         <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label htmlFor={isEdit ? 'edit-roomNumber' : 'roomNumber'}>S? phòng *</Label>
+                    <Label htmlFor={isEdit ? 'edit-roomNumber' : 'roomNumber'}>Room Number *</Label>
                     <Input
                         id={isEdit ? 'edit-roomNumber' : 'roomNumber'}
                         value={formData.room_number}
@@ -158,7 +158,7 @@ export function RoomManagement() {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor={isEdit ? 'edit-floor' : 'floor'}>T?ng *</Label>
+                    <Label htmlFor={isEdit ? 'edit-floor' : 'floor'}>Floor *</Label>
                     <Input
                         id={isEdit ? 'edit-floor' : 'floor'}
                         type="number"
@@ -170,31 +170,31 @@ export function RoomManagement() {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor={isEdit ? 'edit-roomType' : 'roomType'}>Lo?i phòng *</Label>
+                <Label htmlFor={isEdit ? 'edit-roomType' : 'roomType'}>Room Type *</Label>
                 <Select value={formData.room_type} onValueChange={(value) => setFormData({ ...formData, room_type: value })}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Ch?n lo?i phòng" />
+                        <SelectValue placeholder="Select room type" />
                     </SelectTrigger>
                 </Select>
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor={isEdit ? 'edit-status' : 'status'}>Tr?ng thái *</Label>
+                <Label htmlFor={isEdit ? 'edit-status' : 'status'}>Status *</Label>
                 <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Ch?n tr?ng thái" />
+                        <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="available">Tr?ng</SelectItem>
-                        <SelectItem value="occupied">?ang ?</SelectItem>
-                        <SelectItem value="maintenance">B?o trì</SelectItem>
-                        <SelectItem value="reserved">?ã ??t</SelectItem>
+                        <SelectItem value="available">Available</SelectItem>
+                        <SelectItem value="occupied">Occupied</SelectItem>
+                        <SelectItem value="maintenance">Maintenance</SelectItem>
+                        <SelectItem value="reserved">Reserved</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
 
             <div className="space-y-2">
-                <Label>Hình ?nh phòng</Label>
+                <Label>Room Images</Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                     <input
                         type="file"
@@ -211,22 +211,22 @@ export function RoomManagement() {
                         onClick={() => fileInputRef.current?.click()}
                     >
                         <Upload className="h-4 w-4 mr-2" />
-                        Upload hình ?nh
+                        Upload images
                     </Button>
                     
                 </div>
                 <p className="text-sm text-gray-500">
-                    B?n có th? upload nhi?u hình ?nh. N?u không upload, h? th?ng s? s? d?ng hình ?nh m?c ??nh.
+                    You can upload multiple images for the room.
                 </p>
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor={isEdit ? 'edit-notes' : 'notes'}>Ghi chú</Label>
+                <Label htmlFor={isEdit ? 'edit-notes' : 'notes'}>Notes</Label>
                 <Textarea
                     id={isEdit ? 'edit-notes' : 'notes'}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Ghi chú v? phòng (n?u có)..."
+                    placeholder="Notes about the room (if any)..."
                     rows={3}
                 />
             </div>
@@ -237,29 +237,29 @@ export function RoomManagement() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl">Qu?n lý phòng</h2>
-                    <p className="text-gray-500">Qu?n lý các phòng trong khách s?n</p>
+                    <h2 className="text-3xl">Room Management</h2>
+                    <p className="text-gray-500">Manage rooms in the hotel</p>
                 </div>
                 <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                     <DialogTrigger asChild>
                         <Button onClick={() => resetForm()}>
                         <Plus className="h-4 w-4 mr-2" />
-                            Thêm phòng m?i
+                            Add new room
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Thêm phòng m?i</DialogTitle>
+                            <DialogTitle>Add new room</DialogTitle>
                             <DialogDescription>
-                                Nh?p thông tin chi ti?t cho phòng m?i
+                                Enter detailed information for the new room
                             </DialogDescription>
                         </DialogHeader>
                         {renderRoomDialog(false)}
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                                H?y
+                                Cancel
                             </Button>
-                            <Button onClick={handleSubmit}>Thêm phòng</Button>
+                            <Button onClick={handleSubmit}>Add Room</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -268,17 +268,17 @@ export function RoomManagement() {
                 <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Ch?nh s?a phòng</DialogTitle>
+                            <DialogTitle>Edit room</DialogTitle>
                             <DialogDescription>
-                                C?p nh?t thông tin phòng
+                                Update room information
                             </DialogDescription>
                         </DialogHeader>
                         {renderRoomDialog(true)}
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                                H?y
+                                Cancel
                             </Button>
-                            <Button onClick={handleSubmit}>C?p nh?t</Button>
+                            <Button onClick={handleSubmit}>Update</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -288,19 +288,19 @@ export function RoomManagement() {
                 <CardHeader>
                     <CardTitle>List of rooms</CardTitle>
                     <CardDescription>
-                        T?ng s? {rooms.length} phòng
+                        Total {rooms.length} rooms
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>S? phòng</TableHead>
-                                <TableHead>Lo?i phòng</TableHead>
-                                <TableHead>T?ng</TableHead>
-                                <TableHead>Tr?ng thái</TableHead>
-                                <TableHead>Giá</TableHead>
-                                <TableHead className="text-right">Thao tác</TableHead>
+                                <TableHead>Room number</TableHead>
+                                <TableHead>Room type</TableHead>
+                                <TableHead>Floor</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Price</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
