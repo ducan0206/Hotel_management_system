@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '../../ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
 import { Badge } from '../../ui/badge';
-import { Plus, Pencil, Trash2, Upload } from 'lucide-react';
+import { Plus, Pencil, Trash2, Upload, Wifi, Martini, AirVent, Bath, Tv, SquareParking } from 'lucide-react';
 import { useRooms } from '../../context/RoomContext';
 import { toast } from 'sonner';
 
@@ -60,6 +60,16 @@ export function RoomManagement() {
             services: [],
         });
     };
+
+    const SERVICE_OPTIONS = [
+        { label: "Wi-Fi", value: "wifi", icon: Wifi },
+        { label: "Minibar", value: "minibar", icon: Martini },
+        { label: "Air Conditioner", value: "air_conditioner", icon: AirVent },
+        { label: "Television", value: "tv", icon: Tv },
+        { label: "Bathtub", value: "bathtub", icon: Bath },
+        { label: "Parking", value: "parking", icon: SquareParking }
+    ];
+
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -117,7 +127,6 @@ export function RoomManagement() {
         }
     };
 
-
     const handleEdit = (room: any) => {
         setEditingRoom(room);
         setFormData({
@@ -158,6 +167,15 @@ export function RoomManagement() {
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+    };
+
+    const toggleService = (service: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            services: prev.services.includes(service)
+            ? prev.services.filter((s) => s !== service)
+            : [...prev.services, service],
+        }));
     };
 
     const renderRoomDialog = (isEdit: boolean) => (
@@ -256,6 +274,28 @@ export function RoomManagement() {
                         <SelectItem value="Standard">Standard</SelectItem>
                     </SelectContent>
                 </Select>
+            </div>
+
+            <div className="space-y-2">
+                <Label>Services</Label>
+
+                <div className="grid grid-cols-2 gap-3">
+                    {SERVICE_OPTIONS.map((service) => (
+                        <label
+                            key={service.value}
+                            className="flex items-center gap-2 cursor-pointer"
+                        >
+                            <input
+                                type="checkbox"
+                                checked={formData.services.includes(service.value)}
+                                onChange={() => toggleService(service.value)}
+                                className="h-4 w-4"
+                            />
+                            {/* <Icon className="h-4 w-4 text-gray-600" /> */}
+                            <span className="text-sm">{service.label}</span>
+                        </label>
+                    ))}
+                </div>
             </div>
 
             <div className="space-y-2">
