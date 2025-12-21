@@ -19,7 +19,7 @@ export interface AddRoomPayload {
     standard: string;
     floor: number;
     services?: string[];
-    image_url?: File | null;
+    image?: File | null;
 }
 
 export const getAllRooms = async() => {
@@ -180,8 +180,8 @@ export const addNewRoom = async (roomData: AddRoomPayload) => {
             formData.append("services", JSON.stringify(roomData.services));
         }
 
-        if (roomData.image_url) {
-            formData.append("img", roomData.image_url); // ?? ph?i là "img"
+        if (roomData.image) {
+            formData.append("image", roomData.image); 
         }
 
         const res = await api.post("/admin/add-room", formData, {
