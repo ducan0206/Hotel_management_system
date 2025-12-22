@@ -196,3 +196,23 @@ export const addNewRoom = async (roomData: AddRoomPayload) => {
         throw error;
     }
 };
+
+export const deletingRoom = async (id: number) => {
+    try {
+        const res = await api.delete(`/admin/delete-room/${id}`);
+        return res.data;
+    } catch (error) {
+        console.log("Delete room error:", error);
+        throw error;
+    }
+}
+
+export const deletingRoomType = async (id: number) => {
+    try {
+        const res = await api.delete(`/admin/delete-room-type/${id}`);
+        return res.data;
+    } catch (error) {
+        console.log("Delete room type error:", error);
+        throw error;
+    }
+}

@@ -66,7 +66,7 @@ export function RoomManagement() {
         { label: "Minibar", value: "minibar", icon: Martini },
         { label: "Air Conditioner", value: "air_conditioner", icon: AirVent },
         { label: "Television", value: "tv", icon: Tv },
-        { label: "Bathtub", value: "bathtub", icon: Bath },
+        { label: "Bath", value: "bath", icon: Bath },
         { label: "Parking", value: "parking", icon: SquareParking }
     ];
 
@@ -108,7 +108,7 @@ export function RoomManagement() {
             standard: formData.standard,
             floor: formData.floor,
             services: formData.services,
-            image: formData.image, // ?? File
+            image: formData.image, 
         };
 
         try {
@@ -147,7 +147,6 @@ export function RoomManagement() {
     const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to delete this room?')) {
             deleteRoom(id);
-            toast.success('Delete room successfully!');
         }
     };
 

@@ -1,6 +1,7 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import { getAllRoomTypes, addNewRoomType, fetchRooms, addNewRoom } from '../apis/APIFunction';
+import { getAllRoomTypes, addNewRoomType, fetchRooms, addNewRoom, deletingRoom, deletingRoomType } from '../apis/APIFunction';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner'
 
 export interface RoomType {
     type_id: string | number;
@@ -44,7 +45,7 @@ interface RoomContextType {
     rooms: Room[];
     addRoomType: (roomTypeData: any) => Promise<void>;
     updateRoomType: (id: string, roomType: Partial<RoomType>) => void;
-    deleteRoomType: (id: string | number) => void;
+    deleteRoomType: (id: number) => void;
     addRoom: (roomData: AddRoomPayload) => Promise<void>;
     updateRoom: (id: string, room: Partial<Room>) => void;
     deleteRoom: (id: number) => void;
@@ -77,8 +78,17 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         
     };
 
-    const deleteRoomType = (id: string | number) => {
-        
+    const deleteRoomType = async (id: number) => {
+        try {
+            const res = await deletingRoomType(id);
+            if(res.status !== 200) {
+                toast.error(<span className="mess">{res.message}</span>)
+            }
+            toast.success(<span className="mess">Delete room type successfully!</span>)
+            refetchRoomTypes();
+        } catch (error) {
+            console.log("Error deleting room:", error)
+        }
     };
 
     const addRoom = async (roomData: AddRoomPayload) => {
@@ -94,8 +104,17 @@ export function RoomProvider({ children }: { children: ReactNode }) {
 
     };
 
-    const deleteRoom = (id: number) => {
-        
+    const deleteRoom = async (id: number) => {
+        try {
+            const res = await deletingRoom(id);
+            if(res.status !== 200) {
+                toast.error(<span className="mess">{res.message}</span>)
+            }
+            toast.success(<span className="mess">Delete room successfully!</span>)
+            refetchRooms();
+        } catch (error) {
+            console.log("Error deleting room:", error)
+        }
     };
 
     const getRoomTypeById = (id: string | number): RoomType | undefined => {

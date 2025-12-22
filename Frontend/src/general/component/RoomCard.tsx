@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "../../ui/card.tsx";
 import { Badge } from "../../ui/badge.tsx";
 import { Button } from "../../ui/button.tsx";
-import type { Room } from "../pages/Room.tsx";
+import type { Room } from "../../context/RoomContext.tsx";
 import { ImageWithFallback } from "../utils/ImageWithFallback.tsx";
-import { Users,Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2, Utensils, } from "lucide-react";
+import { Users,Maximize, Layers, Wifi, Tv, Wine, Eye, Edit, Trash2, Utensils, SquareParking, AirVent, Bath } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -19,7 +19,6 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
     const navigate = useNavigate();
     const [isAdmin, setIsAdmin] = useState(false);
 
-    /** ? FIX: ??m b?o services luôn là m?ng */
     const services: string[] = Array.isArray(room.services) ? room.services : [];
 
     useEffect(() => {
@@ -50,13 +49,15 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
         }
     };
 
-  /** Icon theo service */
     const getAmenityIcon = (amenity: string) => {
         const lower = amenity.toLowerCase();
         if (lower.includes("wifi")) return <Wifi className="w-4 h-4" />;
         if (lower.includes("tv")) return <Tv className="w-4 h-4" />;
-        if (lower.includes("bar")) return <Wine className="w-4 h-4" />;
+        if (lower.includes("minibar")) return <Wine className="w-4 h-4" />;
         if (lower.includes("breakfast")) return <Utensils className="w-4 h-4" />;
+        if (lower.includes("air_conditioner")) return <AirVent className="w-4 h-4" />;
+        if (lower.includes("parking")) return <SquareParking className="w-4 h-4" />;
+        if (lower.includes("bath")) return <Bath className="w-4 h-4" />;
         return null;
     };
 
@@ -70,7 +71,6 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
         });
     };
 
-  /* ================= LIST VIEW ================= */
     if (viewMode === "list") {
         return (
             <Card className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -99,7 +99,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
                                 <Users className="w-4 h-4" /> {room.capacity} people
                             </div>
                             <div className="flex items-center gap-1">
-                                <Maximize className="w-4 h-4" /> {room.area} m²
+                                <Maximize className="w-4 h-4" /> {room.area} m<sup>2</sup>
                             </div>
                             <div className="flex items-center gap-1">
                                 <Layers className="w-4 h-4" /> Floor {room.floor}
@@ -109,7 +109,6 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
                             </Badge>
                         </div>
 
-                        {/* ? Services + icons */}
                         {services.length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {services.slice(0, 5).map((s, i) => (
@@ -186,7 +185,7 @@ export function RoomCard({ room, viewMode }: RoomCardProps) {
 
                 <div className="flex gap-3 text-sm text-gray-600 mb-3">
                     <Users className="w-4 h-4" /> {room.capacity}
-                    <Maximize className="w-4 h-4" /> {room.area}m²
+                    <Maximize className="w-4 h-4" /> {room.area}m<sup>2</sup>
                 </div>
 
                 {services.length > 0 && (

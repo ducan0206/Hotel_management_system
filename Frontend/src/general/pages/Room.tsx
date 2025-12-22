@@ -7,21 +7,6 @@ import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useRooms } from "../../context/RoomContext";
 
-export interface Room {
-    room_id: number;
-    room_number: string;
-    type_name: string;
-    capacity: number;
-    price: number;
-    status: "available" | "booked" | "maintenance";
-    description: string;
-    image_url: string;
-    area: number;
-    standard: string;
-    floor: number;
-    services: string[] | null;
-}
-
 const RoomsPage = () => {
     const { rooms } = useRooms();
 

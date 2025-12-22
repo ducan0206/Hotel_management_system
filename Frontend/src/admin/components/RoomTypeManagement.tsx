@@ -62,7 +62,7 @@ export function RoomTypeManagement() {
         setIsEditDialogOpen(true);
     };
 
-    const handleDelete = (id: string | number) => {
+    const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to delete this room type?')) {
             deleteRoomType(id);
             toast.success('Room type deleted successfully!');
@@ -167,7 +167,7 @@ export function RoomTypeManagement() {
                 <CardHeader>
                     <CardTitle>List of Room Types</CardTitle>
                     <CardDescription>
-                        Total of {roomTypes.length} room types
+                        Total of {roomTypes?.length} room types
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -180,7 +180,7 @@ export function RoomTypeManagement() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {roomTypes.map((roomType) => (
+                            {roomTypes?.map((roomType) => (
                                 <TableRow key={roomType.type_id}>
                                     <TableCell>{roomType.type_name}</TableCell>
                                     <TableCell>
@@ -201,7 +201,7 @@ export function RoomTypeManagement() {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                onClick={() => handleDelete(roomType.type_id)}
+                                                onClick={() => handleDelete(Number(roomType.type_id))}
                                             >
                                                 <Trash2 className="h-4 w-4 text-red-600" />
                                             </Button>
