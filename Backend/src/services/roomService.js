@@ -148,7 +148,10 @@ export const deletingRoom = async(id) => {
             where room_id = ?
             `, [id]
         );
-        return {message: `Room with ${id} has been deleted.`}
+        return {
+            status: 200,
+            message: `Room with id ${id} has been deleted.`
+        }
     } catch (error) {
         console.log('Error: deletingRoom function', error.message);
         return error;
@@ -216,7 +219,10 @@ export const deletingRoomType = async(id) => {
     try {
         const [existingType] = await db.query("select * from RoomType where type_id = ?", [id]);
         if(existingType.length === 0) {
-            throw new Error(`Room type with ${id} not found.`);
+            return {
+                status: 404,
+                message: `Room type with id ${id} not found.`
+            }
         }
         const [roomsUsingType] = await db.query(
             "select count(*) as c from Rooms where room_type = ?",
@@ -231,7 +237,10 @@ export const deletingRoomType = async(id) => {
             where type_id = ? 
             `, [id]
         )
-        return {message: `Room type with id ${id} has been deleted.`};
+        return {
+            status: 200,
+            message: `Room type with id ${id} has been deleted.`
+        };
     } catch (error) {
         console.log('Error: deletingRoomType function', error.message);
         return error;

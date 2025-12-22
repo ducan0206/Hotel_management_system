@@ -208,9 +208,9 @@ export const deleteRoom = async(request, response) => {
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingRoom(id);
-        if(result.status === 404) 
-            return response.status(404).json({message: result.message});
-        return response.status(204).send();
+        if(result.status !== 200) 
+            return response.status(result.status).json({message: result.message});
+        return response.status(200).send({message: result.message});
     } catch (error) {
         console.log("deleteRoom function error: ", error.message);
         response.status(500).json({message: "System error"});
@@ -262,9 +262,9 @@ export const deleteRoomType = async(request, response) => {
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingRoomType(id);
-        if(result.status === 404) 
-            return response.status(404).json({message: result.message});
-        return response.status(204).send();
+        if(result.status !== 200) 
+            return response.status(result.status).json(result.message);
+        return response.status(200).send({message: result.message});
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);
         response.status(500).json({message: "System error"});
