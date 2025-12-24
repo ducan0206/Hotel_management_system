@@ -12,7 +12,7 @@ import { Plus, Pencil, Trash2, Upload, Wifi, Martini, AirVent, Bath, Tv, SquareP
 import { useRooms } from '../../context/RoomContext';
 import { toast } from 'sonner';
 
-type RoomStatus = 'available' | 'booked' | 'reserved';
+type RoomStatus = 'available' | 'booked' | 'maintenance';
 type RoomStandard = 'Deluxe' | 'Suite' | 'Standard';
 
 export function RoomManagement() {
@@ -26,7 +26,7 @@ export function RoomManagement() {
         room_number: string;
         room_type: string;
         price: number;
-        status: RoomStatus;   // ?? QUAN TR?NG
+        status: RoomStatus;   
         description: string;
         image: File | null;
         area: number;
@@ -37,7 +37,7 @@ export function RoomManagement() {
         room_number: "",
         room_type: "",
         price: 0,
-        status: "available", // ?? literal h?p l?
+        status: "available", 
         description: "",
         image: null,
         area: 0,
@@ -100,19 +100,21 @@ export function RoomManagement() {
 
         const payload = {
             room_number: formData.room_number,
-            room_type: formData.room_type,
-            price: formData.price,
+            room_type: Number(formData.room_type), 
+            price: Number(formData.price),
             status: formData.status,
             description: formData.description,
-            area: formData.area,
+            area: Number(formData.area),
             standard: formData.standard,
-            floor: formData.floor,
+            floor: Number(formData.floor),
             services: formData.services,
             image: formData.image, 
         };
 
         try {
             if (isEditDialogOpen && editingRoom) {
+                console.log(payload);
+                updateRoom(Number(editingRoom.room_id), payload);
                 toast.success('Update room successfully!');
                 setIsEditDialogOpen(false);
             } else {
@@ -131,7 +133,7 @@ export function RoomManagement() {
         setEditingRoom(room);
         setFormData({
             room_number: room.room_number,
-            room_type: room.type_name,  
+            room_type: String(room.room_type), 
             price: room.price,
             status: room.status,
             description: room.description ?? '',
@@ -238,8 +240,8 @@ export function RoomManagement() {
                         <SelectValue placeholder="Select room type" />
                     </SelectTrigger>
                     <SelectContent>
-                        {roomTypes.map(rt => (
-                            <SelectItem key={rt.type_id} value={rt.type_name}>
+                        {roomTypes?.map(rt => (
+                            <SelectItem key={rt.type_id} value={String(rt.type_id)}>
                                 {rt.type_name} ({rt.capacity})
                             </SelectItem>
                         ))}

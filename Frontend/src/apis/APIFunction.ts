@@ -4,16 +4,13 @@ const API_BASE_URL = 'http://localhost:5001'
 
 const api = axios.create({
     baseURL: API_BASE_URL,
-    headers: {
-        "Content-Type": "application/json",
-    },
 });
 
 export interface AddRoomPayload {
     room_number: string;
-    room_type: string;
+    room_type: number;
     price: number;
-    status: string;
+    status: 'available' | 'booked' | 'maintenance';
     description: string;
     area: number;
     standard: string;
@@ -168,7 +165,7 @@ export const addNewRoom = async (roomData: AddRoomPayload) => {
         const formData = new FormData();
 
         formData.append("room_number", roomData.room_number);
-        formData.append("room_type", roomData.room_type);
+        formData.append("room_type", String(roomData.room_type));
         formData.append("price", String(roomData.price));
         formData.append("status", roomData.status);
         formData.append("description", roomData.description);
@@ -216,3 +213,42 @@ export const deletingRoomType = async (id: number) => {
         throw error;
     }
 }
+
+export const updatingRoomType = async (id: number, roomType: any) => {
+    try {
+        const res = await api.put(`/admin/update-room-type/${id}`, roomType);
+        return res.data;
+    } catch (error) {
+        console.log("Update room type error:", error);
+        throw error;
+    }
+}
+
+export const updatingRoom = async (id: number, roomData: AddRoomPayload) => {
+    try {
+        const formData = new FormData();
+
+        Object.entries(roomData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                if (key === "services") {
+                    formData.append(key, JSON.stringify(value));
+                } else if (key === "image" && value instanceof File) {
+                    formData.append("image", value);
+                } else {
+                    formData.append(key, String(value));
+                }
+            }
+        });
+
+        const res = await api.put(
+            `/admin/update-room/${id}`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+        );
+
+        return res.data;
+    } catch (error) {
+        console.log("Update room error:", error);
+        throw error;
+    }
+};

@@ -28,7 +28,6 @@ export function RoomTypeManagement() {
     };
 
     const handleSubmit = () => {
-        console.log('Form Data:', formData);
         if (!formData.name || !formData.capacity) {
             toast.error('Please fill in all required fields.');
             return;
@@ -40,7 +39,9 @@ export function RoomTypeManagement() {
         };
 
         if (isEditDialogOpen && editingRoomType) {
-            updateRoomType(editingRoomType.id, roomTypeData);
+            console.log(editingRoomType);
+            console.log(editingRoomType.type_id);
+            updateRoomType(Number(editingRoomType.type_id), roomTypeData);
             toast.success('Room type updated successfully!');
             setIsEditDialogOpen(false);
         } else {

@@ -1,10 +1,10 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import { getAllRoomTypes, addNewRoomType, fetchRooms, addNewRoom, deletingRoom, deletingRoomType } from '../apis/APIFunction';
+import { getAllRoomTypes, addNewRoomType, fetchRooms, addNewRoom, deletingRoom, deletingRoomType, updatingRoomType , updatingRoom} from '../apis/APIFunction';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner'
 
 export interface RoomType {
-    type_id: string | number;
+    type_id: number;
     type_name: string;
     capacity: number;
 }
@@ -19,7 +19,7 @@ export interface Room {
     image_url: string,
     area: number,
     standard: 'Deluxe' | 'Suite' | 'Standard',
-    floor: number,
+    floor: number,  
     services: any,            
     created_at: string,
     updated_at: string,
@@ -29,9 +29,9 @@ export interface Room {
 
 export interface AddRoomPayload {
     room_number: string;
-    room_type: string;        
+    room_type: number;        
     price: number;
-    status: 'available' | 'booked' | 'reserved';
+    status: 'available' | 'booked' | 'maintenance';
     description: string;
     area: number;
     standard: 'Deluxe' | 'Suite' | 'Standard';
@@ -44,10 +44,10 @@ interface RoomContextType {
     roomTypes: RoomType[];
     rooms: Room[];
     addRoomType: (roomTypeData: any) => Promise<void>;
-    updateRoomType: (id: string, roomType: Partial<RoomType>) => void;
+    updateRoomType: (id: number, roomType: Partial<RoomType>) => void;
     deleteRoomType: (id: number) => void;
     addRoom: (roomData: AddRoomPayload) => Promise<void>;
-    updateRoom: (id: string, room: Partial<Room>) => void;
+    updateRoom: (id: number, room: AddRoomPayload) => void;
     deleteRoom: (id: number) => void;
     getRoomTypeById: (id: string | number) => RoomType | undefined;
 }
@@ -74,15 +74,26 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const updateRoomType = (id: string, roomType: Partial<RoomType>) => {
-        
+    const updateRoomType = async (id: number, roomType: Partial<RoomType>) => {
+        try {
+            const res = await updatingRoomType(id, roomType);
+            if(res.status !== 200) {
+                toast.error(<span className='mess'>{res.message}</span>);
+                return;
+            }
+            toast.success(<span className='mess'>Update room type successfullly!</span>);
+            refetchRoomTypes();
+        } catch (error) {
+            console.log("Error updating room type:", error);
+        }
     };
 
     const deleteRoomType = async (id: number) => {
         try {
             const res = await deletingRoomType(id);
             if(res.status !== 200) {
-                toast.error(<span className="mess">{res.message}</span>)
+                toast.error(<span className="mess">{res.message}</span>);
+                return;
             }
             toast.success(<span className="mess">Delete room type successfully!</span>)
             refetchRoomTypes();
@@ -100,8 +111,18 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const updateRoom = (id: string, room: Partial<Room>) => {
-
+    const updateRoom = async (id: number, room: AddRoomPayload) => {
+        try {
+            const res = await updatingRoom(id, room);
+            if(res.status !== 200) {
+                toast.error(<span className='mess'>{res.message}</span>)
+                return;
+            }
+            toast.success(<span className='mess'>Update room successfully!</span>);
+            refetchRooms();
+        } catch (error) {
+            console.log("Error updating room:", error);
+        }
     };
 
     const deleteRoom = async (id: number) => {
