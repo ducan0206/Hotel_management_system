@@ -44,14 +44,17 @@ export const fetchRoomByID = async(id) => {
     }
 }
 
-export const addRoom = async({room_number, room_type, price, status, description, image_url, area, standard, floor, services}) => {
+export const addRoom = async ({ room_number, room_type, price, status, description, image_url, area, standard, floor, services }) => {
     try {
-        console.log(status);
-        const [type] = await db.query('select type_id from RoomType where type_name = ?', [room_type]);
-        if(type.length === 0) {
-            throw new Error(`Room Type ${room_type} not existed.`);
+        const [type] = await db.query(
+            'select type_id from RoomType where type_id = ?',
+            [room_type]
+        );
+
+        if (type.length === 0) {
+            throw new Error(`Room Type ID ${room_type} not existed.`);
         }
-        const room_type_id = type[0].type_id;
+
         let servicesJson = null;
 
         if (services) {
@@ -59,82 +62,151 @@ export const addRoom = async({room_number, room_type, price, status, description
             if (typeof services === 'string') {
                 try {
                     serviceData = JSON.parse(services);
-                } catch (e) {
-                    throw new Error('Services field must be a valid JSON array or object.');
+                } catch {
+                    throw new Error('Services must be valid JSON.');
                 }
-            }            
+            }
             servicesJson = JSON.stringify(serviceData);
         }
+
         const [result] = await db.query(
-            "insert into Rooms (room_number, room_type, price, status, description, image_url, area, standard, floor, services) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [room_number, room_type_id, price, status, description, image_url, area, standard, floor, servicesJson]
+            `
+            INSERT INTO Rooms
+            (room_number, room_type, price, status, description, image_url, area, standard, floor, services)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `,
+            [
+                room_number,
+                room_type, 
+                price,
+                status,
+                description,
+                image_url,
+                area,
+                standard,
+                floor,
+                servicesJson
+            ]
         );
+
         const [rows] = await db.query(
             `
-            select r.*, t.type_name, t.capacity
-            from Rooms r join RoomType t on r.room_type = t.type_id
-            where r.room_id = ?
-            `, [result.insertId]
+            SELECT r.*, t.type_name, t.capacity
+            FROM Rooms r
+            JOIN RoomType t ON r.room_type = t.type_id
+            WHERE r.room_id = ?
+            `,
+            [result.insertId]
         );
+
         const newRoom = rows[0];
-        if (newRoom.services) {
-            try {
-                newRoom.services = JSON.parse(newRoom.services);
-            } catch (e) {
-                newRoom.services = [];
-            }
-        }
+        newRoom.services = newRoom.services ? JSON.parse(newRoom.services) : [];
+
         return {
             status: 201,
             data: newRoom
-        }
+        };
+
     } catch (error) {
-        console.log('Error: addRoom function', error.message);
-        return error;
+        console.error('Error: addRoom function', error.message);
+        return {
+            status: 400,
+            message: error.message
+        };
     }
 };
 
-// problem: what if just update status
-export const updatingRoom = async(id, roomData) => {
+
+export const updatingRoom = async (id, roomData) => {
     try {
-        const [existingRoom] = await db.query("select * from Rooms where room_id = ?", [id]);
-        if(existingRoom.length === 0) {
-            throw new Error(`Room with ${id} not found.`);
+        if (!roomData) {
+            return {
+                status: 400,
+                message: "Request body is empty"
+            };
         }
-        const old = existingRoom[0];
+
+        const [rows] = await db.query(
+            "SELECT * FROM Rooms WHERE room_id = ?",
+            [id]
+        );
+
+        if (!rows || rows.length === 0) {
+            return {
+                status: 404,
+                message: `Room with id ${id} not found`
+            };
+        }
+
+        const old = rows[0];
+
         const updated = {
             room_number: roomData.room_number ?? old.room_number,
             room_type: roomData.room_type ?? old.room_type,
             price: roomData.price ?? old.price,
             status: roomData.status ?? old.status,
             description: roomData.description ?? old.description,
-            image_url: roomData.image_url ?? old.image_url
+            image_url: roomData.image_url ?? old.image_url,
+            area: roomData.area ?? old.area,
+            standard: roomData.standard ?? old.standard,
+            floor: roomData.floor ?? old.floor,
+            services: roomData.services
+                ? JSON.stringify(roomData.services)
+                : old.services
         };
-        let room_type = updated.room_type;
-        const [type] = await db.query(`select type_id from RoomType where type_name = ?`, [room_type]);
-        if(type.length === 0) {
-            throw new Error(`Room type ${room_type} not existed.`);
-        }
-        const room_type_id = type[0].type_id;
+
         await db.query(
             `
-            update Rooms
-            set room_number = ?,
+            UPDATE Rooms
+            SET room_number = ?,
                 room_type = ?,
                 price = ?,
                 status = ?,
                 description = ?,
-                image_url = ?
-            where room_id = ?
-            `, [updated.room_number, room_type_id, updated.price, updated.status, updated.description, updated.image_url, id]
+                image_url = ?,
+                area = ?,
+                standard = ?,
+                floor = ?,
+                services = ?
+            WHERE room_id = ?
+            `,
+            [
+                updated.room_number,
+                updated.room_type,
+                updated.price,
+                updated.status,
+                updated.description,
+                updated.image_url,
+                updated.area,
+                updated.standard,
+                updated.floor,
+                updated.services,
+                id
+            ]
         );
-        const [rows] = await db.query("select * from Rooms where room_id = ?", [id]);
-        return rows[0];
+
+        const [result] = await db.query(
+            `
+            SELECT r.*, t.type_name, t.capacity
+            FROM Rooms r
+            JOIN RoomType t ON r.room_type = t.type_id
+            WHERE r.room_id = ?
+            `,
+            [id]
+        );
+
+        return {
+            status: 200,
+            data: result[0]
+        };
     } catch (error) {
-        console.log('Error: updatingRoom function', error.message);
-        return error;
+        console.log("Error updatingRoom:", error.message);
+        return {
+            status: 500,
+            message: error.message
+        };
     }
-}
+};
 
 export const deletingRoom = async(id) => {
     try {
@@ -194,9 +266,13 @@ export const addNewRoomType = async({type_name, capacity}) => {
 
 export const updatingRoomType = async(id, typeData) => {
     try {
+        console.log(id);
         const [existingType] = await db.query("select * from RoomType where type_id = ?", [id]);
         if(existingType.length === 0) {
-            throw new Error(`Room type with ${id} not found.`);
+            return {
+                status: 404,
+                message: `Room type with id ${id} not found.`
+            }
         }
         const {type_name, capacity} = typeData;
         await db.query(
@@ -208,7 +284,10 @@ export const updatingRoomType = async(id, typeData) => {
             `, [type_name, capacity, id]
         );
         const [newType] = await db.query("select * from RoomType where type_id = ?", [id]);
-        return newType[0];
+        return {
+            status: 200,
+            data: newType[0]
+        }
     } catch (error) {
         console.log('Error: updatingRoomType function', error.message);
         return error;

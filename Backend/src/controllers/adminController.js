@@ -194,7 +194,13 @@ export const updateRoom = async(request, response) => {
         const id = parseInt(request.params.id, 10);
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
-        const updatedRoom = await updatingRoom(id, request.body);
+        const roomData = request.body;
+        console.log(id);
+        console.log(roomData);
+        const updatedRoom = await updatingRoom(id, roomData);
+        if (updatedRoom.status !== 200) {
+            return response.status(updatedRoom.status).json({message: updatedRoom.message});
+        }
         response.status(200).json(updatedRoom);
     } catch (error) {
         console.log("updateRoom function error: ", error.message);
@@ -249,7 +255,10 @@ export const updateRoomType = async(request, response) => {
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
         const updated = await updatingRoomType(id, request.body);
-        response.status(200).json(updated);
+        if(updated.status !== 200) {
+            response.status(updated.status).json({message: updated.message});
+        }
+        response.status(200).json(updated.data);
     } catch (error) {
         console.log("createNewRoomType function error: ", error.message);
         response.status(500).json({message: "System error"});
