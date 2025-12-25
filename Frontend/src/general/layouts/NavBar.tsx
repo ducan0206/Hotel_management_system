@@ -1,4 +1,4 @@
-import {LogIn, User, LogOut, TicketCheck, ShieldUser, Home } from "lucide-react";
+import {LogIn, User, LogOut, TicketCheck, ShieldUser, LayoutDashboard } from "lucide-react";
 import {Button} from '../../ui/button.tsx'
 import {Avatar, AvatarFallback} from '../../ui/avatar.tsx'
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem} from '../../ui/dropdown-menu.tsx'
@@ -50,7 +50,7 @@ const NavBar = () => {
                     <div className="flex items-center gap-3">
                         {isAuthenticated && user?.role === 'customer' ? (
                             <>
-                            <Button onClick={handleBookNow} className="ml-5">Book Now</Button>
+                            <Button onClick={handleBookNow} className="ml-5 cursor-pointer">Book Now</Button>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button 
@@ -111,7 +111,7 @@ const NavBar = () => {
                             </>
                         ) : (
                             <>
-                            <Button onClick={returnDashBoard} className="ml-5">Dashboard</Button>
+                            <Button onClick={returnDashBoard} className="ml-5 cursor-pointer"> <LayoutDashboard></LayoutDashboard>Dashboard</Button>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button 

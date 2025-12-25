@@ -13,6 +13,7 @@ import AnimatedPage from './AnimatedPage.tsx'
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom'; 
 import { AuthProvider } from './context/AuthContext.tsx'
 import { RoomProvider } from './context/RoomContext.tsx'
+import { GuestProvider } from './context/GuestContext.tsx'
 import { Toaster } from 'sonner';
 import { AnimatePresence } from "framer-motion";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -65,9 +66,11 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 <RoomProvider>
-                    <Router>
-                        <AppRoutes />
-                    </Router>
+                    <GuestProvider>
+                        <Router>
+                            <AppRoutes />
+                        </Router>
+                    </GuestProvider>
                 </RoomProvider>
             </AuthProvider>
         </QueryClientProvider>

@@ -252,3 +252,14 @@ export const updatingRoom = async (id: number, roomData: AddRoomPayload) => {
         throw error;
     }
 };
+
+// guest management 
+export const getAllCustomers = async() => {
+    try {
+        const res = await api.get('/admin/customers');
+        return res.data;
+    } catch (error) {
+        console.log("Get all customers error:", error);
+        throw error;
+    }
+}

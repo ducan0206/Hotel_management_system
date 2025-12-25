@@ -13,10 +13,11 @@ import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
+import { GuestManagement } from "../components/GuestManagement";
 
 const Dashboard = () => {
     const { user } = useAuth();
-    const [currentView, setCurrentView] = useState<'dashboard' | 'reception' | 'rooms'>('dashboard');
+    const [currentView, setCurrentView] = useState<'dashboard' | 'reception' | 'rooms' | 'guest'>('dashboard');
     const isAdmin = user?.role === 'admin';
     const navigate = useNavigate();
 
@@ -52,7 +53,11 @@ const Dashboard = () => {
                         <Calendar className="h-4 w-4" />
                         Bookings
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start gap-3">
+                    <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3"
+                        onClick={() => setCurrentView('guest')}
+                    >
                         <Users className="h-4 w-4" />
                         Guests
                     </Button>
@@ -141,6 +146,8 @@ const Dashboard = () => {
                                     <RoomManagement />
                                 </TabsContent>
                             </Tabs>
+                        ) : currentView === 'guest' ? (
+                            <GuestManagement></GuestManagement>
                         ) : (
                             <>
                             {/* Stats Grid */}
