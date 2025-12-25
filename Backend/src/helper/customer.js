@@ -4,11 +4,23 @@ export const fetchAllCustomers = async() => {
     try {
         const [customers] = await db.query(
             `
-            select user_id, full_name, phone, email, created_at from Account 
-            where role = 'customer';
+            select c.KH_id, a.full_name, a.phone, a.email, a.username, a.created_at, count(b.booking_id) as total_booking, coalesce((b.total_price), 0) as total_spent
+            from Account a join Customers c on a.user_id = c.account_id
+                           left join Bookings b on a.user_id = b.user_id
+            where a.role = 'customer'
+            group by c.KH_id, a.full_name, a.phone, a.email, a.username, a.created_at;
             `
         )
-        return customers;
+        if (customers.length === 0) {
+            return {
+                status: 404,
+                message: "Not found"
+            }
+        }
+        return {
+            status: 200,
+            data: customers
+        }
     } catch (error) {
         console.log('Error: fetchAllCustomers error', error.message);
         return error;

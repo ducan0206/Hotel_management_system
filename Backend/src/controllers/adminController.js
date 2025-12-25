@@ -448,7 +448,10 @@ export const createPayment = async (request, response) => {
 export const getAllCustomers = async (request, response) => {
     try {
         const customers = await fetchAllCustomers();
-        response.status(200).json(customers);
+        if (customers.status != 200) {
+            return response.status(customers.status).json({message: customers.message})
+        }
+        response.status(200).json(customers.data);
     } catch (error) {
         console.log('getAllCustomers function error: ', error);
         response.status(500).json({message: "System error"})
