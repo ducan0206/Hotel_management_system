@@ -204,3 +204,16 @@ h1 {
   height: 120px;
   cursor: pointer;
 }
+
+@layer utilities {
+  /* ?n thanh cu?n cho Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ?n thanh cu?n cho IE, Edge và Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}

@@ -126,20 +126,6 @@ export function GuestManagement() {
         setIsViewDialogOpen(true);
     };
 
-    const getStatusBadge = (status: string) => {
-        const statusConfig = {
-            regular: { label: 'Regular', variant: 'default' as const, className: 'bg-blue-100 text-blue-800' },
-            vip: { label: 'VIP', variant: 'default' as const, className: 'bg-yellow-100 text-yellow-800' },
-            blacklist: { label: 'Blacklist', variant: 'default' as const, className: 'bg-red-100 text-red-800' }
-        };
-        const config = statusConfig[status as keyof typeof statusConfig];
-        return (
-            <Badge variant={config.variant} className={config.className}>
-                {config.label}
-            </Badge>
-        );
-    };
-
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('eu-US', { style: 'currency', currency: 'USD' }).format(price);
     };
@@ -348,11 +334,7 @@ export function GuestManagement() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <Label className="text-gray-500">Full name</Label>
-                                        <p className="text-lg">{viewingGuest.fullName}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-gray-500">Status</Label>
-                                        <div className="mt-1">{getStatusBadge(viewingGuest.status)}</div>
+                                        <p className="text-lg">{viewingGuest.full_name}</p>
                                     </div>
                                     <div>
                                         <Label className="text-gray-500">Email</Label>

@@ -125,11 +125,10 @@ export function GuestProvider({ children }: { children: ReactNode }) {
     const searchGuests = (query: string) => {
         const lowercaseQuery = query.toLowerCase();
         
-        return guests.filter(guest => 
+        return guests.filter((guest: Guest) => 
             guest.full_name.toLowerCase().includes(lowercaseQuery) ||
             guest.email.toLowerCase().includes(lowercaseQuery) ||
-            guest.phone.includes(query) ||
-            guest.KH_id.includes(query)
+            guest.phone.includes(query)
         );
     };
 

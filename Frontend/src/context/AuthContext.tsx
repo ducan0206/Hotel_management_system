@@ -7,7 +7,12 @@ interface User {
     user_id: string | number; 
     username: string;          
     full_name: string;         
-    email: string;
+    phone: string,
+    email: string,
+    address: string,
+    date_of_birth: string,
+    id_card: string,
+    gender: string,
     role: 'customer' | 'admin' | 'employee';
     token: string;             
 }
@@ -74,7 +79,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     user_id: userDetails.user_id,
                     username: userDetails.username,
                     full_name: userDetails.full_name,
+                    phone: userDetails.phone,
                     email: userDetails.email,
+                    address: userDetails.address,
+                    date_of_birth: userDetails.date_of_birth,
+                    id_card: userDetails.id_card,
+                    gender: userDetails.gender,
                     role: userDetails.role,
                     token: token 
                 };

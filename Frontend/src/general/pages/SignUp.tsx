@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Input } from "../../ui/input.tsx";
 import { Button } from "../../ui/button.tsx";
-import { User, Lock, Mail, Phone, PartyPopper } from "lucide-react";
+import { User, Lock, Mail, Phone, PartyPopper, MapPinHouse, VenusAndMars, IdCard, Cake } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '../../context/AuthContext.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select.tsx";
 
 export function SignIn() {
     const [isLogin, setIsLogin] = useState(true);
@@ -20,6 +21,10 @@ export function SignIn() {
         username: "",
         email: "",
         password: "",
+        address: "",
+        id_card: "",
+        date_of_birth: "",
+        gender: "",
         confirmPassword: "",
     });
     const { login, register  } = useAuth();
@@ -87,6 +92,10 @@ export function SignIn() {
                 phone: registerData.phone, 
                 username: registerData.username,
                 email: registerData.email,
+                address: registerData.address,
+                date_of_birth: registerData.date_of_birth,
+                gender: registerData.gender,
+                id_card: registerData.id_card,
                 password: registerData.password,
             });
             toast.success(
@@ -99,6 +108,10 @@ export function SignIn() {
                 username: "",
                 email: "",
                 password: "",
+                address: "",
+                id_card: "",
+                date_of_birth: "",
+                gender: "",
                 confirmPassword: "",
             });
         } catch (error: any) {
@@ -157,7 +170,7 @@ export function SignIn() {
             </div>
 
             {/* --- REGISTER FORM SECTION (N?m b�n PH?I, hi?n khi isLogin = false) --- */}
-            <div className={`w-full md:w-1/2 h-full p-8 md:p-12 flex flex-col justify-center transition-all duration-700 ease-in-out md:absolute md:top-0 md:left-1/2 ${!isLogin ? "md:opacity-100 md:z-20 md:translate-x-0" : "md:opacity-0 md:z-10 md:translate-x-[20%]"}`}>
+            <div className={`w-full md:w-1/2 h-full p-8 md:p-12 flex flex-col overflow-y-auto no-scrollbar transition-all duration-700 ease-in-out md:absolute md:top-0 md:left-1/2 ${!isLogin ? "md:opacity-100 md:z-20 md:translate-x-0" : "md:opacity-0 md:z-10 md:translate-x-[20%]"}`}>
                 <div className={isLogin ? "hidden md:block" : ""}>
                     <h2 className="text-4xl font-bold mb-6 text-gray-800 text-center">Create Account</h2>
                     <form onSubmit={handleRegister} className="space-y-4">
@@ -183,16 +196,6 @@ export function SignIn() {
                         </div>
                         <div className="relative">
                             <Input
-                                type="text"
-                                placeholder="Username"
-                                className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
-                                value={registerData.username}
-                                onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
-                            />
-                            <User className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        </div>
-                        <div className="relative">
-                            <Input
                                 type="email"
                                 placeholder="Email"
                                 className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
@@ -200,6 +203,75 @@ export function SignIn() {
                                 onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                             />
                             <Mail className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        </div>
+                        <div className="relative">
+                            <Input
+                                type="address"
+                                placeholder="Address"
+                                className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
+                                value={registerData.address}
+                                onChange={(e) => setRegisterData({ ...registerData, address: e.target.value })}
+                            />
+                            <MapPinHouse className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        </div>
+                        <div className="relative">
+                            <Input
+                                type="id_card"
+                                placeholder="Id_card"
+                                className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
+                                value={registerData.id_card}
+                                onChange={(e) => setRegisterData({ ...registerData, id_card: e.target.value })}
+                            />
+                            <IdCard className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        </div>
+                        
+                        <div className="flex space-x-4">
+                            <div className="relative w-1/2">
+                                <Input
+                                    type="date"
+                                    placeholder="Date of birth"
+                                    className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500 block"
+                                    value={registerData.date_of_birth}
+                                    onChange={(e) => setRegisterData({ ...registerData, date_of_birth: e.target.value })}
+                                    style={{
+                                        colorScheme: "light", 
+                                    }}
+                                />
+                                
+                                <Cake className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                            </div>
+                            
+                            <div className="relative w-1/2">
+                                <Select
+                                    value={registerData.gender}
+                                    onValueChange={(value) =>
+                                        setRegisterData({ ...registerData, gender: value })
+                                    }
+                                >
+                                    <SelectTrigger 
+                                        className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500 h-auto"
+                                    >
+                                        <SelectValue placeholder="Gender" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Male">Male</SelectItem>
+                                        <SelectItem value="Female">Female</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                
+                                <VenusAndMars className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                            </div>
+                        </div>
+
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                placeholder="Username"
+                                className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
+                                value={registerData.username}
+                                onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+                            />
+                            <User className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         </div>
                         <div className="relative">
                             <Input

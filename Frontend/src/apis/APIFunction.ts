@@ -29,12 +29,7 @@ export const getAllRooms = async() => {
     }
 }
 
-export const createAccount = async (userData: {
-    fullName: string;
-    phone: string;
-    username: string;
-    email: string;
-    password: string;}) => {
+export const createAccount = async (userData: { fullName: string; phone: string; username: string; email: string; address: string, dateOfBirth: string, gender: string, idCard: string, password: string }) => {
     try {
         const res = await api.post("/user/customer/register", userData);
         return res.data;
@@ -91,8 +86,9 @@ export const getAllAdditionalServices = async () => {
     }
 }
 
-export const createNewReceptionAccount = async (employeeData: {username: string, password: string, fullName: string, phone: string, email: string, role: string }) => {
+export const createNewReceptionAccount = async (employeeData: {username: string, password: string, fullName: string, phone: string,  email: string, address: string, date_of_birth: string, gender: string, id_card: string, role: string }) => {
     try {
+        console.log(employeeData);
         const res = await api.post("/admin/reception", employeeData);
         return res.data;
     } catch (error) {

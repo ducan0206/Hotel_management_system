@@ -5,9 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from '
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
+import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from '../../ui/select'
 import { Alert, AlertDescription } from '../../ui/alert';
 import { useAuth } from '../../context/AuthContext';
-import { AlertCircle, Users, UserPlus, CheckCircle2, UserIcon, Mail, Trash2, Calendar, Phone } from 'lucide-react';
+import { AlertCircle, Users, UserPlus, CheckCircle2, UserIcon, Mail, Trash2, Calendar, Phone, MapPinHouse, Cake, IdCard, VenusAndMars} from 'lucide-react';
 
 export function ReceptionManagement() {
     const { receptionAccounts, createReceptionAccount, deleteReceptionAccount, user } = useAuth();
@@ -21,6 +22,10 @@ export function ReceptionManagement() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [fullname, setFullname] = useState('');
     const [phone, setPhone] = useState(''); 
+    const [address, setAddress] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState(''); 
+    const [idCard, setIdCard] = useState('');
+    const [gender, setGender] = useState('');
     
     // UI States
     const [error, setError] = useState('');
@@ -71,10 +76,12 @@ export function ReceptionManagement() {
                 fullName: fullname,
                 phone: phone,
                 email: email,
+                address: address,
+                date_of_birth: dateOfBirth,
+                gender: gender,
+                id_card: idCard,
                 role: 'employee' 
             });
-            
-            console.log(1);
             if (result) {
                 setSuccess('Create account successfully!');
                 setFullname('');
@@ -130,7 +137,7 @@ export function ReceptionManagement() {
                             Create Reception Account
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
+                    <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto no-scrollbar">
                         <DialogHeader>
                             <DialogTitle>Create Reception Account</DialogTitle>
                             <DialogDescription>
@@ -191,6 +198,65 @@ export function ReceptionManagement() {
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
                                     />
+                                </div>
+                            </div>
+
+                            <div className="relative">
+                                <Input
+                                    type="address"
+                                    placeholder="Address"
+                                    className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                />
+                                <MapPinHouse className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            </div>
+                            <div className="relative">
+                                <Input
+                                    type="id_card"
+                                    placeholder="Id_card"
+                                    className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500"
+                                    value={idCard}
+                                    onChange={(e) => setIdCard(e.target.value)}
+                                />
+                                <IdCard className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            </div>
+                            
+                            <div className="flex space-x-4">
+                                <div className="relative w-1/2">
+                                    <Input
+                                        type="date"
+                                        placeholder="Date of birth"
+                                        className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500 block"
+                                        value={dateOfBirth}
+                                        onChange={(e) => setDateOfBirth(e.target.value)}
+                                        style={{
+                                            colorScheme: "light", 
+                                        }}
+                                    />
+                                    
+                                    <Cake className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                                </div>
+                                
+                                <div className="relative w-1/2">
+                                    <Select
+                                        value={gender}
+                                        onValueChange={(value) =>
+                                            setGender(value)
+                                        }
+                                    >
+                                        <SelectTrigger 
+                                            className="w-full pl-4 pr-12 py-6 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-cyan-500 h-auto"
+                                        >
+                                            <SelectValue placeholder="Gender" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Male">Male</SelectItem>
+                                            <SelectItem value="Female">Female</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    
+                                    <VenusAndMars className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
                                 </div>
                             </div>
 
