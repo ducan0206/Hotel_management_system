@@ -6,9 +6,13 @@ export async function initAccountsModel() {
             user_id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(50) NOT NULL UNIQUE,
             password_hash VARCHAR(255) NOT NULL, -- crypto 
-            full_name VARCHAR(100) not null,
-            phone varchar(10),
+            full_name NVARCHAR(100) not null,
+            phone VARCHAR(10),
             email VARCHAR(100) UNIQUE,
+            address NVARCHAR(255),
+            date_of_birth DATE,
+            id_card VARCHAR(20),
+            gender ENUM('male', 'female') DEFAULT 'male',
             role ENUM('admin', 'employee', 'customer') DEFAULT 'customer',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )

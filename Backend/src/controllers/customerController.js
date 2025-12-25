@@ -11,19 +11,14 @@ dotenv.config();
 
 export const createAccount = async(request, response) => {
     try {
-        // ========== LOGGING - Debug registration process (Sơn - 07/12/2025) ==========
-        // Gọi service để tạo tài khoản (có validation bên trong)
         const newAccount = await createNewAccount(request.body);
         
-        // Nếu validation fail (status 400), trả về message chi tiết cho frontend
         if(newAccount.status === 400) {
-            // Log lỗi validation (chỉ log message, không log toàn bộ request body)
-            console.log('❌ Registration validation failed:', newAccount.message);
+            console.log('Registration validation failed:', newAccount.message);
             return response.status(400).json({message: newAccount.message})
         }
         
-        // Nếu thành công, trả về thông tin user mới tạo
-        console.log('✅ Registration successful for user:', newAccount.data.username);
+        console.log('Registration successful for user:', newAccount.data.username);
         return response.status(201).json(newAccount.data);
     } catch (error) {
         console.log('Error: createAccount function', error.message);

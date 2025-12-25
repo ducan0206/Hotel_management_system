@@ -85,7 +85,7 @@ async function generateCustomerId() {
 
 export const createNewAccount = async(userData) => {
     try {
-        const {username, password, fullName, phone, email, role} = userData;
+        const {username, password, fullName, phone, email, date_of_birth, id_card, address, gender, role} = userData;
         
         if(role === 'customer') {
             if(!fullName) {
@@ -169,9 +169,9 @@ export const createNewAccount = async(userData) => {
         const hashedPass = await bcrypt.hash(password, 10); // 10 salt rounds
         const [result] = await db.query(
             `
-            insert into Account (username, password_hash, full_name, phone, email, role, created_at) 
-            values (?, ?, ?, ?, ?, ?, NOW())
-            `, [username, hashedPass, fullName, phone, email, role]
+            insert into Account (username, password_hash, full_name, phone, email, address, date_of_birth, id_card, gender, role, created_at) 
+            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+            `, [username, hashedPass, fullName, phone, email, address, date_of_birth, id_card, gender, role]
         )
 
 
@@ -198,7 +198,7 @@ export const createNewAccount = async(userData) => {
 
         const [newUser] = await db.query(
             `
-            select user_id, username, full_name, phone, email, role, created_at from Account where user_id = ?
+            select * from Account where user_id = ?
             `, [result.insertId]
         )
         return {
