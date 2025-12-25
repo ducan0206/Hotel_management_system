@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 export async function fetchAllReceptions() {
     try {
         const [rows] = await db.query(`
-            SELECT a.user_id, a.full_name, a.phone, a.email, DATE_FORMAT(a.created_at, '%d/%m/%Y') AS created_at
+            SELECT e.NV_id, a.*
             FROM Account a
             JOIN Employees e ON a.user_id = e.account_id
             WHERE a.role = 'employee'
