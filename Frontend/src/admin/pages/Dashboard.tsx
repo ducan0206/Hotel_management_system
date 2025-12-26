@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card";
 import { Button } from "../../ui/button";
-import { Hotel, Users, DollarSign, Calendar, BedDouble, UserCheck, Settings, Bell, Search, Menu, Home } from "lucide-react";
+import { Hotel, Users, DollarSign, Calendar, BedDouble, UserCheck, Settings, Bell, Search, Menu, Home, Briefcase } from "lucide-react";
 import { StatCard } from "../components/StatCard";
 import { BookingChart } from "../components/BookingChart";
 import { RecentBookings } from "../components/RecentBookings";
@@ -14,10 +14,11 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { GuestManagement } from "../components/GuestManagement";
+import { AdditionalServiceManagement } from "../components/AdditionalServiceManagement";
 
 const Dashboard = () => {
     const { user } = useAuth();
-    const [currentView, setCurrentView] = useState<'dashboard' | 'reception' | 'rooms' | 'guest'>('dashboard');
+    const [currentView, setCurrentView] = useState<'dashboard' | 'reception' | 'rooms' | 'guest' | 'services'>('dashboard');
     const isAdmin = user?.role === 'admin';
     const navigate = useNavigate();
 
@@ -64,6 +65,14 @@ const Dashboard = () => {
                     <Button variant="ghost" className="w-full justify-start gap-3">
                         <DollarSign className="h-4 w-4" />
                         Revenue
+                    </Button>
+                    <Button 
+                        variant={currentView === 'services' ? 'default' : 'ghost'} 
+                        className="w-full justify-start gap-3"
+                        onClick={() => setCurrentView('services')}
+                    >
+                        <Briefcase className="h-4 w-4" />
+                        Services
                     </Button>
                     <Button 
                         variant="ghost" 
@@ -148,6 +157,8 @@ const Dashboard = () => {
                             </Tabs>
                         ) : currentView === 'guest' ? (
                             <GuestManagement></GuestManagement>
+                        ) : currentView === 'services' ? (
+                            <AdditionalServiceManagement></AdditionalServiceManagement>
                         ) : (
                             <>
                             {/* Stats Grid */}

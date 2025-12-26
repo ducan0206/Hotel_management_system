@@ -4,7 +4,7 @@ import { BookingSummary } from "../component/BookingSummary.tsx";
 import { Hotel, ArrowLeft } from "lucide-react";
 import { Button } from "../../ui/button.tsx";
 import { useNavigate, useLocation } from 'react-router-dom'
-import type { Room } from './Room.tsx'
+import type { Room } from '../../context/RoomContext.tsx'
 
 export interface BookingData {
     room: Room;
@@ -71,11 +71,6 @@ const Booking = () => {
         }
         setCurrentStep("payment");
     };
-
-    const handleBackToBooking = () => {
-        setCurrentStep("booking");
-    };
-
 
     return (
         <div className="min-h-screen bg-gray-50 mt-16">
