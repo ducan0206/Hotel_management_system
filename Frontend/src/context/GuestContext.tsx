@@ -1,13 +1,19 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getAllCustomers } from '@/apis/APIFunction';
+import { updateGuestInfo } from '../apis/APIFunction';
+import { toast } from 'sonner';
 
 export interface Guest {
-    id: string,
+    user_id: number,
     KH_id: string,
     full_name: string,
     phone: string,
     email: string,
+    id_card: string,
+    date_of_birth: string, 
+    gender: string, 
+    address: string,
     username: string,
     created_at: Date,
     total_booking: number,
@@ -29,8 +35,8 @@ interface GuestContextType {
     guests: Guest[];
     bookingHistory: BookingHistory[];
     addGuest: (guestData: any) => void;
-    updateGuest: (id: string, guest: Partial<Guest>) => void;
-    deleteGuest: (id: string) => void;
+    updateGuest: (id: number, guest: Partial<Guest>) => void;
+    deleteGuest: (id: number) => void;
     getGuestBookings: (guestId: string) => BookingHistory[];
     searchGuests: (query: string) => Guest[];
 }
@@ -110,11 +116,23 @@ export function GuestProvider({ children }: { children: ReactNode }) {
         
     };
 
-    const updateGuest = async (id: string, guest: Partial<Guest>) => {
-        
+    const updateGuest = async (id: number, guest: Partial<Guest>) => {
+        try {
+            console.log(id);
+            console.log(guest);
+            const res  = await updateGuestInfo(id, guest);
+            if (res.status !== 200) {
+                toast.error(<span className='mess'>{res.message}</span>);
+                return;
+            }
+            toast.success(<span className='mess'>Update guest info successfully!</span>)
+            refetchCustomers();
+        } catch (error) {
+            console.log('Update guest info error:', error);
+        }
     };
 
-    const deleteGuest = async (id: string) => {
+    const deleteGuest = async (id: number) => {
        
     };
 

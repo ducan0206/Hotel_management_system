@@ -3,12 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
-import { Textarea } from '../../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '../../ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
 import { Badge } from '../../ui/badge';
-import { Plus, Pencil, Trash2, Search, Eye, Phone, Mail, CreditCard, MapPin, User, Calendar } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Eye, Phone, Mail, CreditCard, MapPin, User, Calendar, VenusAndMars } from 'lucide-react';
 import { useGuests } from '../../context/GuestContext';
 import { toast } from 'sonner';
 
@@ -21,37 +20,31 @@ export function GuestManagement() {
     const [viewingGuest, setViewingGuest] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'regular' | 'vip' | 'blacklist'>('all');
-  
+      
     const [formData, setFormData] = useState({
-        fullName: '',
+        full_name: '',
         email: '',
         phone: '',
-        idCard: '',
+        id_card: '',
+        date_of_birth: '',
+        gender: '',
         address: '',
-        nationality: '',
-        dateOfBirth: '',
-        gender: 'male' as 'male' | 'female' | 'other',
-        status: 'regular' as 'regular' | 'vip' | 'blacklist',
-        notes: ''
     });
 
     const resetForm = () => {
         setFormData({
-            fullName: '',
+            full_name: '',
             email: '',
             phone: '',
-            idCard: '',
+            id_card: '',
             address: '',
-            nationality: '',
-            dateOfBirth: '',
+            date_of_birth: '',
             gender: 'male',
-            status: 'regular',
-            notes: ''
         });
     };
 
     const handleSubmit = () => {
-        if (!formData.fullName || !formData.email || !formData.phone || !formData.idCard) {
+        if (!formData.full_name || !formData.email || !formData.phone || !formData.id_card) {
             toast.error('Please fill in all required fields!');
             return;
         }
@@ -71,20 +64,17 @@ export function GuestManagement() {
         }
 
         const guestData = {
-            fullName: formData.fullName,
+            full_name: formData.full_name,
             email: formData.email,
             phone: formData.phone,
-            idCard: formData.idCard,
+            id_card: formData.id_card,
             address: formData.address,
-            nationality: formData.nationality,
-            dateOfBirth: formData.dateOfBirth,
-            gender: formData.gender,
-            status: formData.status,
-            notes: formData.notes || undefined
+            dateOfBirth: formData.date_of_birth,
+            gender: formData.gender
         };
 
         if (isEditDialogOpen && editingGuest) {
-            updateGuest(editingGuest.id, guestData);
+            updateGuest(editingGuest.user_id, guestData);
             toast.success('Guest information updated successfully!');
             setIsEditDialogOpen(false);
         } else {
@@ -98,23 +88,21 @@ export function GuestManagement() {
     };
 
     const handleEdit = (guest: any) => {
+        console.log(guest.user_id);
         setEditingGuest(guest);
         setFormData({
-            fullName: guest.fullName,
+            full_name: guest.full_name,
             email: guest.email,
             phone: guest.phone,
-            idCard: guest.idCard,
+            id_card: guest.id_card,
             address: guest.address,
-            nationality: guest.nationality,
-            dateOfBirth: guest.dateOfBirth,
+            date_of_birth: guest.date_of_birth,
             gender: guest.gender,
-            status: guest.status,
-            notes: guest.notes || ''
         });
         setIsEditDialogOpen(true);
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = (id: number) => {
         if (confirm('Are you sure you want to delete this guest?')) {
             deleteGuest(id);
             toast.success('Guest deleted successfully!');
@@ -164,17 +152,16 @@ export function GuestManagement() {
                     <Label htmlFor={isEdit ? 'edit-fullName' : 'fullName'}>Full Name *</Label>
                     <Input
                         id={isEdit ? 'edit-fullName' : 'fullName'}
-                        value={formData.fullName}
-                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                        value={formData.full_name}
+                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                         placeholder="John Doe"
                     />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 col-span-2">
                     <Label htmlFor={isEdit ? 'edit-email' : 'email'}>Email *</Label>
                     <Input
                         id={isEdit ? 'edit-email' : 'email'}
-                        type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="example@email.com"
@@ -195,8 +182,8 @@ export function GuestManagement() {
                     <Label htmlFor={isEdit ? 'edit-idCard' : 'idCard'}>ID Card/Passport *</Label>
                     <Input
                         id={isEdit ? 'edit-idCard' : 'idCard'}
-                        value={formData.idCard}
-                        onChange={(e) => setFormData({ ...formData, idCard: e.target.value })}
+                        value={formData.id_card}
+                        onChange={(e) => setFormData({ ...formData, id_card: e.target.value })}
                         placeholder="001234567890"
                     />
                 </div>
@@ -206,8 +193,8 @@ export function GuestManagement() {
                     <Input
                         id={isEdit ? 'edit-dateOfBirth' : 'dateOfBirth'}
                         type="date"
-                        value={formData.dateOfBirth}
-                        onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                        value={formData.date_of_birth}
+                        onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
                     />
                 </div>
 
@@ -225,16 +212,6 @@ export function GuestManagement() {
                     </Select>
                 </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor={isEdit ? 'edit-nationality' : 'nationality'}>Nationality</Label>
-                    <Input
-                        id={isEdit ? 'edit-nationality' : 'nationality'}
-                        value={formData.nationality}
-                        onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
-                        placeholder="Vietnam"
-                    />
-                </div>
-
                 <div className="space-y-2 col-span-2">
                     <Label htmlFor={isEdit ? 'edit-address' : 'address'}>Address</Label>
                     <Input
@@ -242,31 +219,6 @@ export function GuestManagement() {
                         value={formData.address}
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                         placeholder="123 ABC St, District 1, Ho Chi Minh City"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor={isEdit ? 'edit-status' : 'status'}>Status</Label>
-                    <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="regular">Regular</SelectItem>
-                            <SelectItem value="vip">VIP</SelectItem>
-                            <SelectItem value="blacklist">Blacklist</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="space-y-2 col-span-2">
-                    <Label htmlFor={isEdit ? 'edit-notes' : 'notes'}>Notes</Label>
-                    <Textarea
-                        id={isEdit ? 'edit-notes' : 'notes'}
-                        value={formData.notes}
-                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                        placeholder="Notes about the guest (optional)..."
-                        rows={3}
                     />
                 </div>
             </div>
@@ -325,17 +277,21 @@ export function GuestManagement() {
 
                 {/* View Details Dialog */}
                 <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-                    <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto no-scrollbar">
                         <DialogHeader>
                             <DialogTitle>Guest Details</DialogTitle>
                         </DialogHeader>
                         {viewingGuest && (
                             <div className="space-y-6">
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-4 gap-10">
                                     <div>
                                         <Label className="text-gray-500">Full name</Label>
-                                        <p className="text-lg">{viewingGuest.full_name}</p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <User className="h-4 w-4 text-gray-400" />
+                                            <p className="text-lg">{viewingGuest.full_name}</p>
+                                        </div>
                                     </div>
+                                    
                                     <div>
                                         <Label className="text-gray-500">Email</Label>
                                         <div className="flex items-center gap-2 mt-1">
@@ -343,6 +299,7 @@ export function GuestManagement() {
                                             <p>{viewingGuest.email}</p>
                                         </div>
                                     </div>
+
                                     <div>
                                         <Label className="text-gray-500">Phone number</Label>
                                         <div className="flex items-center gap-2 mt-1">
@@ -350,30 +307,33 @@ export function GuestManagement() {
                                             <p>{viewingGuest.phone}</p>
                                         </div>
                                     </div>
+
                                     <div>
                                         <Label className="text-gray-500">ID Card/Passport</Label>
                                         <div className="flex items-center gap-2 mt-1">
                                             <CreditCard className="h-4 w-4 text-gray-400" />
-                                            <p>{viewingGuest.idCard}</p>
+                                            <p>{viewingGuest.id_card}</p>
                                         </div>
                                     </div>
+
                                     <div>
                                         <Label className="text-gray-500">Date of Birth</Label>
                                         <div className="flex items-center gap-2 mt-1">
                                             <Calendar className="h-4 w-4 text-gray-400" />
-                                            <p>{formatDate(viewingGuest.dateOfBirth)}</p>
+                                            <p>{formatDate(viewingGuest.date_of_birth)}</p>
                                         </div>
                                     </div>
-                                    <div>
-                                        <Label className="text-gray-500">Nationality</Label>
-                                        <p className="mt-1">{viewingGuest.nationality}</p>
-                                    </div>
+
                                     <div>
                                         <Label className="text-gray-500">Gender</Label>
-                                        <p className="mt-1">
-                                            {viewingGuest.gender === 'male' ? 'Male' : viewingGuest.gender === 'female' ? 'Female' : 'Other'}
-                                        </p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <VenusAndMars className="h-4 w-4 text-gray-400" />
+                                            <p className="mt-1">
+                                                {viewingGuest.gender === 'male' ? 'Male' : viewingGuest.gender === 'female' ? 'Female' : 'Other'}
+                                            </p>
+                                        </div>
                                     </div>
+
                                     <div className="col-span-2">
                                         <Label className="text-gray-500">Address</Label>
                                         <div className="flex items-center gap-2 mt-1">
@@ -383,18 +343,18 @@ export function GuestManagement() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                                <div className="grid grid-cols-3 gap-10 p-0 pt-4 pb-4 bg-gray-50 rounded-lg">
                                     <div>
                                         <Label className="text-gray-500">Registration Date</Label>
-                                        <p className="text-lg">{formatDate(viewingGuest.registeredDate)}</p>
+                                        <p className="text-lg mt-1">{formatDate(viewingGuest.created_at)}</p>
                                     </div>
                                     <div>
                                         <Label className="text-gray-500">Total Bookings</Label>
-                                        <p className="text-lg">{viewingGuest.totalBookings} times</p>
+                                        <p className="text-lg mt-1">{viewingGuest.total_booking} times</p>
                                     </div>
                                     <div>
                                         <Label className="text-gray-500">Total Spent</Label>
-                                        <p className="text-lg text-green-600">{formatPrice(viewingGuest.totalSpent)}</p>
+                                        <p className="text-lg mt-1 text-green-600">{formatPrice(viewingGuest.total_spent)}</p>
                                     </div>
                                 </div>
 
@@ -489,6 +449,7 @@ export function GuestManagement() {
                                 <TableHead>Name</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Phone</TableHead>
+                                <TableHead>ID Card Number</TableHead>
                                 <TableHead>Total Bookings</TableHead>
                                 <TableHead>Total Spent</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
@@ -496,7 +457,7 @@ export function GuestManagement() {
                         </TableHeader>
                         <TableBody>
                             {filteredGuests.map((guest) => (
-                                <TableRow key={guest.id}>
+                                <TableRow key={guest.user_id}>
                                     <TableCell>{guest.KH_id}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
@@ -506,6 +467,7 @@ export function GuestManagement() {
                                     </TableCell>
                                     <TableCell>{guest.email}</TableCell>
                                     <TableCell>{guest.phone}</TableCell>
+                                    <TableCell>{guest.id_card}</TableCell>
                                     <TableCell>{guest.total_booking} times</TableCell>
                                     <TableCell>{formatPrice(guest.total_spent)}</TableCell>
                                     <TableCell className="text-right">
@@ -527,7 +489,7 @@ export function GuestManagement() {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                onClick={() => handleDelete(guest.id)}
+                                                onClick={() => handleDelete(guest.user_id)}
                                             >
                                                 <Trash2 className="h-4 w-4 text-red-600" />
                                             </Button>

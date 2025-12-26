@@ -259,3 +259,15 @@ export const getAllCustomers = async() => {
         throw error;
     }
 }
+
+export const updateGuestInfo = async(id: number, guestData: any) => {
+    try {
+        console.log(id);
+        console.log(guestData);
+        const res = await api.put(`/admin/customer/${id}`, guestData);
+        return res.data;
+    } catch (error) {
+        console.log("Update a customer error:", error);
+        throw error;
+    }
+}
