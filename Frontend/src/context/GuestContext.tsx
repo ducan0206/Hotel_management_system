@@ -118,8 +118,6 @@ export function GuestProvider({ children }: { children: ReactNode }) {
 
     const updateGuest = async (id: number, guest: Partial<Guest>) => {
         try {
-            console.log(id);
-            console.log(guest);
             const res  = await updateGuestInfo(id, guest);
             if (res.status !== 200) {
                 toast.error(<span className='mess'>{res.message}</span>);

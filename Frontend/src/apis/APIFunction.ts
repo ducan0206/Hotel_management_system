@@ -262,12 +262,61 @@ export const getAllCustomers = async() => {
 
 export const updateGuestInfo = async(id: number, guestData: any) => {
     try {
-        console.log(id);
-        console.log(guestData);
         const res = await api.put(`/admin/customer/${id}`, guestData);
         return res.data;
     } catch (error) {
         console.log("Update a customer error:", error);
+        throw error;
+    }
+}
+
+export const deleteGuest = async(id: number) => {
+    try {
+
+    } catch (error) {
+        console.log("Delete a customer error:", error);
+        throw error;
+    }
+}
+
+// additional services
+export const getAllServices = async() => {
+    try {
+        const res = await api.get("/admin/services");
+        console.log(res.data);
+        return res.data && res.data.data ? res.data.data : [];
+    } catch (error) {
+        console.log("Get all services error:", error);
+        throw error;
+    }
+}
+
+export const addNewService = async(serviceData: any) => {
+    try {
+        const res = await api.post("/admin/service", serviceData);
+        return res.data.data;
+    } catch (error) {
+        console.log("Add new service error:", error);
+        throw error;
+    }
+}
+
+export const updatingService = async(id: number, serviceData: any) => {
+    try {
+        const res = await api.put(`/admin/service/${id}`, serviceData);
+        return res.data;
+    } catch (error) {
+        console.log("Updating service error: ", error);
+        throw error;
+    }
+}
+
+export const deletingService = async(id: number) => {
+    try {
+        const res = await api.delete(`/admin/service/${id}`);
+        return res.data;
+    } catch (error) {
+        console.log("Deleting service error: ", error);
         throw error;
     }
 }

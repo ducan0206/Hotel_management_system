@@ -19,13 +19,13 @@ export function AdditionalServiceManagement() {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [editingService, setEditingService] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+    const [statusFilter, setStatusFilter] = useState<'all' | 'Available' | 'Unavailable'>('all');
   
     const [formData, setFormData] = useState({
         service_name: '',
         price: '',
         description: '',
-        status: 'active' as 'active' | 'inactive'
+        status: 'Available' as 'Available' | 'Unavailable'
     });
 
     const resetForm = () => {
@@ -33,7 +33,7 @@ export function AdditionalServiceManagement() {
             service_name: '',
             price: '',
             description: '',
-            status: 'active'
+            status: 'Available'
         });
     };
 
@@ -81,16 +81,16 @@ export function AdditionalServiceManagement() {
         setIsEditDialogOpen(true);
     };
 
-    const handleDelete = (id: string, serviceName: string) => {
+    const handleDelete = (id: number, serviceName: string) => {
         if (confirm(`Are you sure you want to delete the service "${serviceName}"?`)) {
             deleteService(id);
             toast.success('Service deleted successfully!');
         }
     };
 
-    const handleToggleStatus = (id: string, currentStatus: string) => {
+    const handleToggleStatus = (id: number, currentStatus: string) => {
         toggleServiceStatus(id);
-        const newStatus = currentStatus === 'active' ? 'Inactive' : 'Active';
+        const newStatus = currentStatus === 'Available' ? 'Unavailable' : 'Available';
         toast.success(`Service status changed to ${newStatus}!`);
     };
 
@@ -109,23 +109,23 @@ export function AdditionalServiceManagement() {
     };
 
     const getStatusBadge = (status: string) => {
-        if (status === 'active') {
+        if (status === 'Available') {
         return (
                 <Badge variant="default" className="bg-green-100 text-green-800">
                 <CheckCircle2 className="h-3 w-3 mr-1" />
-                Active
+                Available
             </Badge>
         );
         }
         return (
             <Badge variant="default" className="bg-gray-100 text-gray-800">
                 <XCircle className="h-3 w-3 mr-1" />
-                Inactive
+                Unavailable
             </Badge>
         );
     };
 
-    const filteredServices = services.filter(service => {
+    const filteredServices = services?.filter(service => {
         const matchesSearch = 
             service.service_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             service.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -176,8 +176,8 @@ export function AdditionalServiceManagement() {
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                     <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="inactive">Inactive</SelectItem>
+                            <SelectItem value="Available">Available</SelectItem>
+                            <SelectItem value="Unavailable">Unavailable</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -254,8 +254,8 @@ export function AdditionalServiceManagement() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">All</SelectItem>
-                                <SelectItem value="active">Active</SelectItem>
-                                <SelectItem value="inactive">Inactive</SelectItem>
+                                <SelectItem value="Available">Available</SelectItem>
+                                <SelectItem value="Unavailable">Unavailable</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -279,12 +279,12 @@ export function AdditionalServiceManagement() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm">Active</CardTitle>
+                        <CardTitle className="text-sm">Available</CardTitle>
                         <CheckCircle2 className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl text-green-600">
-                            {services.filter(s => s.status === 'active').length}
+                            {services.filter(s => s.status === 'Available').length}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
                             Services currently provided
@@ -294,12 +294,12 @@ export function AdditionalServiceManagement() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm">Inactive</CardTitle>
+                        <CardTitle className="text-sm">Unavailable</CardTitle>
                         <XCircle className="h-4 w-4 text-gray-600" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl text-gray-600">
-                            {services.filter(s => s.status === 'inactive').length}
+                            {services.filter(s => s.status === 'Unavailable').length}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
                             Services temporarily suspended
@@ -358,8 +358,8 @@ export function AdditionalServiceManagement() {
                                         <div className="flex items-center justify-end gap-2">
                                             <div className="flex items-center gap-2">
                                                 <Switch
-                                                    checked={service.status === 'active'}
-                                                    onCheckedChange={() => handleToggleStatus(service.service_id, service.status)}
+                                                    checked={service.status === 'Available'}
+                                                    onCheckedChange={() => handleToggleStatus(Number(service.service_id), service.status)}
                                                 />
                                             </div>
                                             <Button
