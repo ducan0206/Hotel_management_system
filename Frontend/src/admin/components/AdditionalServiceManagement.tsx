@@ -88,9 +88,10 @@ export function AdditionalServiceManagement() {
         }
     };
 
-    const handleToggleStatus = (id: number, currentStatus: string) => {
-        toggleServiceStatus(id);
-        const newStatus = currentStatus === 'Available' ? 'Unavailable' : 'Available';
+    const handleToggleStatus = (id: number, serviceData: any) => {
+        const newStatus = serviceData.status === 'Available' ? 'Unavailable' : 'Available';
+        serviceData.status = newStatus;
+        toggleServiceStatus(id, serviceData);
         toast.success(`Service status changed to ${newStatus}!`);
     };
 
@@ -359,7 +360,7 @@ export function AdditionalServiceManagement() {
                                             <div className="flex items-center gap-2">
                                                 <Switch
                                                     checked={service.status === 'Available'}
-                                                    onCheckedChange={() => handleToggleStatus(Number(service.service_id), service.status)}
+                                                    onCheckedChange={() => handleToggleStatus(Number(service.service_id), service)}
                                                 />
                                             </div>
                                             <Button

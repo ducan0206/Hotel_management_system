@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { getAllServices, addNewService, updatingService, deletingService } from '../apis/APIFunction';
 import { toast } from 'sonner'
 
@@ -18,7 +18,7 @@ interface AdditionalServiceContextType {
     addService: (serviceData: any) => void;
     updateService: (id: number, serviceData: any) => void;
     deleteService: (id: number) => void;
-    toggleServiceStatus: (id: number) => void;
+    toggleServiceStatus: (id: number, serviceData: any) => void;
 }
 
 const AdditionalServiceContext = createContext<AdditionalServiceContextType | undefined>(undefined);
@@ -71,16 +71,20 @@ export function AdditionalServiceProvider({ children }: { children: ReactNode })
         }
     };
 
-    const toggleServiceStatus = (id: number) => {
-        // setServices(services.map(s => 
-        // s.service_id === id 
-        //     ? { 
-        //         ...s, 
-        //         status: s.status === 'active' ? 'inactive' : 'active',
-        //         updated_at: new Date().toISOString()
-        //     } 
-        //     : s
-        // ));
+    const toggleServiceStatus = async (id: number, serviceData: any) => {
+        try {
+            console.log(id);
+            console.log(serviceData);
+            const res = await updatingService(id, serviceData);
+            if(res.status !== 200) {
+                toast.error(<span className='mess'>{res.message}</span>)
+                return;
+            }
+            toast.success(<span className='mess'>Toggle service status successfully!</span>);
+            refetchServices();
+        } catch (error) {
+            console.log("Error: toggle service status", error);
+        }
     };
 
     return (
