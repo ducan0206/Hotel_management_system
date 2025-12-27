@@ -272,7 +272,8 @@ export const updateGuestInfo = async(id: number, guestData: any) => {
 
 export const deleteGuest = async(id: number) => {
     try {
-
+        const res = await api.delete(`/admin/customer/${id}`);
+        return res.data;
     } catch (error) {
         console.log("Delete a customer error:", error);
         throw error;

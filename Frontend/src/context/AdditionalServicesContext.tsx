@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { getAllServices, addNewService, updatingService, deletingService } from '../apis/APIFunction';
 import { toast } from 'sonner'
 

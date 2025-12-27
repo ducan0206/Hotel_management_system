@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getAllCustomers } from '@/apis/APIFunction';
-import { updateGuestInfo } from '../apis/APIFunction';
+import { updateGuestInfo, getAllCustomers, deleteGuest as deletingGuest } from '../apis/APIFunction';
 import { toast } from 'sonner';
 
 export interface Guest {
@@ -131,7 +130,17 @@ export function GuestProvider({ children }: { children: ReactNode }) {
     };
 
     const deleteGuest = async (id: number) => {
-       
+       try {
+            const res = await deletingGuest(id);
+            if (res.status !== 200) {
+                toast.error(<span className='mess'>{res.message}</span>);
+                return;
+            }
+            toast.success(<span className='mess'>Update guest info successfully!</span>)
+            refetchCustomers();
+       } catch (error) {
+            console.log("Delete guest error:", error);
+       }
     };
 
     const getGuestBookings = (guestId: string) => {
