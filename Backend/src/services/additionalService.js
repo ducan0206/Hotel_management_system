@@ -27,7 +27,10 @@ export const addNewService = async({service_name, price, description, status}) =
             `, [service_name, price, description, status]
         )
         const [rows] = await db.query("select * from Services where service_id = ?", [newService.insertId]);
-        return rows[0];
+        return {
+            status: 200,
+            data: rows[0]
+        };
     } catch (error) {
         console.log('Error: addNewService function', error);
         return error;

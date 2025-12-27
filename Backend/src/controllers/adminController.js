@@ -284,6 +284,9 @@ export const deleteRoomType = async(request, response) => {
 export const getAllServices = async(request, response) => {
     try {
         const services = await fetchAllServices();
+        if(services.status !== 200) {
+            return response.status(services.status).json({message: services.message});
+        }
         response.status(200).json(services);
     } catch (error) {
         console.log("getAllServices function error: ", error.message);
