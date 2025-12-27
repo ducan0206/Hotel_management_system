@@ -313,6 +313,9 @@ export const updateService = async(request, response) => {
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
         const updated = await updatingService(id, request.body);
+        if (updated.status !== 200) {
+            return response.status(updated.status).json(updated.message)
+        }
         response.status(200).json(updated); 
     } catch (error) {
         console.log("updateService function error: ", error.message);
@@ -326,9 +329,9 @@ export const deleteService = async(request, response) => {
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingService(id);
-        if(result.status === 404) 
-            return response.status(404).json({message: result.message});
-        return response.status(204).send();
+        if(result.status !== 200) 
+            return response.status(result.status).json(result.message);
+        return response.status(200).send(result.message);
     } catch (error) {
         console.log("deleteService function error: ", error.message);
         response.status(500).json({message: "System error"});

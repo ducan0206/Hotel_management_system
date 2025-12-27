@@ -48,11 +48,11 @@ adminRoute.delete("/delete-room-type/:id", deleteRoomType);
 // service management 
 adminRoute.get("/services", getAllServices);
 
-adminRoute.post("/new-service", createNewService);
+adminRoute.post("/service", createNewService);
 
-adminRoute.put("/update-service/:id", updateService);
+adminRoute.put("/service/:id", updateService);
 
-adminRoute.delete("/delete-service/:id", deleteService);
+adminRoute.delete("/service/:id", deleteService);
 
 adminRoute.get("/service-orderd", getAllServiceOrder);
 

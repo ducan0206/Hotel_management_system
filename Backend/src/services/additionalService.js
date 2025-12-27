@@ -41,7 +41,10 @@ export const updatingService = async(id, serviceData) => {
     try {
         const [existingService] = await db.query("select * from Services where service_id = ?", [id]);
         if(existingService.length === 0) {
-            throw new Error(`Service with id ${id} not found.`);
+            return {
+                status: 404,
+                message: `Service with id ${id} not found.`
+            }
         }
         const old = existingService[0];
         const updatedInfo = {
@@ -63,7 +66,10 @@ export const updatingService = async(id, serviceData) => {
             `, [updatedInfo.service_name, updatedInfo.price, updatedInfo.description, updatedInfo.status, id]
         );
         const [updated] = await db.query("select * from Services where service_id = ?", [id]);
-        return updated[0];
+        return {
+            status: 200,
+            data: updated[0]
+        }
     } catch (error) {
         console.log('Error: updatingService function', error);
         return error;
@@ -74,7 +80,10 @@ export const deletingService = async(id) => {
     try {
         const [existingService] = await db.query("select * from Services where service_id = ?", [id]);
         if(existingService.length === 0) {
-            throw new Error(`Service with id ${id} not found.`);
+            return {
+                status: 404,
+                message: `Service with id ${id} not found.`
+            }
         }
         await db.query(
             `
@@ -82,7 +91,10 @@ export const deletingService = async(id) => {
             where service_id = ?
             `, [id]
         );
-        return {message: `Service with id ${id} has been deleted.`};
+        return {
+            status: 200,
+            message: `Service with id ${id} has been deleted.`
+        };
     } catch (error) {
         console.log('Error: deletingService function', error);
         return error;
