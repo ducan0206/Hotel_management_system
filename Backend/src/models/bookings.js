@@ -14,7 +14,7 @@ export async function initBookingDetailsModel() {
             foreign key (room_id) references Rooms(room_id)
                 on delete cascade
                 on update cascade
-        )
+        );
     `;
 
     await db.query(createBookingDetailsTable);

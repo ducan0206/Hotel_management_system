@@ -352,6 +352,9 @@ export const getAllServiceOrder = async(request, response) => {
 export const getAllBookings = async(request, response) => {
     try {
         const bookings = await fetchAllBookings();
+        if(bookings.status !== 200) {
+            return response.status(bookings.status).json(bookings.message);
+        }
         response.status(200).json(bookings);
     } catch (error) {
         console.log("getAllBookings function error: ", error.message);

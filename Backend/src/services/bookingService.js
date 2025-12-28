@@ -9,6 +9,12 @@ export const fetchAllBookings = async() => {
             from Bookings b join Account a on b.user_id = a.user_id
             `
         );
+        if(bookings.length === 0) {
+            return {
+                status: 404,
+                message: 'Not found.'
+            }
+        }
         return {
             status: 200,
             data: bookings
@@ -136,12 +142,11 @@ export const deletingBooking = async(id) => {
 
 
 export const createBooking = async (data) => {
-    const { userId, checkIn, checkOut, roomId, roomPrice, services } = data;
+    const { userId, checkIn, checkOut, roomId, roomPrice, services, adults, children, specialRequest } = data;
 
-    // 1. Validate Logic Nghi?p v? (Business Logic)
     if (checkOut <= checkIn) {
         const error = new Error("Check-out date must be after check-in date.");
-        error.statusCode = 400; // Bad Request
+        error.statusCode = 400; 
         throw error;
     }
 
@@ -162,9 +167,9 @@ export const createBooking = async (data) => {
         // L?u ý: total_price t?m th?i ?? 0 ho?c totalRoomCost, s? update l?i sau khi c?ng d?ch v?
         const [bookingResult] = await connection.query(
             `INSERT INTO Bookings 
-            (user_id, check_in, check_out, status, payment_status, total_price, created_at, updated_at) 
-            VALUES (?, ?, ?, 'booked', 'not paid', ?, NOW(), NOW())`,
-            [userId, checkIn, checkOut, totalRoomCost]
+            (user_id, check_in, check_out, status, payment_status, total_price, created_at, updated_at, specialRequest) 
+            VALUES (?, ?, ?, 'booked', 'not paid', ?, NOW(), NOW(), ?)`,
+            [userId, checkIn, checkOut, totalRoomCost, specialRequest]
         );
 
         const bookingId = bookingResult.insertId;
@@ -173,9 +178,9 @@ export const createBooking = async (data) => {
         // B??C B: T?O BOOKING DETAILS (Chi ti?t phòng)
         // ---------------------------------------------------------
         await connection.query(
-            `INSERT INTO BookingDetails (booking_id, room_id, price, nights)
-             VALUES (?, ?, ?, ?)`,
-            [bookingId, roomId, roomPrice, nights]
+            `INSERT INTO BookingDetails (booking_id, room_id, price, nights, adutls, children)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [bookingId, roomId, roomPrice, nights, adults, children]
         );
 
         // ---------------------------------------------------------
@@ -184,9 +189,7 @@ export const createBooking = async (data) => {
         let totalServiceCost = 0;
 
         if (services.length > 0) {
-            // T?o m?ng các Promise insert ?? ch?y song song
             const servicePromises = services.map(service => {
-                // service: { service_id, price, ... }
                 const srvPrice = parseFloat(service.price);
                 totalServiceCost += srvPrice;
 
@@ -204,12 +207,13 @@ export const createBooking = async (data) => {
         // ---------------------------------------------------------
         // B??C D: C?P NH?T T?NG TI?N CU?I CÙNG
         // ---------------------------------------------------------
-        const finalTotalPrice = totalRoomCost + totalServiceCost;
+
+        const total_price = (totalRoomCost + totalServiceCost) * 1.1 + 25;
 
         if (totalServiceCost > 0) {
             await connection.query(
                 `UPDATE Bookings SET total_price = ? WHERE booking_id = ?`,
-                [finalTotalPrice, bookingId]
+                [total_price, bookingId]
             );
         }
 
@@ -222,15 +226,7 @@ export const createBooking = async (data) => {
         // Có th? query l?i ho?c t? build object tr? v? ?? ti?t ki?m query
         return {
             status: 200,
-            message: "Booking created successfully",
-            data: {
-                booking_id: bookingId,
-                user_id: userId,
-                total_price: finalTotalPrice,
-                check_in: checkIn,
-                check_out: checkOut,
-                services_count: services.length
-            }
+            message: "Booking created successfully"
         };
 
     } catch (error) {
