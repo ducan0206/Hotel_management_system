@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'rea
 import { AuthProvider } from './context/AuthContext.tsx'
 import { RoomProvider } from './context/RoomContext.tsx'
 import { GuestProvider } from './context/GuestContext.tsx'
+import { BookingProvider } from './context/BookingContext.tsx'
 import { AdditionalServiceProvider } from './context/AdditionalServicesContext.tsx'
 import { Toaster } from 'sonner';
 import { AnimatePresence } from "framer-motion";
@@ -69,9 +70,11 @@ function App() {
                 <RoomProvider>
                     <GuestProvider>
                         <AdditionalServiceProvider>
-                            <Router>
-                                <AppRoutes />
-                            </Router>
+                            <BookingProvider>
+                                <Router>
+                                    <AppRoutes />
+                                </Router>
+                            </BookingProvider>
                         </AdditionalServiceProvider>
                     </GuestProvider>
                 </RoomProvider>

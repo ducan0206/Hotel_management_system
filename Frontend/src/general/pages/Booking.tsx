@@ -5,28 +5,8 @@ import { Hotel, ArrowLeft } from "lucide-react";
 import { Button } from "../../ui/button.tsx";
 import { useNavigate, useLocation } from 'react-router-dom'
 import type { Room } from '../../context/RoomContext.tsx'
-import type { AdditionalService } from '../../context/AdditionalServicesContext.tsx'
+import type { BookingData } from '../../context/BookingContext.tsx'
 
-export interface BookingData {
-    room: Room;
-    checkIn: Date | undefined;
-    checkOut: Date | undefined;
-    guests: {
-        adults: number;
-        children: number;
-    };
-    guestInfo: {
-        fullName: string;
-        idCard: string,
-        dateOfBirth: string,
-        gender: string,
-        email: string;
-        phone: string;
-        address: string;
-    };
-    specialRequests: string;
-    additionalServices: AdditionalService[];
-}
 
 const Booking = () => {
     const navigate = useNavigate();

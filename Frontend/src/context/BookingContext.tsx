@@ -1,0 +1,86 @@
+import { useQuery } from '@tanstack/react-query';
+import type {Room} from '../context/RoomContext'
+import type { AdditionalService } from './AdditionalServicesContext';
+import { createContext, useContext, type ReactNode } from 'react';
+import { getAllBookings, addNewBooking } from '../apis/APIFunction';
+import { toast } from 'sonner';
+
+export interface BookingData {
+    user_id: number;
+    checkIn: Date | undefined;
+    checkOut: Date | undefined;
+    room: Room;
+    additionalServices: AdditionalService[];
+    guests: {
+        adults: number;
+        children: number;
+    };
+    specialRequest: string;
+    guestInfo: {
+        fullName: string;
+        idCard: string,
+        dateOfBirth: string,
+        gender: string, 
+        email: string;
+        phone: string;
+        address: string;
+    };
+}
+
+interface BookingContextType {
+    bookings: BookingData[];
+    addBooking: (bookingData: any) => void;
+    updateBooking: (id: number, bookingData: any) => void;
+    deleteBooking: (id: number) => void;
+}
+
+const BookingContext = createContext<BookingContextType | undefined>(undefined);
+
+export function BookingProvider({children}: {children: ReactNode}) {
+    const { data: bookings = [], refetch: refetchBookings } = useQuery<BookingData[]>({
+        queryKey: ['bookings'],
+        queryFn: getAllBookings
+    });
+
+    const addBooking = async (bookingData: any) => {
+        try {
+            console.log(bookingData);
+            const res = await addNewBooking(bookingData);
+            if(res.status !== 200) {
+                toast.error(<span className='mess'>{res.message}</span>);
+                return;
+            }
+            toast.success(<span className='mess'>Add a new booking successfully!</span>);
+            refetchBookings();
+        } catch (error) {
+            console.log('Add new booking error:', error);
+        }
+    }
+
+    const updateBooking = async (id: number, bookingData: any) => {
+
+    }
+
+    const deleteBooking = async (id: number) => {
+
+    }
+
+    return (
+        <BookingContext.Provider value={{
+            bookings,
+            addBooking,
+            updateBooking,
+            deleteBooking
+        }}>
+            {children}
+        </BookingContext.Provider>
+    )
+}
+
+export function useBooking() {
+    const context = useContext(BookingContext);
+    if(context === undefined) {
+        throw new Error('useBooking must be used within a BookingProvider');
+    }
+    return context;
+}

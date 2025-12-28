@@ -31,7 +31,6 @@ export const getAllRooms = async() => {
 
 export const getAccountInfo = async (id: number) => {
     try {
-        console.log(id);
         const res = await api.get(`/user/customer/${id}`);
         return res.data;
     } catch (error) {
@@ -285,7 +284,6 @@ export const deleteGuest = async(id: number) => {
 export const getAllServices = async() => {
     try {
         const res = await api.get("/admin/services");
-        console.log(res.data);
         return res.data && res.data.data ? res.data.data : [];
     } catch (error) {
         console.log("Get all services error:", error);
@@ -319,6 +317,46 @@ export const deletingService = async(id: number) => {
         return res.data;
     } catch (error) {
         console.log("Deleting service error: ", error);
+        throw error;
+    }
+}
+
+// booking 
+export const getAllBookings = async () => {
+    try {
+        const res = await api.get(`/admin/bookings`);
+        return res.data;
+    } catch (error) {
+        console.log("Get all bookings error:", error);
+        throw error;
+    }
+}
+
+export const addNewBooking = async (bookingData: any) => {
+    try {
+        console.log(bookingData);
+        const res = await api.post(`/user/booking`, bookingData);
+        return res.data;
+    } catch (error) {
+        console.log("Add new bookings error:", error);
+        throw error;
+    }
+}
+
+export const updateBooking = async (id: number, bookingData: any) => {
+    try {
+
+    } catch (error) {
+        console.log("Update bookings error:", error);
+        throw error;
+    }
+}
+
+export const deleteBooking = async (id: number) => {
+    try {
+
+    } catch (error) {
+        console.log("Delete bookings error:", error);
         throw error;
     }
 }

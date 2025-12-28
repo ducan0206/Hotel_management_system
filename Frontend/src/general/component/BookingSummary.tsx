@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card.tsx";
 import { Button } from "../../ui/button.tsx";
 import { Badge } from "../../ui/badge.tsx";
 import { Separator } from "../../ui/separator.tsx";
-import type { BookingData } from "../pages/Booking.tsx";
+import { useBooking, type BookingData } from "../../context/BookingContext.tsx";
 import { ImageWithFallback } from "../utils/ImageWithFallback.tsx";
 import { CalendarIcon, Users, Wifi, Tv, Wine, Sparkles, MessageSquare, User, Lock } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
@@ -13,19 +13,23 @@ interface BookingSummaryProps {
 }
 
 export function BookingSummary({ bookingData, onProceedToPayment }: BookingSummaryProps) {
-    // L?y thêm additionalServices, specialRequests, guestInfo t? bookingData có s?n
-    const { room, checkIn, checkOut, guests, additionalServices = [], specialRequests, guestInfo } = bookingData;
+    const { addBooking } = useBooking();
+    const { room, checkIn, checkOut, guests, additionalServices = [], specialRequest, guestInfo } = bookingData;
 
     const nights = checkIn && checkOut ? differenceInDays(checkOut, checkIn) : 0;
     
-    // Tính toán chi phí
     const roomTotal = nights * room.price;
     const servicesTotal = additionalServices?.reduce((sum, service) => sum + Number(service.price), 0);
     
     const subtotal = roomTotal + servicesTotal;
-    const tax = subtotal * 0.1; // 10% tax
+    const tax = subtotal * 0.1; 
     const serviceFee = 25;
     const total = subtotal + tax + serviceFee;
+
+    const handleSubmitPayment = () => {
+        addBooking(bookingData);
+        onProceedToPayment();
+    }
 
     return (
         <div className="space-y-6">
@@ -146,7 +150,7 @@ export function BookingSummary({ bookingData, onProceedToPayment }: BookingSumma
                     )}
 
                     {/* Special Requests Section */}
-                    {specialRequests && (
+                    {specialRequest && (
                         <>
                         <Separator />
                         <div className="space-y-2">
@@ -155,7 +159,7 @@ export function BookingSummary({ bookingData, onProceedToPayment }: BookingSumma
                                 Special Requests
                             </h4>
                             <p className="text-sm text-gray-600 italic bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                "{specialRequests}"
+                                "{specialRequest}"
                             </p>
                         </div>
                         </>
@@ -206,7 +210,7 @@ export function BookingSummary({ bookingData, onProceedToPayment }: BookingSumma
                     <Button
                         className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-md text-lg font-semibold py-6"
                         size="lg"
-                        onClick={onProceedToPayment}
+                        onClick={handleSubmitPayment}
                         disabled={!checkIn || !checkOut || nights === 0}
                     >
                         Confirm & Pay

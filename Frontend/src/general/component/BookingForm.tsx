@@ -4,7 +4,7 @@ import { Input } from "../../ui/input.tsx";
 import { Textarea } from "../../ui/textarea.tsx";
 import { Checkbox } from '../../ui/checkbox.tsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select.tsx";
-import type { BookingData } from "../pages/Booking.tsx";
+import type { BookingData } from "../../context/BookingContext.tsx";
 import { Paintbrush, WavesLadder, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles, Baby, Users, Bus, Motorbike, Dumbbell } from "lucide-react";
 import { format } from "date-fns";
 import { useAdditionalServices } from '../../context/AdditionalServicesContext.tsx';
@@ -35,6 +35,7 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
             return;
         }
         onBookingChange({
+            user_id: Number(user?.user_id),
             guestInfo: {
                 fullName: userInfo.full_name,
                 idCard: userInfo.id_card,
@@ -346,8 +347,8 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
                     <Textarea
                         placeholder="Any special requests or requirements? (Optional)"
                         rows={4}
-                        value={bookingData.specialRequests}
-                        onChange={(e) => onBookingChange({ specialRequests: e.target.value })}
+                        value={bookingData.specialRequest}
+                        onChange={(e) => onBookingChange({ specialRequest: e.target.value })}
                     />
                 </CardContent>
             </Card>
