@@ -76,15 +76,15 @@ export const getAvailableRooms = async (check_in: string, check_out: string, cap
     }
 }
 
-export const getAllAdditionalServices = async () => {
-    try {
-        const res = await api.get("/all-services");
-        return res;
-    } catch (error) {
-        console.log("Get all additional services error: ", error);
-        throw error;
-    }
-}
+// export const getAllAdditionalServices = async () => {
+//     try {
+//         const res = await api.get("/all-services");
+//         return res;
+//     } catch (error) {
+//         console.log("Get all additional services error: ", error);
+//         throw error;
+//     }
+// }
 
 export const createNewReceptionAccount = async (employeeData: {username: string, password: string, fullName: string, phone: string,  email: string, address: string, date_of_birth: string, gender: string, id_card: string, role: string }) => {
     try {

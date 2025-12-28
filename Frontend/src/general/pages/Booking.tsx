@@ -5,6 +5,7 @@ import { Hotel, ArrowLeft } from "lucide-react";
 import { Button } from "../../ui/button.tsx";
 import { useNavigate, useLocation } from 'react-router-dom'
 import type { Room } from '../../context/RoomContext.tsx'
+import type { AdditionalService } from '../../context/AdditionalServicesContext.tsx'
 
 export interface BookingData {
     room: Room;
@@ -25,6 +26,7 @@ export interface BookingData {
         zipCode: string;
     };
     specialRequests: string;
+    additionalServices: AdditionalService[];
 }
 
 const Booking = () => {
@@ -54,6 +56,7 @@ const Booking = () => {
                 zipCode: "",
             },
             specialRequests: "",
+            additionalServices: []
         }
     })
 

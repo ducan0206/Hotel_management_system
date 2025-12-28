@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card.tsx";
 import { Label } from "../../ui/label.tsx";
 import { Input } from "../../ui/input.tsx";
@@ -6,38 +5,18 @@ import { Textarea } from "../../ui/textarea.tsx";
 import { Checkbox } from '../../ui/checkbox.tsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select.tsx";
 import type { BookingData } from "../pages/Booking.tsx";
-import { Car, SquareParking, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles, Baby, Users } from "lucide-react";
+import { Paintbrush, WavesLadder, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles, Baby, Users, Bus, Motorbike, Dumbbell } from "lucide-react";
 import { format } from "date-fns";
-import { getAllAdditionalServices } from '../../apis/APIFunction.ts'
+import { useAdditionalServices } from '../../context/AdditionalServicesContext.tsx';
+import type { AdditionalService } from '../../context/AdditionalServicesContext.tsx';
 
 interface BookingFormProps {
     bookingData: BookingData;
     onBookingChange: (updates: Partial<BookingData>) => void;
 }
 
-interface AdditionalServices {
-    service_id: number;
-    service_name: string;
-    price: number;
-    description: string;
-    status: string;
-}
-
 export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) {
-    const [services, setServices] = useState<AdditionalServices[]>([]);
-    const [extraService, setExtraService] = useState<AdditionalServices[]>([]);
-
-    useEffect(() => {
-        const loadAdditionalServices = async() => {
-            try {
-                const data = await getAllAdditionalServices();
-                setServices(data.data);
-            } catch (error) {
-                console.error("Fetch additional services fail.", error);
-            }
-        }
-        loadAdditionalServices()
-    }, [])
+    const {services} = useAdditionalServices();
 
     const handleGuestInfoChange = (field: string, value: string) => {
         onBookingChange({
@@ -59,24 +38,32 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
 
     const getAmenityIcon = (amenity: string) => {
         const lower = amenity.toLowerCase();
-        if (lower.includes("taxi")) return <Car className="w-4 h-4" />;
-        if (lower.includes("car")) return <Car className="w-4 h-4" />;
-        if (lower.includes("parking")) return <SquareParking className="w-4 h-4" />;
+        if (lower.includes("city tour")) return <Bus className="w-4 h-4" />;
+        if (lower.includes("motorbike")) return <Motorbike className="w-4 h-4" />;
+        if (lower.includes("gym")) return <Dumbbell className="w-4 h-4" />;
         if (lower.includes("meeting")) return <Projector className="w-4 h-4" />;
         if (lower.includes("laundry")) return <WashingMachine className="w-4 h-4" />;
         if (lower.includes("tennis")) return <LandPlot className="w-4 h-4" />;
-        if (lower.includes("airport")) return <Plane className="w-4 h-4" />;
+        if (lower.includes("air port")) return <Plane className="w-4 h-4" />;
         if (lower.includes("gift")) return <Gift className="w-4 h-4" />;
         if (lower.includes("spa")) return <Bubbles className="w-4 h-4" />;
+        if (lower.includes("pool")) return <WavesLadder className="w-4 h-4"/>;
+        if (lower.includes("decoration")) return <Paintbrush className="w-4 h-4"/>;
         return null;
     };
 
-    function toggleAdditionalService(service: AdditionalServices) {
-        setExtraService(prev => 
-            prev.includes(service)
-                ? prev.filter(item => item !== service)   
-                : [...prev, service]                      
-        );
+    function toggleAdditionalService(service: AdditionalService) {
+        const currentServices = bookingData.additionalServices || [];
+        const exists = currentServices.some(s => s.service_id === service.service_id);
+        let newServices;
+        if (exists) {
+            newServices = currentServices.filter(s => s.service_id !== service.service_id);
+        } else {
+            newServices = [...currentServices, service];
+        }
+        onBookingChange({
+            additionalServices: newServices
+        })
     }
   
     return (
@@ -268,7 +255,9 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
                 <CardContent>
                     <div className="space-y-4">
                         {services.map((service) => {
-                            const isSelected = extraService.includes(service);
+                            const isSelected = (bookingData.additionalServices || []).some(
+                                (s) => s.service_id === service.service_id
+                            );
 
                             return (
                                 <div
