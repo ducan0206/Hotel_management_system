@@ -133,131 +133,117 @@ export const deletingBooking = async(id) => {
     }
 }
 
-const getServicesDetailByName = async(services) => {
-    if(!services || services.length === 0) {
-        return [];
-    }
-    const placeholders = services.map(() => '?').join(', ');
-    const [rows] = await db.query(
-        `
-        SELECT service_id, price 
-        FROM Services
-        WHERE service_name IN (?)
-        `, [services]
-    );
-    return rows;
-}
 
-export const addingBooking = async (bookingData) => {
-    const { user_id, check_in, check_out, room_id, room_status, room_price, services } = bookingData;
 
-    // --- VALIDATE NGÀY ---
-    const checkIn = new Date(check_in);
-    const checkOut = new Date(check_out);
+export const createBooking = async (data) => {
+    const { userId, checkIn, checkOut, roomId, roomPrice, services } = data;
 
+    // 1. Validate Logic Nghi?p v? (Business Logic)
     if (checkOut <= checkIn) {
-        throw new Error("Check out date must be after check in date.");
+        const error = new Error("Check-out date must be after check-in date.");
+        error.statusCode = 400; // Bad Request
+        throw error;
     }
 
-    const nights = Math.ceil(Math.abs(checkOut - checkIn) / (1000 * 3600 * 24));
-    const roomPrice = nights * room_price;
+    // 2. Tính toán chi phí phòng
+    // (L?y s? ms chênh l?ch / s? ms trong 1 ngày) ?? ra s? ?êm
+    const nights = Math.ceil(Math.abs(checkOut - checkIn) / (1000 * 60 * 60 * 24));
+    const totalRoomCost = nights * roomPrice;
 
-    let totalServicePrice = 0;
-    let totalBookingPrice = roomPrice;
+    // L?y connection ?? b?t ??u Transaction
+    const connection = await db.getConnection();
 
     try {
-        // --- T?O BOOKING ---
-        const [newBooking] = await db.query(
-            `
-            INSERT INTO Bookings (
-                user_id, check_in, check_out, status, payment_status, created_at, updated_at
-            ) VALUES (?, ?, ?, 'booked', 'not paid', NOW(), NOW())
-            `,
-            [user_id, check_in, check_out]
+        await connection.beginTransaction();
+
+        // ---------------------------------------------------------
+        // B??C A: T?O BOOKING (Master Table)
+        // ---------------------------------------------------------
+        // L?u ý: total_price t?m th?i ?? 0 ho?c totalRoomCost, s? update l?i sau khi c?ng d?ch v?
+        const [bookingResult] = await connection.query(
+            `INSERT INTO Bookings 
+            (user_id, check_in, check_out, status, payment_status, total_price, created_at, updated_at) 
+            VALUES (?, ?, ?, 'booked', 'not paid', ?, NOW(), NOW())`,
+            [userId, checkIn, checkOut, totalRoomCost]
         );
 
-        const booking_id = newBooking.insertId;
+        const bookingId = bookingResult.insertId;
 
-        // --- T?O BOOKING DETAIL ---
-        await db.query(
-            `
-            INSERT INTO BookingDetails (booking_id, room_id, price, nights)
-            VALUES (?, ?, ?, ?)
-            `,
-            [booking_id, room_id, room_price, nights]
+        // ---------------------------------------------------------
+        // B??C B: T?O BOOKING DETAILS (Chi ti?t phòng)
+        // ---------------------------------------------------------
+        await connection.query(
+            `INSERT INTO BookingDetails (booking_id, room_id, price, nights)
+             VALUES (?, ?, ?, ?)`,
+            [bookingId, roomId, roomPrice, nights]
         );
 
-        // --- D?CH V? (N?U CÓ) ---
-        if (Array.isArray(services) && services.length > 0) {
-            const serviceRows = await getServicesDetailByName(services);
+        // ---------------------------------------------------------
+        // B??C C: X? LÝ D?CH V? (N?u có)
+        // ---------------------------------------------------------
+        let totalServiceCost = 0;
 
-            const serviceOrderPromises = serviceRows.map(srv => {
-                totalServicePrice += parseFloat(srv.price);
+        if (services.length > 0) {
+            // T?o m?ng các Promise insert ?? ch?y song song
+            const servicePromises = services.map(service => {
+                // service: { service_id, price, ... }
+                const srvPrice = parseFloat(service.price);
+                totalServiceCost += srvPrice;
 
-                return db.query(
-                    `
-                    INSERT INTO ServiceOrdered 
-                    (booking_id, service_id, total_price, status, created_at, quantity)
-                    VALUES (?, ?, ?, 'pending', NOW(), 1)
-                    `,
-                    [booking_id, srv.service_id, srv.price]
+                return connection.query(
+                    `INSERT INTO ServiceOrdered 
+                    (booking_id, service_id, total_price, status, quantity, created_at)
+                    VALUES (?, ?, ?, 'pending', 1, NOW())`,
+                    [bookingId, service.service_id, srvPrice]
                 );
             });
 
-            await Promise.all(serviceOrderPromises);
+            await Promise.all(servicePromises);
         }
 
-        // --- C?P NH?T T?NG TI?N ---
-        totalBookingPrice += totalServicePrice;
+        // ---------------------------------------------------------
+        // B??C D: C?P NH?T T?NG TI?N CU?I CÙNG
+        // ---------------------------------------------------------
+        const finalTotalPrice = totalRoomCost + totalServiceCost;
 
-        await db.query(
-            `
-            UPDATE Bookings
-            SET total_price = ?
-            WHERE booking_id = ?
-            `,
-            [totalBookingPrice, booking_id]
-        );
+        if (totalServiceCost > 0) {
+            await connection.query(
+                `UPDATE Bookings SET total_price = ? WHERE booking_id = ?`,
+                [finalTotalPrice, bookingId]
+            );
+        }
 
-        // --- L?Y THÔNG TIN BOOKING ===
-        const [bookingInfo] = await db.query(
-            `
-            SELECT 
-                b.booking_id, a.user_id, a.full_name, a.phone, a.email, 
-                t.type_name, r.room_number, r.image_url,
-                d.price AS room_price_per_night, d.nights,
-                b.check_in, b.check_out, b.payment_status, b.total_price
-            FROM Bookings b 
-            JOIN BookingDetails d ON d.booking_id = b.booking_id
-            JOIN Account a ON a.user_id = b.user_id
-            JOIN Rooms r ON r.room_id = d.room_id
-            JOIN RoomType t ON t.type_id = r.room_type
-            WHERE b.booking_id = ?
-            `,
-            [booking_id]
-        );
+        // ---------------------------------------------------------
+        // B??C E: COMMIT & L?Y D? LI?U TR? V?
+        // ---------------------------------------------------------
+        await connection.commit();
 
-        const [servicesOrdered] = await db.query(
-            `
-            SELECT s.service_name, o.total_price AS service_cost, o.quantity
-            FROM ServiceOrdered o
-            JOIN Services s ON s.service_id = o.service_id
-            WHERE o.booking_id = ?
-            `,
-            [booking_id]
-        );
-
+        // L?y thông tin chi ti?t ?? tr? v? cho Frontend (Optional)
+        // Có th? query l?i ho?c t? build object tr? v? ?? ti?t ki?m query
         return {
             status: 200,
-            bookingInfo: bookingInfo[0],
-            serviceInfo: servicesOrdered
+            message: "Booking created successfully",
+            data: {
+                booking_id: bookingId,
+                user_id: userId,
+                total_price: finalTotalPrice,
+                check_in: checkIn,
+                check_out: checkOut,
+                services_count: services.length
+            }
         };
 
     } catch (error) {
-        console.error("Error in addingBooking:", error);
-        throw error;
+        // G?p l?i -> Rollback toàn b?
+        await connection.rollback();
+        throw error; // Ném l?i v? Controller x? lý
+    } finally {
+        // Tr? connection v? pool
+        connection.release();
     }
 };
+
+
 
 
 export const getCustomerBooking = async(cus_id, booking_id) => {

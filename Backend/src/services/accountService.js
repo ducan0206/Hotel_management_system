@@ -218,7 +218,7 @@ export const getAccountById = async(id) => {
     try {
         const [existingAccount] = await db.query(
             `
-            select * from Account where user_id = ?
+            select full_name, phone, email, address, date_of_birth, id_card, gender, created_at from Account where user_id = ?
             `, [id]
         )
         if(existingAccount.length === 0) {

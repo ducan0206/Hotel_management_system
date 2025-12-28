@@ -92,7 +92,10 @@ export const deletingCustomer = async(id) => {
             `, [id]
         )
         if(existingCustomer.length === 0) {
-            throw new Error(`Customer with id ${id} not found.`);
+            return {
+                status: 404, 
+                message: `Customer with id ${id} not found.`
+            }
         }
         await db.query(
             `
@@ -100,7 +103,10 @@ export const deletingCustomer = async(id) => {
             where user_id = ?
             `, [id]
         )
-        return {message: `Customer with id ${id} has been deleted.`}
+        return {
+            status: 200,
+            message: `Customer with id ${id} has been deleted.`
+        }
     } catch (error) {
         console.log('Error: fetchAllCustomers error', error.message);
         return error;

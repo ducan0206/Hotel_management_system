@@ -496,9 +496,9 @@ export const deleteCustomer = async (request, response) => {
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
         const result = await deletingCustomer(id);
-        if(result.status === 404) 
-            return response.status(404).json({message: result.message});
-        return response.status(204).send();
+        if(result.status !== 200) 
+            return response.status(result.status).json(result.message);
+        return response.status(200).json(result);
     } catch (error) {
         console.log('deleteCustomer function error: ', error);
         response.status(500).json({message: "System error"})

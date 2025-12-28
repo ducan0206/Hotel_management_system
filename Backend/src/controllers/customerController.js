@@ -1,4 +1,4 @@
-import {fetchBookingByID, addingBooking, getCustomerBooking, deletingBooking} from '../services/bookingService.js'
+import {fetchBookingByID, createBooking, getCustomerBooking, deletingBooking} from '../services/bookingService.js'
 import {createNewAccount, getAccountById, updatingAccount} from '../services/accountService.js'
 import {getAvailableRooms} from '../services/roomService.js'
 import {getPaymentByBookingId} from '../services/paymentService.js'
@@ -127,15 +127,49 @@ export const getBookingByID = async(request, response) => {
     }
 }
 
-export const addNewBooking = async(request, response) => {
+
+
+export const addNewBooking = async (req, res) => {
     try {
-        const newBooking = await addingBooking(request.body);
-        return response.status(200).json(newBooking);
+        // 1. L?y d? li?u t? Frontend
+        // Frontend g?i: { user_id, checkIn, checkOut, room: { room_id, price }, additionalServices: [...] }
+        const { user_id, checkIn, checkOut, room, additionalServices } = req.body;
+
+        // 2. Validate c? b?n (Controller Level Validation)
+        if (!user_id || !checkIn || !checkOut || !room || !room.room_id) {
+            return res.status(400).json({ 
+                message: "Missing required booking information (User, Room, Dates)." 
+            });
+        }
+
+        // 3. Chu?n hóa d? li?u ?? g?i sang Service
+        const bookingRequest = {
+            userId: user_id,
+            checkIn: new Date(checkIn),
+            checkOut: new Date(checkOut),
+            roomId: room.room_id,
+            roomPrice: parseFloat(room.price), // ??m b?o là s?
+            services: additionalServices || [] // M?ng d?ch v? (có th? r?ng)
+        };
+
+        // 4. G?i Service ?? x? lý logic
+        const newBooking = await createBooking(bookingRequest);
+
+        // 5. Tr? v? k?t qu? thành công
+        return res.status(200).json(newBooking);
+
     } catch (error) {
-        console.log('Error: getAllBooking funtion', error.message);
-        return response.status(500).json({message: "System error"})
+        console.error('Controller Error - addNewBooking:', error);
+        
+        // X? lý l?i tr? v? t? Service ho?c l?i h? th?ng
+        const status = error.statusCode || 500;
+        const message = error.message || "Internal Server Error";
+        
+        return res.status(status).json({ message });
     }
-}
+};
+
+
 
 export const updateBooking = async(request, response) => {
     try {

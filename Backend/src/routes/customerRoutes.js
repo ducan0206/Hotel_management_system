@@ -21,7 +21,7 @@ customerRoute.get("/all-booking/:cus_id", getAllBooking);
 
 customerRoute.get("/booking/:cus_id/:id", getBookingByID);
 
-customerRoute.post("/new-booking", addNewBooking);
+customerRoute.post("/booking", addNewBooking);
 
 customerRoute.put("/booking/:id/update", updateBooking);
 
