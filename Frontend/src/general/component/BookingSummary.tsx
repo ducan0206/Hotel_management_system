@@ -112,7 +112,7 @@ export function BookingSummary({ bookingData, onProceedToPayment }: BookingSumma
                                 <div className="flex-1">
                                     <p className="text-xs text-gray-500 uppercase font-semibold">Primary Contact</p>
                                     <p className="text-sm font-medium text-gray-900 mt-0.5 truncate">
-                                        {guestInfo.firstName} {guestInfo.lastName}
+                                        {guestInfo.fullName}
                                     </p>
                                     <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
                                         <span>{guestInfo.phone}</span>

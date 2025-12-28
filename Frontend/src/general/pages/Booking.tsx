@@ -16,14 +16,13 @@ export interface BookingData {
         children: number;
     };
     guestInfo: {
-        firstName: string;
-        lastName: string;
+        fullName: string;
+        idCard: string,
+        dateOfBirth: string,
+        gender: string,
         email: string;
         phone: string;
         address: string;
-        city: string;
-        country: string;
-        zipCode: string;
     };
     specialRequests: string;
     additionalServices: AdditionalService[];
@@ -46,14 +45,13 @@ const Booking = () => {
                 children: 0,
             },
             guestInfo: {
-                firstName: "",
-                lastName: "",
+                fullName: "",
+                idCard: "",
+                dateOfBirth: "",
+                gender: "",
                 email: "",
                 phone: "",
-                address: "",
-                city: "",
-                country: "",
-                zipCode: "",
+                address: ""
             },
             specialRequests: "",
             additionalServices: []
@@ -67,10 +65,9 @@ const Booking = () => {
     const handleProceedToPayment = () => {
         // Validate required fields
         const { guestInfo, checkIn, checkOut } = bookingData;
-        if (!checkIn || !checkOut || !guestInfo.firstName || !guestInfo.lastName || 
-            !guestInfo.email || !guestInfo.phone) {
-        alert("Please fill in all required fields");
-        return;
+        if (!checkIn || !checkOut || !guestInfo.fullName || !guestInfo.email || !guestInfo.phone) {
+            alert("Please fill in all required fields");
+            return;
         }
         setCurrentStep("payment");
     };

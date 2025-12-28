@@ -8,7 +8,11 @@ import type { BookingData } from "../pages/Booking.tsx";
 import { Paintbrush, WavesLadder, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles, Baby, Users, Bus, Motorbike, Dumbbell } from "lucide-react";
 import { format } from "date-fns";
 import { useAdditionalServices } from '../../context/AdditionalServicesContext.tsx';
+import { useAuth } from '../../context/AuthContext.tsx'
 import type { AdditionalService } from '../../context/AdditionalServicesContext.tsx';
+import { getAccountInfo } from "../../apis/APIFunction.ts";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 interface BookingFormProps {
     bookingData: BookingData;
@@ -16,16 +20,32 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) {
+    const {user} = useAuth();
+
+    const { data: userInfo } = useQuery({
+        queryKey: ['userInfo', user?.user_id],
+        queryFn: () => getAccountInfo(Number(user?.user_id))
+    })
+
     const {services} = useAdditionalServices();
 
-    const handleGuestInfoChange = (field: string, value: string) => {
+    useEffect(() => {
+        if(!user || !userInfo) {
+            console.log(1);
+            return;
+        }
         onBookingChange({
             guestInfo: {
-                ...bookingData.guestInfo,
-                [field]: value,
-            },
-        });
-    };
+                fullName: userInfo.full_name,
+                idCard: userInfo.id_card,
+                dateOfBirth: userInfo.date_of_birth,
+                gender: userInfo.gender,
+                email: userInfo.email,
+                phone: userInfo.phone,
+                address: userInfo.address
+            }
+        })
+    }, [userInfo, user])
 
     const handleGuestsChange = (field: "adults" | "children", value: number) => {
         onBookingChange({
@@ -68,6 +88,90 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
   
     return (
         <div className="space-y-6">
+            {/* Guest Information */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Guest Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="firstName">First Name *</Label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center text-gray-700">
+                                    {userInfo?.full_name || "N/A"}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="lastName">Identity number *</Label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center text-gray-700">
+                                    {userInfo?.id_card || "N/A"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="firstName">Date of birth *</Label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center text-gray-700">
+                                    {userInfo?.date_of_birth || "N/A"}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="lastName">Gender *</Label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center text-gray-700">
+                                    {userInfo?.gender || "N/A"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email *</Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center text-gray-700">
+                                    {userInfo?.email || "N/A"}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="phone">Phone Number *</Label>
+                            <div className="relative">
+                                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center text-gray-700">
+                                    {userInfo?.phone || "N/A"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="lastName">Address *</Label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center text-gray-700">
+                                {userInfo?.address || "N/A"}
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
             {/* Dates and Guests */}
             <Card>
                 <CardHeader>
@@ -163,80 +267,6 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
                                         <SelectItem value="4">4 Children</SelectItem>
                                     </SelectContent>
                                 </Select>
-                            </div>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Guest Information */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Guest Information</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="firstName">First Name *</Label>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                <Input
-                                    id="firstName"
-                                    placeholder="John"
-                                    className="pl-10"
-                                    value={bookingData.guestInfo.firstName}
-                                    onChange={(e) => handleGuestInfoChange("firstName", e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="lastName">Last Name *</Label>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                <Input
-                                    id="lastName"
-                                    placeholder="Doe"
-                                    className="pl-10"
-                                    value={bookingData.guestInfo.lastName}
-                                    onChange={(e) => handleGuestInfoChange("lastName", e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email *</Label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="john.doe@example.com"
-                                    className="pl-10"
-                                    value={bookingData.guestInfo.email}
-                                    onChange={(e) => handleGuestInfoChange("email", e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Phone Number *</Label>
-                            <div className="relative">
-                                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                <Input
-                                    id="phone"
-                                    type="tel"
-                                    placeholder="+1 234 567 8900"
-                                    className="pl-10"
-                                    value={bookingData.guestInfo.phone}
-                                    onChange={(e) => handleGuestInfoChange("phone", e.target.value)}
-                                    required
-                                />
                             </div>
                         </div>
                     </div>
