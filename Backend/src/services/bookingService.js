@@ -28,18 +28,18 @@ export const fetchAllBookings = async() => {
 // filter by user id
 export const fetchBookingByID = async(id) => {
     try {
-        const [existingId] = await db.query("select * from Account where user_id = ?", [id]);
-        if(existingId.length === 0) {
-            return {
-                status: 404,
-                message: `Account with id ${id} not found.`
-            }
-        }
         const [bookings] = await db.query(
             `
-            select b.*, a.full_name, a.email, a.phone
+            select b.check_in, b.check_out, b.total_price, b.specialRequest,
+                   a.full_name, a.phone, a.email, a.address, a.date_of_birth, a.id_card, a.gender, 
+                   d.nights, d.adutls, d.children,
+                   r.room_number, r.image_url,
+                   t.type_name
             from Bookings b join Account a on b.user_id = a.user_id
-            where a.user_id = ?
+                            join BookingDetails d on d.booking_id = b.booking_id
+                            join Rooms r on r.room_id = d.room_id
+                            join RoomType t on t.type_id = r.room_type
+            where b.booking_id = ?
             `, [id]
         )
         return {
@@ -149,22 +149,14 @@ export const createBooking = async (data) => {
         error.statusCode = 400; 
         throw error;
     }
-
-    // 2. Tính toán chi phí phòng
-    // (L?y s? ms chênh l?ch / s? ms trong 1 ngày) ?? ra s? ?êm
     const nights = Math.ceil(Math.abs(checkOut - checkIn) / (1000 * 60 * 60 * 24));
     const totalRoomCost = nights * roomPrice;
 
-    // L?y connection ?? b?t ??u Transaction
     const connection = await db.getConnection();
 
     try {
         await connection.beginTransaction();
 
-        // ---------------------------------------------------------
-        // B??C A: T?O BOOKING (Master Table)
-        // ---------------------------------------------------------
-        // L?u ý: total_price t?m th?i ?? 0 ho?c totalRoomCost, s? update l?i sau khi c?ng d?ch v?
         const [bookingResult] = await connection.query(
             `INSERT INTO Bookings 
             (user_id, check_in, check_out, status, payment_status, total_price, created_at, updated_at, specialRequest) 
@@ -174,18 +166,12 @@ export const createBooking = async (data) => {
 
         const bookingId = bookingResult.insertId;
 
-        // ---------------------------------------------------------
-        // B??C B: T?O BOOKING DETAILS (Chi ti?t phòng)
-        // ---------------------------------------------------------
         await connection.query(
             `INSERT INTO BookingDetails (booking_id, room_id, price, nights, adutls, children)
              VALUES (?, ?, ?, ?, ?, ?)`,
             [bookingId, roomId, roomPrice, nights, adults, children]
         );
 
-        // ---------------------------------------------------------
-        // B??C C: X? LÝ D?CH V? (N?u có)
-        // ---------------------------------------------------------
         let totalServiceCost = 0;
 
         if (services.length > 0) {
@@ -204,10 +190,6 @@ export const createBooking = async (data) => {
             await Promise.all(servicePromises);
         }
 
-        // ---------------------------------------------------------
-        // B??C D: C?P NH?T T?NG TI?N CU?I CÙNG
-        // ---------------------------------------------------------
-
         const total_price = (totalRoomCost + totalServiceCost) * 1.1 + 25;
 
         if (totalServiceCost > 0) {
@@ -217,16 +199,11 @@ export const createBooking = async (data) => {
             );
         }
 
-        // ---------------------------------------------------------
-        // B??C E: COMMIT & L?Y D? LI?U TR? V?
-        // ---------------------------------------------------------
         await connection.commit();
-
-        // L?y thông tin chi ti?t ?? tr? v? cho Frontend (Optional)
-        // Có th? query l?i ho?c t? build object tr? v? ?? ti?t ki?m query
         return {
             status: 200,
-            message: "Booking created successfully"
+            message: "Booking created successfully",
+            id: bookingId
         };
 
     } catch (error) {
@@ -268,14 +245,14 @@ export const getCustomerBooking = async(cus_id, booking_id) => {
         }
         const [booking] = await db.query(
             `
-            select a.full_name, a.phone, a.email, b.booking_id, r.room_number, t.type_name, r.image_url, d. nights, b.total_price, 
+            select a.full_name, a.phone, a.email, b.booking_id, r.room_number, t.type_name, r.image_url, d. nights, b.total_price
             from Bookings b join BookingDetails d on d.booking_id = b.booking_id
                             join Rooms r on r.room_id = d.room_id
                             join RoomType t on t.type_id = r.room_type
                             join Account a on a.user_id = b.user_id
                             left join ServiceOrdered o on o.booking_id = b.booking_id
                             left join Services s on s.service_id = o.service_id
-            where b.booking_id = ? and user_id = ?
+            where b.booking_id = ? and a.user_id = ?;
             `, [booking_id, cus_id]
         )
         return {

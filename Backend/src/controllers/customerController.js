@@ -112,11 +112,10 @@ export const getAllBooking = async(request, response) => {
 }
 
 // get booking by customer id and booking id
-export const getBookingByID = async(request, response) => {
+export const getBookingByBookingID = async(request, response) => {
     try {
-        const cus_id = parseInt(request.params.cus_id, 10);
         const booking_id = parseInt(request.params.id, 10);
-        const booking = await getCustomerBooking(cus_id, booking_id);
+        const booking = await fetchBookingByID(booking_id);
         if(booking.status === 404) {
             return response.status(404).json(booking.message);
         }
@@ -126,8 +125,6 @@ export const getBookingByID = async(request, response) => {
         return response.status(500).json({message: "System error"})
     }
 }
-
-
 
 export const addNewBooking = async (req, res) => {
     try {

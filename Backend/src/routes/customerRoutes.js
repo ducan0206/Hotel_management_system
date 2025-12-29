@@ -1,5 +1,5 @@
 import express from 'express'
-import {getAllBooking, getBookingByID, addNewBooking, updateBooking, deleteBooking, 
+import {getAllBooking, getBookingByBookingID, addNewBooking, updateBooking, deleteBooking, 
         createAccount, updateAccount, viewAccount, loginAccount,
         getAllAvailableRooms,
         createNewPayment, getPayment
@@ -19,7 +19,7 @@ customerRoute.get("/customer/:id", viewAccount);
 // booking
 customerRoute.get("/all-booking/:cus_id", getAllBooking);
 
-customerRoute.get("/booking/:cus_id/:id", getBookingByID);
+customerRoute.get("/booking/:id", getBookingByBookingID);
 
 customerRoute.post("/booking", addNewBooking);
 
