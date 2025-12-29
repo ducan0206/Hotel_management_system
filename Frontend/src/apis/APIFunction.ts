@@ -360,3 +360,14 @@ export const deleteBooking = async (id: number) => {
         throw error;
     }
 }
+
+// payment
+export const getBookingByBookingId = async (id: number) => {
+    try {
+        const res = await api.get(`/user/booking/${id}`);
+        return res.data;
+    } catch (error) {
+        console.log("Get booking by id error:", error);
+        throw error;
+    }
+}

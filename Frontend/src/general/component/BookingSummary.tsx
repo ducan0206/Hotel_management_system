@@ -28,7 +28,6 @@ export function BookingSummary({ bookingData, onProceedToPayment }: BookingSumma
 
     const handleSubmitPayment = () => {
         addBooking(bookingData);
-        onProceedToPayment();
     }
 
     return (

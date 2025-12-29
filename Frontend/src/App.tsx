@@ -8,6 +8,7 @@ import AdminLoginPage from './admin/AdminLogin.tsx'
 import HotelAuthentication from './admin/HotelAuthentication.tsx'
 import ReceptionLoginPage from './admin/ReceptionLogin.tsx'
 import Dashboard from './admin/pages/Dashboard.tsx'
+import PaymentPage from './general/pages/Payment.tsx'
 
 import AnimatedPage from './AnimatedPage.tsx'
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom'; 
@@ -24,9 +25,9 @@ const MainLayout = () => {
     return (
         <>
         <NavBar/>
-        <div className="min-h-screen"> 
-            <Outlet /> 
-        </div>
+            <div className="min-h-screen"> 
+                <Outlet /> 
+            </div>
         <Footer />
         </>
     );
@@ -43,9 +44,9 @@ const AppRoutes = () => {
 
                 {/* USER PAGES */}
                 <Route element={<MainLayout />}> 
-                <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
-                <Route path="/all-rooms" element={<AnimatedPage><RoomsPage /></AnimatedPage>} />
-                <Route path="/booking/:room_id" element={<AnimatedPage><Booking /></AnimatedPage>} />
+                    <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
+                    <Route path="/all-rooms" element={<AnimatedPage><RoomsPage /></AnimatedPage>} />
+                    <Route path="/booking/:room_id" element={<AnimatedPage><Booking /></AnimatedPage>} />
                 </Route>
 
                 {/* AUTH PAGES */}
@@ -54,6 +55,7 @@ const AppRoutes = () => {
                 <Route path="/reception/auth" element={<AnimatedPage><ReceptionLoginPage /></AnimatedPage>} />
                 <Route path="/hotel/auth" element={<AnimatedPage><HotelAuthentication /></AnimatedPage>} />
                 <Route path="/admin/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
+                <Route path='/payment/:booking_id' element={<AnimatedPage><PaymentPage/></AnimatedPage>}></Route>
 
             </Routes>
         </AnimatePresence>
@@ -66,19 +68,19 @@ function App() {
         <Toaster richColors />
         
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <RoomProvider>
-                    <GuestProvider>
-                        <AdditionalServiceProvider>
-                            <BookingProvider>
-                                <Router>
+            <Router>
+                <AuthProvider>
+                    <RoomProvider>
+                        <GuestProvider>
+                            <AdditionalServiceProvider>
+                                <BookingProvider>
                                     <AppRoutes />
-                                </Router>
-                            </BookingProvider>
-                        </AdditionalServiceProvider>
-                    </GuestProvider>
-                </RoomProvider>
-            </AuthProvider>
+                                </BookingProvider>
+                            </AdditionalServiceProvider>
+                        </GuestProvider>
+                    </RoomProvider>
+                </AuthProvider>
+            </Router>
         </QueryClientProvider>
         </>
     );

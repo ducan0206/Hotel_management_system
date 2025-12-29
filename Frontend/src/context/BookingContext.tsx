@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import type {Room} from '../context/RoomContext'
 import type { AdditionalService } from './AdditionalServicesContext';
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { getAllBookings, addNewBooking } from '../apis/APIFunction';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 export interface BookingData {
     user_id: number;
@@ -16,6 +17,7 @@ export interface BookingData {
         children: number;
     };
     specialRequest: string;
+    booking_id: number,
     guestInfo: {
         fullName: string;
         idCard: string,
@@ -28,8 +30,9 @@ export interface BookingData {
 }
 
 interface BookingContextType {
+    currentBookingId: number,
     bookings: BookingData[];
-    addBooking: (bookingData: any) => void;
+    addBooking: (bookingData: any) => void; // return id
     updateBooking: (id: number, bookingData: any) => void;
     deleteBooking: (id: number) => void;
 }
@@ -42,16 +45,25 @@ export function BookingProvider({children}: {children: ReactNode}) {
         queryFn: getAllBookings
     });
 
+    const navigate = useNavigate();
+
+    // current booking
+    const [currentBookingId, setCurrentBookingId] = useState(0);
+
     const addBooking = async (bookingData: any) => {
         try {
-            console.log(bookingData);
             const res = await addNewBooking(bookingData);
-            if(res.status !== 200) {
+            const newBookingId = res.data?.bookingId || res.id;
+            if(res.status === 200 && newBookingId) {
+                console.log(newBookingId);
+                setCurrentBookingId(newBookingId);
+                toast.success(<span className='mess'>Add a new booking successfully!</span>);
+                refetchBookings();
+                navigate(`/payment/${newBookingId}`);
+            } else {
                 toast.error(<span className='mess'>{res.message}</span>);
                 return;
             }
-            toast.success(<span className='mess'>Add a new booking successfully!</span>);
-            refetchBookings();
         } catch (error) {
             console.log('Add new booking error:', error);
         }
@@ -67,6 +79,7 @@ export function BookingProvider({children}: {children: ReactNode}) {
 
     return (
         <BookingContext.Provider value={{
+            currentBookingId,
             bookings,
             addBooking,
             updateBooking,
