@@ -331,7 +331,7 @@ export const deleteService = async(request, response) => {
         const result = await deletingService(id);
         if(result.status !== 200) 
             return response.status(result.status).json(result.message);
-        return response.status(200).send(result.message);
+        return response.status(200).send(result);
     } catch (error) {
         console.log("deleteService function error: ", error.message);
         response.status(500).json({message: "System error"});
