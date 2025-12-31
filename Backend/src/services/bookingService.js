@@ -5,8 +5,15 @@ export const fetchAllBookings = async() => {
     try {
         const [bookings] = await db.query(
             ` 
-            select b.*, a.full_name, a.email, a.phone
+            select b.booking_id, b.check_in, b.check_out, b.total_price, b.specialRequest,
+                   a.full_name, a.phone, a.email, a.address, a.date_of_birth, a.id_card, a.gender, 
+                   d.nights, d.adutls, d.children,
+                   r.room_number, r.image_url,
+                   t.type_name
             from Bookings b join Account a on b.user_id = a.user_id
+                            join BookingDetails d on d.booking_id = b.booking_id
+                            join Rooms r on r.room_id = d.room_id
+                            join RoomType t on t.type_id = r.room_type
             `
         );
         if(bookings.length === 0) {
