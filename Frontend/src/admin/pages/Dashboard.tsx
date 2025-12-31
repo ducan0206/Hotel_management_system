@@ -44,7 +44,7 @@ const Dashboard = () => {
                         Dashboard
                     </Button>
                     <Button 
-                        variant="ghost" 
+                        variant={currentView === 'rooms' ? 'default' : 'ghost'} 
                         className="w-full justify-start gap-3"
                         onClick={() => setCurrentView('rooms')}
                     >
@@ -52,7 +52,7 @@ const Dashboard = () => {
                         Rooms
                     </Button>
                     <Button 
-                        variant="ghost" 
+                        variant={currentView === 'bookings' ? 'default' : 'ghost'}  
                         className="w-full justify-start gap-3"
                         onClick={() => setCurrentView('bookings')}
                     >
@@ -60,7 +60,7 @@ const Dashboard = () => {
                         Bookings
                     </Button>
                     <Button 
-                        variant="ghost" 
+                        variant={currentView === 'guest' ? 'default' : 'ghost'} 
                         className="w-full justify-start gap-3"
                         onClick={() => setCurrentView('guest')}
                     >
@@ -108,33 +108,33 @@ const Dashboard = () => {
             {/* Header */}
                 <header className="bg-white border-b border-gray-200 px-6 py-4">
                     <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" className="md:hidden">
-                        <Menu className="h-5 w-5" />
-                        </Button>
-                        <div>
-                        <h1 className="text-2xl">Dashboard</h1>
-                        <p className="text-gray-500">Welcome back, Admin</p>
+                        <div className="flex items-center gap-4">
+                            <Button variant="ghost" size="icon" className="md:hidden">
+                                <Menu className="h-5 w-5" />
+                            </Button>
+                            <div>
+                                <h1 className="text-2xl">Dashboard</h1>
+                                <p className="text-gray-500">Welcome back, Admin</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4">
-                        <div className="relative hidden sm:block">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input 
-                            placeholder="Search..." 
-                            className="pl-10 w-64"
-                        />
+                        
+                        <div className="flex items-center gap-4">
+                            <div className="relative hidden sm:block">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <Input 
+                                placeholder="Search..." 
+                                className="pl-10 w-64"
+                            />
+                            </div>
+                            <Button variant="ghost" size="icon" className="relative">
+                                <Bell className="h-5 w-5" />
+                                <span className="absolute top-1 right-1 h-2 w-2 bg-red-600 rounded-full"></span>
+                            </Button>
+                            <Avatar>
+                                <AvatarImage src="" />
+                                <AvatarFallback>AD</AvatarFallback>
+                            </Avatar>
                         </div>
-                        <Button variant="ghost" size="icon" className="relative">
-                        <Bell className="h-5 w-5" />
-                        <span className="absolute top-1 right-1 h-2 w-2 bg-red-600 rounded-full"></span>
-                        </Button>
-                        <Avatar>
-                        <AvatarImage src="" />
-                        <AvatarFallback>AD</AvatarFallback>
-                        </Avatar>
-                    </div>
                     </div>
                 </header>
 

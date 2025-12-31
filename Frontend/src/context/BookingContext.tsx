@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 export interface BookingData {
+    booking_id: number,
     user_id: number;
     checkIn: Date | undefined;
     checkOut: Date | undefined;
@@ -17,7 +18,6 @@ export interface BookingData {
         children: number;
     };
     specialRequest: string;
-    booking_id: number,
     guestInfo: {
         fullName: string;
         idCard: string,

@@ -46,7 +46,7 @@ export function AdditionalServiceProvider({ children }: { children: ReactNode })
     const updateService = async (id: number, serviceData: any) => {
         try {
             const res = await updatingService(id, serviceData);
-            if(res.ststus !== 200) {
+            if(res.status !== 200) {
                 toast.error(<span className='mess'>{res.message}</span>)
                 return;
             }
@@ -60,7 +60,8 @@ export function AdditionalServiceProvider({ children }: { children: ReactNode })
     const deleteService = async (id: number) => {
         try {
             const res = await deletingService(id);
-            if(res.ststus !== 200) {
+            console.log(res);
+            if(res.status !== 200) {
                 toast.error(<span className='mess'>{res.message}</span>)
                 return;
             }

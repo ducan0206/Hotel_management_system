@@ -4,16 +4,14 @@ import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '../../ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '../../ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
-import { Badge } from '../../ui/badge';
-import { Plus, Pencil, Trash2, Search, Eye, Phone, Mail, CreditCard, MapPin, User, Calendar, VenusAndMars } from 'lucide-react';
+import { Pencil, Trash2, Search, Eye, Phone, Mail, CreditCard, MapPin, User, Calendar, VenusAndMars } from 'lucide-react';
 import { useGuests } from '../../context/GuestContext';
 import { toast } from 'sonner';
 
 export function GuestManagement() {
-    const { guests, addGuest, updateGuest, deleteGuest, getGuestBookings } = useGuests();
-    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+    const { guests, updateGuest, deleteGuest } = useGuests();
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
     const [editingGuest, setEditingGuest] = useState<any>(null);
@@ -77,11 +75,7 @@ export function GuestManagement() {
             updateGuest(editingGuest.user_id, guestData);
             toast.success('Guest information updated successfully!');
             setIsEditDialogOpen(false);
-        } else {
-            addGuest(guestData);
-            toast.success('New guest added successfully!');
-            setIsAddDialogOpen(false);
-        }
+        } 
 
         resetForm();
         setEditingGuest(null);
@@ -120,20 +114,6 @@ export function GuestManagement() {
 
     const formatDate = (date: string) => {
         return new Date(date).toLocaleDateString('vi-VN');
-    };
-
-    const getBookingStatusBadge = (status: string) => {
-        const statusConfig = {
-            completed: { label: 'Completed', className: 'bg-green-100 text-green-800' },
-            cancelled: { label: 'Cancelled', className: 'bg-red-100 text-red-800' },
-            'no-show': { label: 'No-show', className: 'bg-orange-100 text-orange-800' }
-        };
-        const config = statusConfig[status as keyof typeof statusConfig];
-        return (
-            <Badge variant="default" className={config.className}>
-                {config.label}
-            </Badge>
-        );
     };
 
     const filteredGuests = guests.filter(guest => {
@@ -232,29 +212,6 @@ export function GuestManagement() {
                     <h2 className="text-3xl">Guest Management</h2>
                     <p className="text-gray-500">Manage guest information and booking history</p>
                 </div>
-                <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button onClick={() => resetForm()}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add New Guest
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <DialogHeader>
-                            <DialogTitle>Add New Guest</DialogTitle>
-                            <DialogDescription>
-                                Enter detailed information for the new guest
-                            </DialogDescription>
-                        </DialogHeader>
-                        {renderGuestForm(false)}
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                                Cancel
-                            </Button>
-                            <Button onClick={handleSubmit}>Add Guest</Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
 
                 {/* Edit Dialog */}
                 <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -364,41 +321,6 @@ export function GuestManagement() {
                                         <p className="mt-1 p-3 bg-yellow-50 rounded border border-yellow-200">{viewingGuest.notes}</p>
                                     </div>
                                 )}
-
-                                <div>
-                                    <h3 className="text-lg mb-3">Booking History</h3>
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Room</TableHead>
-                                                <TableHead>Room Type</TableHead>
-                                                <TableHead>Check-in</TableHead>
-                                                <TableHead>Check-out</TableHead>
-                                                <TableHead>Total Amount</TableHead>
-                                                <TableHead>Status</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {getGuestBookings(viewingGuest.id).map((booking) => (
-                                                <TableRow key={booking.id}>
-                                                    <TableCell>{booking.roomNumber}</TableCell>
-                                                    <TableCell>{booking.roomType}</TableCell>
-                                                    <TableCell>{formatDate(booking.checkIn)}</TableCell>
-                                                    <TableCell>{formatDate(booking.checkOut)}</TableCell>
-                                                    <TableCell>{formatPrice(booking.totalAmount)}</TableCell>
-                                                    <TableCell>{getBookingStatusBadge(booking.status)}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                            {getGuestBookings(viewingGuest.id).length === 0 && (
-                                                <TableRow>
-                                                    <TableCell colSpan={6} className="text-center text-gray-500">
-                                                        No booking history
-                                                    </TableCell>
-                                                </TableRow>
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </div>
                             </div>
                         )}
                     </DialogContent>

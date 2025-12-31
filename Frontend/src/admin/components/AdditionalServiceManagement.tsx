@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
 import { Badge } from '../../ui/badge';
 import { Switch } from '../../ui/switch';
-import { Plus, Pencil, Trash2, Search, DollarSign, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, DollarSign, Clock, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { useAdditionalServices } from '../../context/AdditionalServicesContext';
 import { toast } from 'sonner';
 
@@ -20,6 +20,9 @@ export function AdditionalServiceManagement() {
     const [editingService, setEditingService] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'Available' | 'Unavailable'>('all');
+    
+    // Loading state for API calls
+    const [isLoading, setIsLoading] = useState(false);
   
     const [formData, setFormData] = useState({
         service_name: '',
@@ -37,7 +40,7 @@ export function AdditionalServiceManagement() {
         });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!formData.service_name || !formData.price) {
             toast.error('Please enter both service name and price!');
             return;
@@ -56,18 +59,27 @@ export function AdditionalServiceManagement() {
             status: formData.status
         };
 
-        if (isEditDialogOpen && editingService) {
-            updateService(editingService.service_id, serviceData);
-            toast.success('Service updated successfully!');
-            setIsEditDialogOpen(false);
-        } else {
-            addService(serviceData);
-            toast.success('New service added successfully!');
-            setIsAddDialogOpen(false);
-        }
+        setIsLoading(true); // Start loading
 
-        resetForm();
-        setEditingService(null);
+        try {
+            if (isEditDialogOpen && editingService) {
+                updateService(editingService.service_id, serviceData);
+                // Note: Assuming updateService handles success toast internally or returns promise
+                // If toast is needed here: toast.success('Service updated successfully!');
+                setIsEditDialogOpen(false);
+            } else {
+                addService(serviceData);
+                // If toast is needed here: toast.success('New service added successfully!');
+                setIsAddDialogOpen(false);
+            }
+            resetForm();
+            setEditingService(null);
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            toast.error("Failed to save service. Please try again.");
+        } finally {
+            setIsLoading(false); // Stop loading
+        }
     };
 
     const handleEdit = (service: any) => {
@@ -81,18 +93,32 @@ export function AdditionalServiceManagement() {
         setIsEditDialogOpen(true);
     };
 
-    const handleDelete = (id: number, serviceName: string) => {
+    const handleDelete = async (id: number, serviceName: string) => {
         if (confirm(`Are you sure you want to delete the service "${serviceName}"?`)) {
-            deleteService(id);
-            toast.success('Service deleted successfully!');
+            // Optional: You could add a specific loading state for delete if you want to show it on the row
+            // For now, using global isLoading might be okay or separate state
+             try {
+                deleteService(id);
+                // toast.success('Service deleted successfully!'); // Assuming context handles this
+            } catch (error) {
+                console.error("Error deleting service:", error);
+                toast.error("Failed to delete service.");
+            }
         }
     };
 
-    const handleToggleStatus = (id: number, serviceData: any) => {
+    const handleToggleStatus = async (id: number, serviceData: any) => {
+        // Optional: Add loading state for toggle if needed
         const newStatus = serviceData.status === 'Available' ? 'Unavailable' : 'Available';
-        serviceData.status = newStatus;
-        toggleServiceStatus(id, serviceData);
-        toast.success(`Service status changed to ${newStatus}!`);
+        const updatedData = { ...serviceData, status: newStatus }; // create a copy
+        
+        try {
+             toggleServiceStatus(id, updatedData);
+             // toast.success(`Service status changed to ${newStatus}!`); // Assuming context handles this
+        } catch (error) {
+             console.error("Error toggling status:", error);
+             toast.error("Failed to update status.");
+        }
     };
 
     const formatPrice = (price: number) => {
@@ -145,6 +171,7 @@ export function AdditionalServiceManagement() {
                     value={formData.service_name}
                     onChange={(e) => setFormData({ ...formData, service_name: e.target.value })}
                     placeholder="Example: Airport transfer"
+                    disabled={isLoading}
                 />
             </div>
 
@@ -156,6 +183,7 @@ export function AdditionalServiceManagement() {
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     placeholder="500000"
+                    disabled={isLoading}
                 />
             </div>
 
@@ -167,12 +195,17 @@ export function AdditionalServiceManagement() {
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     placeholder="Detailed description of the service..."
                     rows={4}
+                    disabled={isLoading}
                 />
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor={isEdit ? 'edit-status' : 'status'}>Status</Label>
-                <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
+                <Select 
+                    value={formData.status} 
+                    onValueChange={(value: any) => setFormData({ ...formData, status: value })}
+                    disabled={isLoading}
+                >
                     <SelectTrigger>
                             <SelectValue placeholder="Select status" />
                         </SelectTrigger>
@@ -208,10 +241,23 @@ export function AdditionalServiceManagement() {
                         </DialogHeader>
                         {renderServiceForm(false)}
                         <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isLoading}>
                                 Cancel
                             </Button>
-                            <Button onClick={handleSubmit}>Add service</Button>
+                            <Button 
+                                onClick={handleSubmit} 
+                                disabled={isLoading}
+                                className={isLoading ? "bg-green-600 text-white" : ""}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Adding...
+                                    </>
+                                ) : (
+                                    'Add service'
+                                )}
+                            </Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -227,10 +273,23 @@ export function AdditionalServiceManagement() {
                         </DialogHeader>
                         {renderServiceForm(true)}
                         <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={isLoading}>
                                 Cancel
                             </Button>
-                            <Button onClick={handleSubmit}>Update</Button>
+                            <Button 
+                                onClick={handleSubmit} 
+                                disabled={isLoading}
+                                className={isLoading ? "bg-green-600 text-white" : ""}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Updating...
+                                    </>
+                                ) : (
+                                    'Update'
+                                )}
+                            </Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -339,7 +398,6 @@ export function AdditionalServiceManagement() {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-1 text-green-600">
-                                            <DollarSign className="h-3 w-3" />
                                             <span>{formatPrice(service.price)}</span>
                                         </div>
                                     </TableCell>

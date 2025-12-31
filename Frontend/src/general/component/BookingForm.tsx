@@ -7,12 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import type { BookingData } from "../../context/BookingContext.tsx";
 import { Paintbrush, WavesLadder, Projector, WashingMachine, LandPlot, Plane, Gift, CalendarIcon, User, Phone, Mail, Bubbles, Baby, Users, Bus, Motorbike, Dumbbell } from "lucide-react";
 import { format } from "date-fns";
-import { useAdditionalServices } from '../../context/AdditionalServicesContext.tsx';
+import { useAdditionalServices, type AdditionalService } from '../../context/AdditionalServicesContext.tsx';
 import { useAuth } from '../../context/AuthContext.tsx'
-import type { AdditionalService } from '../../context/AdditionalServicesContext.tsx';
 import { getAccountInfo } from "../../apis/APIFunction.ts";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface BookingFormProps {
     bookingData: BookingData;
@@ -28,6 +27,12 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
     })
 
     const {services} = useAdditionalServices();
+    const [availableServices, setAvailableServices] = useState<AdditionalService[]>();
+
+    useEffect(() => {
+        const avaiServices = services.filter(s => s.status === 'Available');
+        setAvailableServices(avaiServices);
+    }, [services]);
 
     useEffect(() => {
         if(!user || !userInfo) {
@@ -285,7 +290,7 @@ export function BookingForm({ bookingData, onBookingChange }: BookingFormProps) 
 
                 <CardContent>
                     <div className="space-y-4">
-                        {services.map((service) => {
+                        {availableServices?.map((service) => {
                             const isSelected = (bookingData.additionalServices || []).some(
                                 (s) => s.service_id === service.service_id
                             );

@@ -27,7 +27,9 @@ export function BookingSummary({ bookingData, onProceedToPayment }: BookingSumma
     const total = subtotal + tax + serviceFee;
 
     const handleSubmitPayment = () => {
-        addBooking(bookingData);
+        if (window.confirm('Are you sure you want to book this room?')) {
+            addBooking(bookingData);
+        }
     }
 
     return (

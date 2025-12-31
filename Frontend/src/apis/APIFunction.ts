@@ -294,7 +294,7 @@ export const getAllServices = async() => {
 export const addNewService = async(serviceData: any) => {
     try {
         const res = await api.post("/admin/service", serviceData);
-        return res.data.data;
+        return res.data;
     } catch (error) {
         console.log("Add new service error:", error);
         throw error;
