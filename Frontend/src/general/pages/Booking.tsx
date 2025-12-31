@@ -6,17 +6,18 @@ import { Button } from "../../ui/button.tsx";
 import { useNavigate, useLocation } from 'react-router-dom'
 import type { Room } from '../../context/RoomContext.tsx'
 import type { BookingData } from '../../context/BookingContext.tsx'
-
+import { useAuth } from "@/context/AuthContext.tsx";
 
 const Booking = () => {
     const navigate = useNavigate();
     const location = useLocation();
-
+    const {user} = useAuth();
     const {selectedRoom: room} = location.state as { selectedRoom: Room };
 
     const [currentStep, setCurrentStep] = useState<"booking" | "payment">("booking");
     const [bookingData, setBookingData] = useState<BookingData>(() => {
         return {
+            user_id: Number(user?.user_id),
             room: room,
             checkIn: undefined,
             checkOut: undefined,
@@ -33,7 +34,8 @@ const Booking = () => {
                 phone: "",
                 address: ""
             },
-            specialRequests: "",
+            booking_id: 0,
+            specialRequest: "",
             additionalServices: []
         }
     })

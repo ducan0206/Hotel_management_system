@@ -15,10 +15,11 @@ import { useNavigate } from 'react-router-dom'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { GuestManagement } from "../components/GuestManagement";
 import { AdditionalServiceManagement } from "../components/AdditionalServiceManagement";
+import { BookingsManagement } from "../components/BookingsManagement";
 
 const Dashboard = () => {
     const { user } = useAuth();
-    const [currentView, setCurrentView] = useState<'dashboard' | 'reception' | 'rooms' | 'guest' | 'services'>('dashboard');
+    const [currentView, setCurrentView] = useState<'dashboard' | 'reception' | 'rooms' | 'guest' | 'services' | 'bookings'>('dashboard');
     const isAdmin = user?.role === 'admin';
     const navigate = useNavigate();
 
@@ -50,7 +51,11 @@ const Dashboard = () => {
                         <BedDouble className="h-4 w-4" />
                         Rooms
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start gap-3">
+                    <Button 
+                        variant="ghost" 
+                        className="w-full justify-start gap-3"
+                        onClick={() => setCurrentView('bookings')}
+                    >
                         <Calendar className="h-4 w-4" />
                         Bookings
                     </Button>
@@ -61,10 +66,6 @@ const Dashboard = () => {
                     >
                         <Users className="h-4 w-4" />
                         Guests
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start gap-3">
-                        <DollarSign className="h-4 w-4" />
-                        Revenue
                     </Button>
                     <Button 
                         variant={currentView === 'services' ? 'default' : 'ghost'} 
@@ -159,6 +160,8 @@ const Dashboard = () => {
                             <GuestManagement></GuestManagement>
                         ) : currentView === 'services' ? (
                             <AdditionalServiceManagement></AdditionalServiceManagement>
+                        ) : currentView === 'bookings' ? (
+                            <BookingsManagement></BookingsManagement>
                         ) : (
                             <>
                             {/* Stats Grid */}

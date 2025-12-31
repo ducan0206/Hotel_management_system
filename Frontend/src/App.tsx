@@ -9,6 +9,7 @@ import HotelAuthentication from './admin/HotelAuthentication.tsx'
 import ReceptionLoginPage from './admin/ReceptionLogin.tsx'
 import Dashboard from './admin/pages/Dashboard.tsx'
 import PaymentPage from './general/pages/Payment.tsx'
+import PaymentSuccess from './general/component/PaymentSuccess.tsx'
 
 import AnimatedPage from './AnimatedPage.tsx'
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom'; 
@@ -56,6 +57,7 @@ const AppRoutes = () => {
                 <Route path="/hotel/auth" element={<AnimatedPage><HotelAuthentication /></AnimatedPage>} />
                 <Route path="/admin/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
                 <Route path='/payment/:booking_id' element={<AnimatedPage><PaymentPage/></AnimatedPage>}></Route>
+                <Route path='/payment-success' element={<AnimatedPage><PaymentSuccess/></AnimatedPage>}></Route>
 
             </Routes>
         </AnimatePresence>

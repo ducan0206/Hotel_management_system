@@ -325,7 +325,7 @@ export const deletingService = async(id: number) => {
 export const getAllBookings = async () => {
     try {
         const res = await api.get(`/admin/bookings`);
-        return res.data;
+        return res.data.data;
     } catch (error) {
         console.log("Get all bookings error:", error);
         throw error;

@@ -47,6 +47,8 @@ export function BookingProvider({children}: {children: ReactNode}) {
 
     const navigate = useNavigate();
 
+    console.log(bookings);
+
     // current booking
     const [currentBookingId, setCurrentBookingId] = useState(0);
 
