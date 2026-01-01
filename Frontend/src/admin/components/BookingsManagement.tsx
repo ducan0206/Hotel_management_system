@@ -135,11 +135,11 @@ export function BookingsManagement() {
 
         try {
             if (editingId) {
-                await updateBooking(editingId, payload);
+                updateBooking(editingId, payload);
                 toast.success('Booking updated successfully!');
                 setIsEditDialogOpen(false);
             } else {
-                await addBooking(payload);
+                addBooking(payload);
                 toast.success('Booking created successfully!');
                 setIsAddDialogOpen(false);
             }
@@ -149,7 +149,25 @@ export function BookingsManagement() {
         }
     };
 
+    const checkCanEdit = (booking: any) => {
+        const today = new Date();
+        const checkInDate = new Date(booking.check_in);
+
+        const diffDays = Math.ceil(
+            (checkInDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        if (diffDays <= 2) {
+            return false;
+        }
+        return true;
+    }
+
     const handleEdit = (booking: any) => {
+        if(!checkCanEdit(booking)) {
+            toast.error(<span className='mess'>Customer can not change booking info.</span>);
+            return;
+        }
         console.log(booking);
         setEditingId(booking.booking_id);
         mapContextToForm(booking);
@@ -162,9 +180,8 @@ export function BookingsManagement() {
     };
 
     const handleDelete = (id: number) => {
-        if (confirm('Delete this booking?')) {
+        if (window.confirm('Delete this booking?')) {
             deleteBooking(id);
-            toast.success('Deleted successfully!');
         }
     };
 
@@ -195,7 +212,7 @@ export function BookingsManagement() {
                     <div><b>Room:</b> {b.room_number}</div>
                     <div><b>Check-in:</b> {formatDate(b.check_in)}</div>
                     <div><b>Check-out:</b> {formatDate(b.check_out)}</div>
-                    <div><b>Adults:</b> {b.adults}</div>
+                    <div><b>Adults:</b> {b.adutls}</div>
                     <div><b>Children:</b> {b.children}</div>
                     <div className="col-span-2">
                         <b>Total:</b> <span className="text-green-600">{formatPrice(b.total_price)}</span>

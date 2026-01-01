@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import type {Room} from '../context/RoomContext'
 import type { AdditionalService } from './AdditionalServicesContext';
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import { getAllBookings, addNewBooking } from '../apis/APIFunction';
+import { getAllBookings, addNewBooking, updatingBooking, deletingBooking } from '../apis/APIFunction';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,11 +72,37 @@ export function BookingProvider({children}: {children: ReactNode}) {
     }
 
     const updateBooking = async (id: number, bookingData: any) => {
-
+        try {
+            const res = await updatingBooking(id, bookingData);
+            console.log(res);
+            if(res.status !== 200) {
+                if(res.status === 403) {
+                    console.log(1);
+                    toast.error(<span className='mess'>{res.message}</span>);
+                    return;
+                }
+                toast.error(<span className='mess'>{res.message}</span>);
+                return;
+            }
+            toast.success(<span className='mess'>Update a booking successfully!</span>);
+            refetchBookings();
+        } catch (error) {
+            console.log('Update booking error:', error);
+        }
     }
 
     const deleteBooking = async (id: number) => {
-
+        try {
+            const res = await deletingBooking(id);
+            if(res.status !== 200) {
+                toast.error(<span className='mess'>{res.message}</span>);
+                return;
+            }
+            toast.success(<span className='mess'>Delete a booking successfully!</span>);
+            refetchBookings();
+        } catch (error) {
+            console.log('Delete booking error', error);
+        }
     }
 
     return (

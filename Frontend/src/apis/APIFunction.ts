@@ -343,18 +343,22 @@ export const addNewBooking = async (bookingData: any) => {
     }
 }
 
-export const updateBooking = async (id: number, bookingData: any) => {
+export const updatingBooking = async (id: number, bookingData: any) => {
     try {
-
+        console.log(id);
+        console.log(bookingData);
+        const res = await api.put(`/admin/booking/${id}`, bookingData);
+        return res.data;
     } catch (error) {
         console.log("Update bookings error:", error);
         throw error;
     }
 }
 
-export const deleteBooking = async (id: number) => {
+export const deletingBooking = async (id: number) => {
     try {
-
+        const res = await api.delete(`/admin/booking/${id}`);
+        return res.data;
     } catch (error) {
         console.log("Delete bookings error:", error);
         throw error;
