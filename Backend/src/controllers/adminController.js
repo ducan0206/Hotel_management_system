@@ -381,6 +381,9 @@ export const updateBooking = async(request, response) => {
         if (isNaN(id)) 
             return response.status(400).json({ message: "Invalid ID" });
         const updated = await updatingBooking(id, request.body);
+        if(updated.status !== 200) {
+            return response.status(updated.status).json(updated);
+        }
         response.status(200).json(updated);
     } catch (error) {
         console.log("updateBooking function error: ", error.message);
@@ -412,7 +415,7 @@ export const deleteBooking = async (request, response) => {
             return response.status(404).json({ message: result.message });
         }
 
-        return response.status(204).send();
+        return response.status(200).send(result);
     } catch (error) {
         console.log("deleteBooking function error: ", error.message);
         return response.status(500).json({ message: "System error" });

@@ -61,11 +61,11 @@ adminRoute.get("/bookings", getAllBookings);
 
 adminRoute.get("/bookings/:id", getBookingByID);
 
-adminRoute.put("/bookings/:id/update", updateBooking);
+adminRoute.put("/booking/:id", updateBooking);
 
 adminRoute.post("/new-bookings", createNewBooking);
 
-adminRoute.delete("/bookings/:id", deleteBooking);
+adminRoute.delete("/booking/:id", deleteBooking);
 
 // Payment Management
 adminRoute.get("/payments", getAllPayments);

@@ -61,31 +61,93 @@ export const fetchBookingByID = async(id) => {
 
 export const updatingBooking = async(id, bookingData) => {
     try {
-        const [existing] = await db.query("select * from Bookings where booking_id = ?", [id]);
+        const [existing] = await db.query(
+            `
+            select b.check_in, b.check_out, b.total_price, b.specialRequest,
+                   d.adutls, d.children,
+                   a.phone, a.email
+            from Bookings b join BookingDetails d on b.booking_id = d.booking_id
+                            join Account a on a.user_id = b.user_id
+            where b.booking_id = ?
+            `
+            , [id]
+        );
         if (existing.length === 0) {
             return { status: 404, message: `Booking with ID ${id} not found.` };
         }
 
         const old = existing[0];
+        
+        const today = new Date();
+        const checkInDate = new Date(old.check_in);
+
+        const diffDays = Math.ceil(
+            (checkInDate - today) / (1000 * 60 * 60 * 24)
+        );
+
+        if (diffDays <= 2) {
+            return {
+                status: 403,
+                message: "Booking cannot be edited within 2 days before check-in"
+            };
+        }
+        
         const updatedInfo = {
             check_in: bookingData.check_in ?? old.check_in,
             check_out: bookingData.check_out ?? old.check_out,
             total_price: bookingData.total_price ?? old.total_price,
-            status: bookingData.status ?? old.status,
-            payment_status: bookingData.payment_status ?? old.payment_status
+            specialRequest: bookingData.specialRequest ?? old.specialRequest,
+            adults: bookingData.guests.adults ?? old.adutls,
+            children: bookingData.guests.children ?? old.children,
+            phone: bookingData.guestInfo.phone ?? old.phone,
+            email: bookingData.guestInfo.email ?? old.email
         }
+
+        console.log(updatedInfo);
 
         await db.query(
             `
             update Bookings
-            set check_in = ?, check_out = ?, total_price = ?, status = ?, payment_status = ?, updated_at = NOW()
+            set check_in = ?, check_out = ?, total_price = ?, specialRequest = ?, updated_at = NOW()
             WHERE booking_id = ?
             `,
-            [updatedInfo.check_in, updatedInfo.check_out, updatedInfo.total_price, updatedInfo.status, updatedInfo.payment_status, id]
+            [updatedInfo.check_in, updatedInfo.check_out, updatedInfo.total_price, updatedInfo.specialRequest, id]
         );
 
+        const [rows] = await db.query(
+            `select user_id from Bookings where booking_id = ?`, 
+            [id]
+        );
+
+        let cus_id;
+        if (rows.length > 0) {
+            cus_id = rows[0].user_id; 
+        } else {
+            console.log("Khong tim thay user_id");
+        }
+
+        await db.query(
+            `
+            update BookingDetails
+            set adutls = ?, children = ?
+            where booking_id = ?
+            `, [updatedInfo.adults, updatedInfo.children, id]
+        )
+
+        await db.query(
+            `
+            update Account
+            set phone = ?, email = ?
+            where user_id = ?
+            `, [updatedInfo.phone, updatedInfo.email, cus_id]
+        )
+
         const [updated] = await db.query("select * from Bookings where booking_id = ?", [id]);
-        return updated[0];
+        return {
+            status: 200,
+            data: updated[0],
+            adults: updatedInfo.adults
+        };
     } catch (error) {
         console.log('Error: updatingBooking function', error);
         return error;
